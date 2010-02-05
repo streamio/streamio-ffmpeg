@@ -1,13 +1,25 @@
-= streamio-ffmpeg
+= Streamio FFMPEG
 
-Description goes here.
+Simplest possible wrapper around FFMPEG to get metadata from movie files and do transcoding. IN DEVELOPMENT - Current version only handles basic metadata parsing.
+
+== Installation
+
+  sudo gem install streamio-ffmpeg
+
+(should add instructions for ffmpeg installation here as well)
+
+== Usage
+
+  movie = FFMPEG::Movie.new("path/to/movie.mov")
+  movie.duration # Duration of the movie in seconds
+  movie.width # Width of the movie in pixels
+  movie.height # Height of the movie in pixels
 
 == Note on Patches/Pull Requests
  
 * Fork the project.
 * Make your feature addition or bug fix.
-* Add tests for it. This is important so I don't break it in a
-  future version unintentionally.
+* Add specs for it. This is important so I don't break it in a future version unintentionally.
 * Commit, do not mess with rakefile, version, or history.
   (if you want to have your own version, that is fine but bump version in a commit by itself I can ignore when I pull)
 * Send me a pull request. Bonus points for topic branches.
