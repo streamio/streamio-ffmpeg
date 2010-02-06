@@ -2,7 +2,9 @@ require 'open3'
 
 module FFMPEG
   class Movie
-    attr_reader :duration, :video_stream, :audio_stream, :video_codec, :colorspace, :resolution
+    attr_reader :duration, :bitrate
+    attr_reader :video_stream, :video_codec, :colorspace, :resolution
+    attr_reader :audio_stream, :audio_codec, :audio_sample_rate
     
     def initialize(path)
       raise Errno::ENOENT, "the file '#{path}' does not exist" unless File.exists?(path)
@@ -15,6 +17,9 @@ module FFMPEG
       output[/Duration: (\d{2}):(\d{2}):(\d{2}\.\d{1})/]
       @duration = ($1.to_i*60*60) + ($2.to_i*60) + $3.to_f
       
+      output[/bitrate: (\d*)/]
+      @bitrate = $1 ? $1.to_i : nil
+      
       output[/Video: (.*)/]
       @video_stream = $1
       
@@ -24,6 +29,11 @@ module FFMPEG
       if video_stream
         @video_codec, @colorspace, resolution = video_stream.split(/\s?,\s?/)
         @resolution = resolution.split(" ").first # get rid of [PAR 1:1 DAR 16:9]
+      end
+      
+      if audio_stream
+        @audio_codec, audio_sample_rate, @audio_channels = audio_stream.split(/\s?,\s?/)
+        @audio_sample_rate = audio_sample_rate[/\d*/].to_i
       end
     end
     
@@ -37,6 +47,16 @@ module FFMPEG
     
     def height
       resolution.split("x")[1].to_i rescue nil
+    end
+    
+    def audio_channels
+      return @audio_channels[/\d*/].to_i if @audio_channels["channels"]
+      return 1 if @audio_channels["mono"]
+      return 2 if @audio_channels["stereo"]
+    end
+    
+    def frame_rate
+      video_stream[/(\d*\.\d*)\s?fps/] ? $1.to_f : nil
     end
   end
 end
