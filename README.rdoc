@@ -11,18 +11,24 @@ Simplest possible wrapper around FFMPEG to get metadata from movie files and do 
 == Usage
 
   movie = FFMPEG::Movie.new("path/to/movie.mov")
-  movie.duration # Duration of the movie in seconds
-  movie.width # Width of the movie in pixels
-  movie.height # Height of the movie in pixels
-
-== Note on Patches/Pull Requests
- 
-* Fork the project.
-* Make your feature addition or bug fix.
-* Add specs for it. This is important so I don't break it in a future version unintentionally.
-* Commit, do not mess with rakefile, version, or history.
-  (if you want to have your own version, that is fine but bump version in a commit by itself I can ignore when I pull)
-* Send me a pull request. Bonus points for topic branches.
+  
+  movie.duration # 7.5 (duration of the movie in seconds)
+  movie.bitrate # 481 (bitrate in kb/s)
+  
+  movie.video_stream # "h264, yuv420p, 640x480 [PAR 1:1 DAR 4:3], 371 kb/s, 16.75 fps, 15 tbr, 600 tbn, 1200 tbc" (raw video stream info)
+  movie.video_codec # "h264"
+  movie.colorspace # "yuv420p"
+  movie.resolution # "640x480"
+  movie.width # 640 (width of the movie in pixels)
+  movie.height # 480 (height of the movie in pixels)
+  movie.frame_rate # 16.72 (frames per second)
+  
+  movie.audio_stream # "aac, 44100 Hz, stereo, s16, 75 kb/s" (raw audio stream info)
+  movie.audio_codec # "aac"
+  movie.audio_sample_rate # 44100
+  movie.audio_channels # 2
+  
+  movie.valid? # true (would be false if ffmpeg fails to read the movie)
 
 == Copyright
 
