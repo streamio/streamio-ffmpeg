@@ -10,6 +10,8 @@ Simplest possible wrapper around FFMPEG to get metadata from movie files and do 
 
 == Usage
 
+=== Reading Metadata
+
   movie = FFMPEG::Movie.new("path/to/movie.mov")
   
   movie.duration # 7.5 (duration of the movie in seconds)
@@ -29,6 +31,27 @@ Simplest possible wrapper around FFMPEG to get metadata from movie files and do 
   movie.audio_channels # 2
   
   movie.valid? # true (would be false if ffmpeg fails to read the movie)
+  
+=== Transcoding
+
+Use :output_file option to specify the output file path.
+  
+  movie.transcode(:output_file => "tmp/movie.mp4") # Default ffmpeg settings for mp4 format
+
+Keep track of progress with an optional block.
+
+  movie.transcode(:output_file => "movie.mp4") { |progress| puts progress } # 0.2 ... 0.5 ... 1.0
+
+Give custom command line options to ffmpeg through :raw_options.
+
+  movie.transcode(:raw_options => "-ac aac -vc libx264 -ac 2 ...", :output_file => "movie.mp4")
+  
+The transcode function returns a Movie object for the encoded file.
+
+  transcoded_movie = movie.transcode(:output_file => "tmp/movie.flv")
+  
+  transcoded_movie.video_codec # "flv"
+  transcoded_movie.audio_codec # "mp3"
 
 == Copyright
 
