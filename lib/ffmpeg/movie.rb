@@ -1,13 +1,13 @@
-require 'open3'
-
 module FFMPEG
   class Movie
-    attr_reader :duration, :bitrate
+    attr_reader :path, :duration, :bitrate
     attr_reader :video_stream, :video_codec, :colorspace, :resolution
     attr_reader :audio_stream, :audio_codec, :audio_sample_rate
     
     def initialize(path)
       raise Errno::ENOENT, "the file '#{path}' does not exist" unless File.exists?(path)
+      
+      @path = path
       
       stdin, stdout, stderr = Open3.popen3("ffmpeg -i #{path}") # Output will land in stderr
       output = stderr.read
@@ -57,6 +57,11 @@ module FFMPEG
     
     def frame_rate
       video_stream[/(\d*\.\d*)\s?fps/] ? $1.to_f : nil
+    end
+    
+    def transcode(options, &block)
+      transcoder = Transcoder.new(self, options)
+      transcoder.run &block
     end
   end
 end
