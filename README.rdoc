@@ -1,12 +1,12 @@
 = Streamio FFMPEG
 
-Simplest possible wrapper around FFMPEG to get metadata from movie files and do transcoding. IN DEVELOPMENT - Current version only handles basic metadata parsing.
+Simple yet powerful wrapper around the ffmpeg command for reading metadata and transcoding movies.
 
 == Installation
 
-  sudo gem install streamio-ffmpeg
+  (sudo) gem install streamio-ffmpeg
 
-(should add instructions for ffmpeg installation here as well)
+This version is written against an ffmpeg build from january 2010. So expect things to fail if you're using an earlier (or much later) version. Output and input standards have inconveniently changed rather a lot between versions of ffmpeg. My goal is to keep this library in sync with new versions of ffmpeg as they come along.
 
 == Usage
 
