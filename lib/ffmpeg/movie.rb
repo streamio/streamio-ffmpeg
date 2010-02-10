@@ -59,8 +59,8 @@ module FFMPEG
       video_stream[/(\d*\.?\d*)\s?fps/] ? $1.to_f : nil
     end
     
-    def transcode(options, &block)
-      Transcoder.new(self, options).run &block
+    def transcode(output_file, options, &block)
+      Transcoder.new(self, output_file, options).run &block
     end
   end
 end

@@ -89,10 +89,10 @@ module FFMPEG
         movie = Movie.new("#{fixture_path}/movies/awesome.mov")
 
         mockery = mock(Transcoder)
-        Transcoder.should_receive(:new).with(movie, "#{tmp_path}/awesome.flv").and_return(mockery)
+        Transcoder.should_receive(:new).with(movie, "#{tmp_path}/awesome.flv", :custom => "-vcodec libx264").and_return(mockery)
         mockery.should_receive(:run)
 
-        movie.transcode("#{tmp_path}/awesome.flv")
+        movie.transcode("#{tmp_path}/awesome.flv", :custom => "-vcodec libx264")
       end
     end
   end
