@@ -1,3 +1,7 @@
+== 0.4.1 2009-02-10
+
+* Forgot to change the transcoding shortcut from Movie
+
 == 0.4.0 2009-02-10
 
 * Transcoding API changed to make use of more humanly readable options (see README for examples)
