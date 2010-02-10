@@ -86,11 +86,13 @@ module FFMPEG
     
     describe "transcode" do
       it "should run the transcoder" do
-        FileUtils.rm_f "#{tmp_path}/awesome.flv"
         movie = Movie.new("#{fixture_path}/movies/awesome.mov")
-        encoded = movie.transcode(:output_file => "#{tmp_path}/awesome.flv")
-        encoded.should be_valid
-        File.exists?("#{tmp_path}/awesome.flv").should be_true
+
+        mockery = mock(Transcoder)
+        Transcoder.should_receive(:new).with(movie, "#{tmp_path}/awesome.flv").and_return(mockery)
+        mockery.should_receive(:run)
+
+        movie.transcode("#{tmp_path}/awesome.flv")
       end
     end
   end
