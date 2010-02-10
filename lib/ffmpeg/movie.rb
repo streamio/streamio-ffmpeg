@@ -56,12 +56,11 @@ module FFMPEG
     end
     
     def frame_rate
-      video_stream[/(\d*\.\d*)\s?fps/] ? $1.to_f : nil
+      video_stream[/(\d*\.?\d*)\s?fps/] ? $1.to_f : nil
     end
     
     def transcode(options, &block)
-      transcoder = Transcoder.new(self, options)
-      transcoder.run &block
+      Transcoder.new(self, options).run &block
     end
   end
 end
