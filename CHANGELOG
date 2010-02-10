@@ -1,3 +1,8 @@
+== 0.4.0 2009-02-10
+
+* Transcoding API changed to make use of more humanly readable options (see README for examples)
+* Fixed frame rate parsing for integer frame rates
+
 == 0.3.0 2009-02-07
 
 * Simple transcoding
