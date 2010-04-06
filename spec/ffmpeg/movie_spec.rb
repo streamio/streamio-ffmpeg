@@ -20,13 +20,13 @@ module FFMPEG
         end
       end
 
-      describe "given awesome.mov file" do
+      describe "given an awesome movie file" do
         before(:all) do
-          @movie = Movie.new("#{fixture_path}/movies/awesome.mov")
+          @movie = Movie.new("#{fixture_path}/movies/awesome movie.mov")
         end
 
         it "should remember the movie path" do
-          @movie.path.should == "#{fixture_path}/movies/awesome.mov"
+          @movie.path.should == "#{fixture_path}/movies/awesome movie.mov"
         end
 
         it "should parse duration to number of seconds" do
@@ -86,7 +86,7 @@ module FFMPEG
     
     describe "transcode" do
       it "should run the transcoder" do
-        movie = Movie.new("#{fixture_path}/movies/awesome.mov")
+        movie = Movie.new("#{fixture_path}/movies/awesome movie.mov")
 
         mockery = mock(Transcoder)
         Transcoder.should_receive(:new).with(movie, "#{tmp_path}/awesome.flv", :custom => "-vcodec libx264").and_return(mockery)

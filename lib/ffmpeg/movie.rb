@@ -7,9 +7,9 @@ module FFMPEG
     def initialize(path)
       raise Errno::ENOENT, "the file '#{path}' does not exist" unless File.exists?(path)
       
-      @path = path
-      
-      stdin, stdout, stderr = Open3.popen3("ffmpeg -i #{path}") # Output will land in stderr
+      @path = escape(path)
+
+      stdin, stdout, stderr = Open3.popen3("ffmpeg -i '#{path}'") # Output will land in stderr
       output = stderr.read
       
       @valid = output[/Unknown format/].nil?
@@ -61,6 +61,12 @@ module FFMPEG
     
     def transcode(output_file, options, &block)
       Transcoder.new(self, output_file, options).run &block
+    end
+    
+    protected
+    def escape(path)
+      map  =  { '\\' => '\\\\', '</' => '<\/', "\r\n" => '\n', "\n" => '\n', "\r" => '\n', '"' => '\\"', "'" => "\\'" }
+      path.gsub(/(\\|<\/|\r\n|[\n\r"'])/) { map[$1] }
     end
   end
 end
