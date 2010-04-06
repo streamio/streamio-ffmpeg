@@ -5,5 +5,5 @@ require 'ffmpeg/transcoder'
 require 'ffmpeg/encoding_options'
  
 module FFMPEG
-  VERSION = '0.4.2'
+  VERSION = '0.4.3'
 end
