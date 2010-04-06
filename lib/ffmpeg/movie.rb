@@ -12,7 +12,7 @@ module FFMPEG
       stdin, stdout, stderr = Open3.popen3("ffmpeg -i '#{path}'") # Output will land in stderr
       output = stderr.read
       
-      @valid = output[/Unknown format/].nil?
+      @valid = output["Unknown format"].nil? && output["Invalid data found when processing input"].nil?
       
       output[/Duration: (\d{2}):(\d{2}):(\d{2}\.\d{1})/]
       @duration = ($1.to_i*60*60) + ($2.to_i*60) + $3.to_f
