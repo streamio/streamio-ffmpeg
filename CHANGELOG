@@ -1,20 +1,24 @@
-== 0.4.1 2009-02-10
+== 0.4.2 20010-04-06
+
+* Escape the path to handle spaces in filenames and avoid CLI injection attacks (thanks J. Weir!)
+
+== 0.4.1 2010-02-10
 
 * Forgot to change the transcoding shortcut from Movie
 
-== 0.4.0 2009-02-10
+== 0.4.0 2010-02-10
 
 * Transcoding API changed to make use of more humanly readable options (see README for examples)
 * Fixed frame rate parsing for integer frame rates
 
-== 0.3.0 2009-02-07
+== 0.3.0 2010-02-07
 
 * Simple transcoding
 
-== 0.2.0 2009-02-06
+== 0.2.0 2010-02-06
 
 * Some more metadata parsing
 
-== 0.1.0 2009-02-05
+== 0.1.0 2010-02-05
 
 * Some basic parsing of metadata added
