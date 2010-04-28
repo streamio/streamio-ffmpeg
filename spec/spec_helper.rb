@@ -5,8 +5,9 @@ require 'spec'
 require 'spec/autorun'
 require 'fileutils'
 
+FFMPEG.logger = Logger.new(nil)
+
 Spec::Runner.configure do |config|
-  
 end
 
 def fixture_path
