@@ -1,8 +1,12 @@
-== 0.4.3 20010-04-06
+== 0.5.0 2010-04-28
+
+* Added logging capabilities 
+
+== 0.4.3 2010-04-06
 
 * Correctly identify invalid movies on latest ffmpeg build (r22811)
 
-== 0.4.2 20010-04-06
+== 0.4.2 2010-04-06
 
 * Escape the path to handle spaces in filenames and avoid CLI injection attacks (thanks J. Weir!)
 
