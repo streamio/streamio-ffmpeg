@@ -19,15 +19,19 @@ module FFMPEG
     
     def run
       command = "ffmpeg -y -i '#{@movie.path}' #{@raw_options} '#{@output_file}'"
+      FFMPEG.logger.info("Running transcoding...\n#{command}")
+      output = ""
       last_output = nil
       Open3.popen3(command) do |stdin, stdout, stderr|
         stderr.each("r") do |line|
+          output << line
           if line =~ /time=(\d+.\d+)/
             time = $1.to_f
             progress = time / @movie.duration
             yield(progress) if block_given?
           end
           if line =~ /Unsupported codec/
+            FFMPEG.logger.error "Failed encoding...\nCommand\n#{command}\nOutput\n#{output}"
             raise "Failed encoding: #{line}"
           end
           last_output = line
@@ -35,9 +39,12 @@ module FFMPEG
       end
 
       if encoding_succeeded?
+        FFMPEG.logger.info "Transcoding of #{@movie.path} to #{@output_file} succeeded"
         yield(1.0) if block_given?
       else
-        raise "Failed encoding. Last output: #{last_output}. Errors: #{@errors.join(", ")}"
+        errors = @errors.empty? ? "" : "Errors: #{@errors.join(", ")}"
+        FFMPEG.logger.error "Failed encoding...\n#{command}\n\n#{output}\n#{errors}"
+        raise "Failed encoding. Last output: #{last_output}. #{errors}"
       end
       
       encoded

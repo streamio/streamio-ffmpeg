@@ -26,6 +26,10 @@ module FFMPEG
     end
     
     describe "transcoding" do
+      before(:each) do
+        FFMPEG.logger.should_receive(:info).at_least(:once)
+      end
+      
       it "should transcode the movie with progress given an awesome movie" do
         FileUtils.rm_f "#{tmp_path}/awesome.flv"
         
@@ -67,6 +71,7 @@ module FFMPEG
       end
       
       it "should fail when given an invalid movie" do
+        FFMPEG.logger.should_receive(:error)
         movie = Movie.new(__FILE__)
         transcoder = Transcoder.new(movie, "#{tmp_path}/fail.flv")
         lambda { transcoder.run }.should raise_error(RuntimeError, /no output file created/)
