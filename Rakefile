@@ -8,7 +8,7 @@ begin
     gem.summary = %Q{Simple wrapper around ffmpeg to get metadata from movies and do transcoding}
     gem.description = %Q{Simple wrapper around ffmpeg to get metadata from movies and do transcoding}
     gem.email = "duztdruid@gmail.com"
-    gem.homepage = "http://github.com/dbackeus/streamio-ffmpeg"
+    gem.homepage = "http://github.com/streamio/streamio-ffmpeg"
     gem.authors = ["David Backeus"]
     gem.add_development_dependency "rspec", ">= 1.2.9"
   end
