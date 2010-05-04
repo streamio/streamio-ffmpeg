@@ -14,6 +14,16 @@ module FFMPEG
         EncodingOptions.new(:cropright => 20).to_s.should == "-cropright 20"
       end
       
+      it "should know the width from the resolution or be nil" do
+        EncodingOptions.new(:resolution => "320x240").width.should == 320
+        EncodingOptions.new.width.should be_nil
+      end
+      
+      it "should know the height from the resolution or be nil" do
+        EncodingOptions.new(:resolution => "320x240").height.should == 240
+        EncodingOptions.new.height.should be_nil
+      end
+      
       it "should convert frame rate" do
         EncodingOptions.new(:frame_rate => 29.9).to_s.should == "-r 29.9"
       end

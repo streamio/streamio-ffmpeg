@@ -12,6 +12,14 @@ module FFMPEG
       end.join(" ")
     end
     
+    def width
+      self[:resolution].split("x").first.to_i rescue nil
+    end
+    
+    def height
+      self[:resolution].split("x").last.to_i rescue nil
+    end
+    
     private
     def supports_option?(option)
       private_methods.include?("convert_#{option}")
