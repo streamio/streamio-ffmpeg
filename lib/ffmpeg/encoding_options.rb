@@ -7,9 +7,11 @@ module FFMPEG
     end
     
     def to_s
-      collect do |key, value|
+      parameters = collect do |key, value|
         send("convert_#{key}", value) if supports_option?(key)
       end.join(" ")
+      parameters << " #{convert_aspect(calculate_aspect)}" if calculate_aspect?
+      parameters
     end
     
     def width
@@ -23,6 +25,19 @@ module FFMPEG
     private
     def supports_option?(option)
       private_methods.include?("convert_#{option}")
+    end
+    
+    def convert_aspect(value)
+      "-aspect #{value}"
+    end
+    
+    def calculate_aspect
+      width, height = self[:resolution].split("x")
+      width.to_f / height.to_f
+    end
+    
+    def calculate_aspect?
+      self[:aspect].nil? && self[:resolution]
     end
     
     def convert_croptop(value)
