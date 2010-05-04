@@ -81,6 +81,10 @@ module FFMPEG
         it "should should be valid" do
           @movie.should be_valid
         end
+        
+        it "should calculate the aspect ratio" do
+          @movie.calculated_aspect_ratio.to_s.should == "1.33333333333333"
+        end
       end
     end
     

@@ -49,6 +49,10 @@ module FFMPEG
       resolution.split("x")[1].to_i rescue nil
     end
     
+    def calculated_aspect_ratio
+      width.to_f / height.to_f
+    end
+    
     def audio_channels
       return @audio_channels[/\d*/].to_i if @audio_channels["channels"]
       return 1 if @audio_channels["mono"]
