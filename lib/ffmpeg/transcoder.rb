@@ -2,7 +2,7 @@ require 'open3'
 
 module FFMPEG
   class Transcoder
-    def initialize(movie, output_file, options = EncodingOptions.new)
+    def initialize(movie, output_file, options = EncodingOptions.new, transcoder_options = {})
       @movie = movie
       @output_file = output_file
       
@@ -14,7 +14,10 @@ module FFMPEG
         raise ArgumentError, "Unknown options format '#{options.class}', should be either EncodingOptions, Hash or String."
       end
       
+      @transcoder_options = transcoder_options
       @errors = []
+      
+      apply_transcoder_options
     end
     
     def run
@@ -72,6 +75,18 @@ module FFMPEG
     
     def encoded
       @encoded ||= Movie.new(@output_file)
+    end
+    
+    private
+    def apply_transcoder_options
+      case @transcoder_options[:preserve_aspect_ratio].to_s
+      when "width"
+        new_height = (@raw_options.width / @movie.calculated_aspect_ratio).to_i
+        @raw_options[:resolution] = "#{@raw_options.width}x#{new_height}"
+      when "height"
+        new_width = (@raw_options.height * @movie.calculated_aspect_ratio).to_i
+        @raw_options[:resolution] = "#{new_width}x#{@raw_options.height}"
+      end
     end
   end
 end

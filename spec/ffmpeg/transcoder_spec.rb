@@ -47,7 +47,7 @@ module FFMPEG
         FileUtils.rm_f "#{tmp_path}/optionalized.mp4"
         
         movie = Movie.new("#{fixture_path}/movies/awesome movie.mov")
-        options = {:video_codec => "libx264", :frame_rate => 10, :resolution => "320x240", :video_bitrate => 300, 
+        options = {:video_codec => "libx264", :frame_rate => 10, :resolution => "320x240", :video_bitrate => 300,
                    :audio_codec => "libfaac", :audio_bitrate => 32, :audio_sample_rate => 22050, :audio_channels => 1,
                    :custom => "-flags +loop -cmp +chroma -partitions +parti4x4+partp8x8 -flags2 +mixed_refs -me_method umh -subq 6 -refs 6 -rc_eq 'blurCplx^(1-qComp)' -coder 0 -me_range 16 -g 250 -keyint_min 25 -sc_threshold 40 -i_qfactor 0.71 -qcomp 0.6 -qmin 10 -qmax 51 -qdiff 4 -level 21"}
         
@@ -60,6 +60,27 @@ module FFMPEG
         encoded.audio_channels.should == 1
       end
       
+      describe "aspect ratio preservation" do
+        before(:each) do
+          @movie = Movie.new("#{fixture_path}/movies/awesome_widescreen.mov")
+          @options = {:resolution => "320x240"}
+        end
+        
+        it "should work on width" do
+          special_options = {:preserve_aspect_ratio => :width}
+
+          encoded = Transcoder.new(@movie, "#{tmp_path}/preserved_aspect.mp4", @options, special_options).run
+          encoded.resolution.should == "320x180"
+        end
+
+        it "should work on height" do
+          special_options = {:preserve_aspect_ratio => :height}
+        
+          encoded = Transcoder.new(@movie, "#{tmp_path}/preserved_aspect.mp4", @options, special_options).run
+          encoded.resolution.should == "426x240"
+        end
+      end
+
       it "should transcode the movie with String options" do
         FileUtils.rm_f "#{tmp_path}/string_optionalized.flv"
         
