@@ -7,6 +7,13 @@ module FFMPEG
         EncodingOptions.new(:video_codec => "libx264").to_s.should == "-vcodec libx264"
       end
       
+      it "should convert cropping options" do
+        EncodingOptions.new(:croptop => 20).to_s.should == "-croptop 20"
+        EncodingOptions.new(:cropbottom => 20).to_s.should == "-cropbottom 20"
+        EncodingOptions.new(:cropleft => 20).to_s.should == "-cropleft 20"
+        EncodingOptions.new(:cropright => 20).to_s.should == "-cropright 20"
+      end
+      
       it "should convert frame rate" do
         EncodingOptions.new(:frame_rate => 29.9).to_s.should == "-r 29.9"
       end
