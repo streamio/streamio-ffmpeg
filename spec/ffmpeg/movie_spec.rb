@@ -19,6 +19,16 @@ module FFMPEG
           @movie.should_not be_valid
         end
       end
+      
+      describe "a broken mp4 file" do
+        before(:all) do
+          @movie = Movie.new("#{fixture_path}/movies/broken.mp4")
+        end
+        
+        it "should not be valid" do
+          @movie.should_not be_valid
+        end
+      end
 
       describe "given an awesome movie file" do
         before(:all) do
