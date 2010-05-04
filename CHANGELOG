@@ -1,3 +1,9 @@
+== 0.6.0 2010-05-04
+
+* Cropping options now handled by EncodingOptions (croptop, cropbottom, cropleft and cropright)
+* Aspect ratio parameter calculated and added by default
+* Added transcoder options to preserve original aspect ratio on width or height
+
 == 0.5.0 2010-04-28
 
 * Added logging capabilities 

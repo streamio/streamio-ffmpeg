@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{streamio-ffmpeg}
-  s.version = "0.5.0"
+  s.version = "0.6.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["David Backeus"]
-  s.date = %q{2010-04-28}
+  s.date = %q{2010-05-04}
   s.description = %q{Simple wrapper around ffmpeg to get metadata from movies and do transcoding}
   s.email = %q{duztdruid@gmail.com}
   s.extra_rdoc_files = [
@@ -32,6 +32,7 @@ Gem::Specification.new do |s|
      "spec/ffmpeg/movie_spec.rb",
      "spec/ffmpeg/transcoder_spec.rb",
      "spec/fixtures/movies/awesome movie.mov",
+     "spec/fixtures/movies/awesome_widescreen.mov",
      "spec/spec.opts",
      "spec/spec_helper.rb",
      "spec/stremio-ffmpeg_spec.rb",
