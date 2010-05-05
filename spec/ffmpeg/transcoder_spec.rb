@@ -87,6 +87,14 @@ module FFMPEG
           encoded = Transcoder.new(@movie, "#{tmp_path}/preserved_aspect.mp4", @options, special_options).run
           encoded.resolution.should == "320x240"
         end
+        
+        it "should round to resolutions divisible by 2" do
+          @movie.should_receive(:calculated_aspect_ratio).at_least(:once).and_return(1.234)
+          special_options = {:preserve_aspect_ratio => :width}
+          
+          encoded = Transcoder.new(@movie, "#{tmp_path}/preserved_aspect.mp4", @options, special_options).run
+          encoded.resolution.should == "320x260" # 320 / 1.234 should at first be rounded to 259
+        end
       end
 
       it "should transcode the movie with String options" do
