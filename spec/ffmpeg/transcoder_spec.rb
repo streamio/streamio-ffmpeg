@@ -79,6 +79,14 @@ module FFMPEG
           encoded = Transcoder.new(@movie, "#{tmp_path}/preserved_aspect.mp4", @options, special_options).run
           encoded.resolution.should == "426x240"
         end
+        
+        it "should not be used if original resolution is undeterminable" do
+          @movie.should_receive(:calculated_aspect_ratio).and_return(nil)
+          special_options = {:preserve_aspect_ratio => :height}
+          
+          encoded = Transcoder.new(@movie, "#{tmp_path}/preserved_aspect.mp4", @options, special_options).run
+          encoded.resolution.should == "320x240"
+        end
       end
 
       it "should transcode the movie with String options" do

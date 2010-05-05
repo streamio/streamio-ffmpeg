@@ -79,6 +79,7 @@ module FFMPEG
     
     private
     def apply_transcoder_options
+      return if @movie.calculated_aspect_ratio.nil?
       case @transcoder_options[:preserve_aspect_ratio].to_s
       when "width"
         new_height = (@raw_options.width / @movie.calculated_aspect_ratio).to_i
