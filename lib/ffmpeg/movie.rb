@@ -1,7 +1,7 @@
 module FFMPEG
   class Movie
     attr_reader :path, :duration, :bitrate
-    attr_reader :video_stream, :video_codec, :colorspace, :resolution
+    attr_reader :video_stream, :video_codec, :colorspace, :resolution, :dar
     attr_reader :audio_stream, :audio_codec, :audio_sample_rate
     
     def initialize(path)
@@ -29,6 +29,7 @@ module FFMPEG
       if video_stream
         @video_codec, @colorspace, resolution = video_stream.split(/\s?,\s?/)
         @resolution = resolution.split(" ").first # get rid of [PAR 1:1 DAR 16:9]
+        @dar = $1 if video_stream[/DAR (\d+:\d+)/]
       end
       
       if audio_stream
@@ -56,8 +57,13 @@ module FFMPEG
     end
     
     def calculated_aspect_ratio
-      aspect = width.to_f / height.to_f
-      aspect.nan? ? nil : aspect
+      if dar
+        width, height = dar.split(":")
+        width.to_f / height.to_f
+      else
+        aspect = width.to_f / height.to_f
+        aspect.nan? ? nil : aspect
+      end
     end
     
     def audio_channels

@@ -44,6 +44,20 @@ module FFMPEG
         end
       end
 
+      describe "given a weird aspect ratio file" do
+        before(:all) do
+          @movie = Movie.new("#{fixture_path}/movies/weird_aspect.small.mpg")
+        end
+        
+        it "should parse the DAR" do
+          @movie.dar.should == "704:405"
+        end
+        
+        it "should have correct calculated_aspect_ratio" do
+          @movie.calculated_aspect_ratio.to_s.should == "1.73827160493827"
+        end
+      end
+
       describe "given an awesome movie file" do
         before(:all) do
           @movie = Movie.new("#{fixture_path}/movies/awesome movie.mov")
