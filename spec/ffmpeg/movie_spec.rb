@@ -28,6 +28,10 @@ module FFMPEG
         it "should not be valid" do
           @movie.should_not be_valid
         end
+
+        it "should have nil calculated_aspect_ratio" do
+          @movie.calculated_aspect_ratio.should be_nil
+        end
       end
 
       describe "given an awesome movie file" do

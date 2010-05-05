@@ -50,7 +50,8 @@ module FFMPEG
     end
     
     def calculated_aspect_ratio
-      width.to_f / height.to_f
+      aspect = width.to_f / height.to_f
+      aspect.nan? ? nil : aspect
     end
     
     def audio_channels
