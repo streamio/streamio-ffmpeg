@@ -20,6 +20,16 @@ module FFMPEG
         end
       end
       
+      describe "given a mp3 file" do
+        before(:all) do
+          @movie = Movie.new("#{fixture_path}/sounds/napoleon.mp3")
+        end
+        
+        it "should have uncertain duration" do
+          @movie.should be_uncertain_duration
+        end
+      end
+      
       describe "a broken mp4 file" do
         before(:all) do
           @movie = Movie.new("#{fixture_path}/movies/broken.mp4")
@@ -39,6 +49,10 @@ module FFMPEG
           @movie = Movie.new("#{fixture_path}/movies/awesome movie.mov")
         end
 
+        it "should not have uncertain duration" do
+          @movie.should_not be_uncertain_duration
+        end
+        
         it "should remember the movie path" do
           @movie.path.should == "#{fixture_path}/movies/awesome movie.mov"
         end
