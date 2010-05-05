@@ -1,3 +1,10 @@
+== 0.6.2 2010-05-05
+
+* Added Movie#uncertain_duration? which is true if ffmpeg is guessing duration from bitrate
+* Skipping the transcoders duration validation if original file has uncertain duration
+* Made sure aspect ratio preservation always rounds new size to an even number to avoid "not divisible by 2" errors
+* Changed Movie#valid? logic to accept any movie with either a readable audio or video stream
+
 == 0.6.0 2010-05-04
 
 * Cropping options now handled by EncodingOptions (croptop, cropbottom, cropleft and cropright)
