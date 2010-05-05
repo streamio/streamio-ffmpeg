@@ -65,7 +65,7 @@ module FFMPEG
       end
       
       precision = 1.1
-      unless !(encoded.duration >= (@movie.duration * precision) or encoded.duration <= (@movie.duration / precision))
+      unless @movie.uncertain_duration? || !(encoded.duration >= (@movie.duration * precision) or encoded.duration <= (@movie.duration / precision))
         @errors << "encoded file duration differed from original (original: #{@movie.duration}sec, encoded: #{encoded.duration}sec)"
         return false
       end

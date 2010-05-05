@@ -113,6 +113,22 @@ module FFMPEG
         transcoder = Transcoder.new(movie, "#{tmp_path}/fail.flv")
         lambda { transcoder.run }.should raise_error(RuntimeError, /no output file created/)
       end
+      
+      it "should fail if duration differs from original" do
+        movie = Movie.new("#{fixture_path}/sounds/napoleon.mp3")
+        movie.stub!(:duration).and_return(200)
+        movie.stub!(:uncertain_duration?).and_return(false)
+        transcoder = Transcoder.new(movie, "#{tmp_path}/duration_fail.flv")
+        lambda { transcoder.run }.should raise_error(RuntimeError, /encoded file duration differed from original/)
+      end
+      
+      it "should skip duration check if originals duration is uncertain" do
+        movie = Movie.new("#{fixture_path}/sounds/napoleon.mp3")
+        movie.stub!(:duration).and_return(200)
+        movie.stub!(:uncertain_duration?).and_return(true)
+        transcoder = Transcoder.new(movie, "#{tmp_path}/duration_fail.flv")
+        lambda { transcoder.run }.should_not raise_error(RuntimeError)
+      end
     end
   end
 end
