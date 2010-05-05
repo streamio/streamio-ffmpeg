@@ -5,7 +5,7 @@
 
 Gem::Specification.new do |s|
   s.name = %q{streamio-ffmpeg}
-  s.version = "0.6.2"
+  s.version = "0.6.3"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["David Backeus"]
@@ -34,6 +34,7 @@ Gem::Specification.new do |s|
      "spec/fixtures/movies/awesome movie.mov",
      "spec/fixtures/movies/awesome_widescreen.mov",
      "spec/fixtures/movies/broken.mp4",
+     "spec/fixtures/movies/weird_aspect.small.mpg",
      "spec/fixtures/sounds/napoleon.mp3",
      "spec/spec.opts",
      "spec/spec_helper.rb",

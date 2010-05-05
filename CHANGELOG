@@ -1,3 +1,7 @@
+== 0.6.3 2010-05-05
+
+* Use DAR to calculate aspect ratio if availible
+
 == 0.6.2 2010-05-05
 
 * Added Movie#uncertain_duration? which is true if ffmpeg is guessing duration from bitrate
