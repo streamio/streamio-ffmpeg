@@ -24,7 +24,8 @@ module FFMPEG
     
     private
     def supports_option?(option)
-      private_methods.include?("convert_#{option}")
+      option = RUBY_VERSION < "1.9" ? "convert_#{option}" : "convert_#{option}".to_sym
+      private_methods.include?(option)
     end
     
     def convert_aspect(value)
