@@ -10,6 +10,11 @@ This version is written against an ffmpeg build from april 2010 (tested against 
 
 == Usage
 
+=== Require the gem
+
+  require 'rubygems'
+  require 'streamio-ffmpeg'
+
 === Reading Metadata
 
   movie = FFMPEG::Movie.new("path/to/movie.mov")
