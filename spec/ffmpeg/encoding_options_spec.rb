@@ -34,7 +34,7 @@ module FFMPEG
       
       it "should add calculated aspect ratio" do
         EncodingOptions.new(:resolution => "640x480").to_s.should include("-aspect 1.3333333")
-        EncodingOptions.new(:resolution => "640x360").to_s.should include("-aspect 1.77777777777778")
+        EncodingOptions.new(:resolution => "640x360").to_s.should include("-aspect 1.7777777777777")
       end
       
       it "should use specified aspect ratio if given" do

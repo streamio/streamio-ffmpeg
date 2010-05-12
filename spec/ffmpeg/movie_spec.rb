@@ -54,7 +54,7 @@ module FFMPEG
         end
         
         it "should have correct calculated_aspect_ratio" do
-          @movie.calculated_aspect_ratio.to_s.should == "1.73827160493827"
+          @movie.calculated_aspect_ratio.to_s[0..15].should == "1.73827160493827" # substringed to be 1.9 compatible
         end
       end
 
@@ -125,7 +125,7 @@ module FFMPEG
         end
         
         it "should calculate the aspect ratio" do
-          @movie.calculated_aspect_ratio.to_s.should == "1.33333333333333"
+          @movie.calculated_aspect_ratio.to_s[0..15].should == "1.33333333333333" # substringed to be 1.9 compatible
         end
       end
     end
