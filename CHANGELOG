@@ -1,6 +1,10 @@
+== 0.6.4 2010-05-12
+
+* Ruby 1.9 compatibility fix for EncodingOptions (thanks michalf!)
+
 == 0.6.3 2010-05-05
 
-* Use DAR to calculate aspect ratio if availible
+* Use DAR to calculate aspect ratio if available
 
 == 0.6.2 2010-05-05
 
