@@ -66,6 +66,10 @@ module FFMPEG
       end
     end
     
+    def size
+      File.size(@path)
+    end
+    
     def audio_channels
       return @audio_channels[/\d*/].to_i if @audio_channels["channels"]
       return 1 if @audio_channels["mono"]

@@ -127,6 +127,10 @@ module FFMPEG
         it "should calculate the aspect ratio" do
           @movie.calculated_aspect_ratio.to_s[0..15].should == "1.33333333333333" # substringed to be 1.9 compatible
         end
+        
+        it "should know the file size" do
+          @movie.size.should == 455546
+        end
       end
     end
     
