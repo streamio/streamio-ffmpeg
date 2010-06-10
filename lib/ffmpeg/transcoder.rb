@@ -64,10 +64,12 @@ module FFMPEG
         return false
       end
       
-      precision = 1.1
-      unless @movie.uncertain_duration? || !(encoded.duration >= (@movie.duration * precision) or encoded.duration <= (@movie.duration / precision))
-        @errors << "encoded file duration differed from original (original: #{@movie.duration}sec, encoded: #{encoded.duration}sec)"
-        return false
+      if validate_duration?
+        precision = 1.1
+        unless !(encoded.duration >= (@movie.duration * precision) or encoded.duration <= (@movie.duration / precision))
+          @errors << "encoded file duration differed from original (original: #{@movie.duration}sec, encoded: #{encoded.duration}sec)"
+          return false
+        end
       end
       
       true
@@ -90,6 +92,12 @@ module FFMPEG
         new_width = new_width.ceil.even? ? new_width.ceil : new_width.floor
         @raw_options[:resolution] = "#{new_width}x#{@raw_options.height}"
       end
+    end
+    
+    def validate_duration?
+      return false if @movie.uncertain_duration?
+      return false if %w(.jpg .png).include?(File.extname(@output_file))
+      true
     end
   end
 end

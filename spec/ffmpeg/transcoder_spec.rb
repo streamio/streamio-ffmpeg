@@ -129,6 +129,16 @@ module FFMPEG
         transcoder = Transcoder.new(movie, "#{tmp_path}/duration_fail.flv")
         lambda { transcoder.run }.should_not raise_error(RuntimeError)
       end
+      
+      it "should be able to transcode to images" do
+        movie = Movie.new("#{fixture_path}/movies/awesome movie.mov")
+        
+        encoded = Transcoder.new(movie, "#{tmp_path}/image.png", :custom => "-ss 00:00:03 -vframes 1 -f image2").run
+        encoded.resolution.should == "640x480"
+        
+        encoded = Transcoder.new(movie, "#{tmp_path}/image.jpg", :custom => "-ss 00:00:03 -vframes 1 -f image2").run
+        encoded.resolution.should == "640x480"
+      end
     end
   end
 end
