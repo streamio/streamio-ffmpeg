@@ -86,10 +86,12 @@ module FFMPEG
       when "width"
         new_height = @raw_options.width / @movie.calculated_aspect_ratio
         new_height = new_height.ceil.even? ? new_height.ceil : new_height.floor
+        new_height += 1 if new_height.odd? # needed if new_height ended up with no decimals in the first place
         @raw_options[:resolution] = "#{@raw_options.width}x#{new_height}"
       when "height"
         new_width = @raw_options.height * @movie.calculated_aspect_ratio
         new_width = new_width.ceil.even? ? new_width.ceil : new_width.floor
+        new_width += 1 if new_width.odd?
         @raw_options[:resolution] = "#{new_width}x#{@raw_options.height}"
       end
     end
