@@ -1,3 +1,7 @@
+== 0.6.7 2010-06-10
+
+* Bugfix - aspect ratio preserver could suggest non even resolutions in certain circumstances 
+
 == 0.6.6 2010-06-10
 
 * Transcodings to .jpg and .png will now work as they will skip duration validation.
