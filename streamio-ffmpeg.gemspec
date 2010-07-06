@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{streamio-ffmpeg}
-  s.version = "0.6.7"
+  s.version = "0.6.8"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["David Backeus"]
-  s.date = %q{2010-06-15}
+  s.date = %q{2010-07-06}
   s.description = %q{Simple wrapper around ffmpeg to get metadata from movies and do transcoding}
   s.email = %q{duztdruid@gmail.com}
   s.extra_rdoc_files = [
@@ -59,12 +59,12 @@ Gem::Specification.new do |s|
     s.specification_version = 3
 
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
-      s.add_development_dependency(%q<rspec>, [">= 1.2.9"])
+      s.add_development_dependency(%q<rspec>, ["= 1.3.0"])
     else
-      s.add_dependency(%q<rspec>, [">= 1.2.9"])
+      s.add_dependency(%q<rspec>, ["= 1.3.0"])
     end
   else
-    s.add_dependency(%q<rspec>, [">= 1.2.9"])
+    s.add_dependency(%q<rspec>, ["= 1.3.0"])
   end
 end
 

@@ -10,7 +10,7 @@ begin
     gem.email = "duztdruid@gmail.com"
     gem.homepage = "http://github.com/streamio/streamio-ffmpeg"
     gem.authors = ["David Backeus"]
-    gem.add_development_dependency "rspec", ">= 1.2.9"
+    gem.add_development_dependency "rspec", "1.3.0"
   end
   Jeweler::GemcutterTasks.new
 rescue LoadError
