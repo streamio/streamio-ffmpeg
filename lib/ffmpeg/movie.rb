@@ -58,8 +58,8 @@ module FFMPEG
     
     def calculated_aspect_ratio
       if dar
-        width, height = dar.split(":")
-        width.to_f / height.to_f
+        w, h = dar.split(":")
+        w.to_f / h.to_f
       else
         aspect = width.to_f / height.to_f
         aspect.nan? ? nil : aspect
