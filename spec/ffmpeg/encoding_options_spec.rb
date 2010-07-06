@@ -70,6 +70,22 @@ module FFMPEG
         EncodingOptions.new(:audio_channels => 2).to_s.should == "-ac 2"
       end
       
+      it "should convert maximum video bitrate" do
+        EncodingOptions.new(:video_max_bitrate => 600).to_s.should == "-maxrate 600k"
+      end
+      
+      it "should convert mininimum video bitrate" do
+        EncodingOptions.new(:video_min_bitrate => 600).to_s.should == "-minrate 600k"
+      end
+      
+      it "should convert buffer size" do
+        EncodingOptions.new(:buffer_size => 2000).to_s.should == "-bufsize 2000k"
+      end
+      
+      it "should convert threads" do
+        EncodingOptions.new(:threads => 2).to_s.should == "-threads 2"
+      end
+      
       it "should convert a lot of them simultaneously" do
         converted = EncodingOptions.new(:video_codec => "libx264", :audio_codec => "aac", :video_bitrate => "1000k").to_s
         converted.should match(/-acodec aac/)

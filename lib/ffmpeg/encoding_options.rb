@@ -1,5 +1,3 @@
-# Include support for -bt -maxrate -minrate -bufsize?
-
 module FFMPEG
   class EncodingOptions < Hash
     def initialize(options = {})
@@ -70,7 +68,7 @@ module FFMPEG
     end
     
     def convert_video_bitrate(value)
-      "-b #{value}#{k_format(value)}"
+      "-b #{k_format(value)}"
     end
     
     def convert_audio_codec(value)
@@ -78,7 +76,7 @@ module FFMPEG
     end
     
     def convert_audio_bitrate(value)
-      "-ab #{value}#{k_format(value)}"
+      "-ab #{k_format(value)}"
     end
     
     def convert_audio_sample_rate(value)
@@ -89,12 +87,28 @@ module FFMPEG
       "-ac #{value}"
     end
     
+    def convert_video_max_bitrate(value)
+      "-maxrate #{k_format(value)}"
+    end
+    
+    def convert_video_min_bitrate(value)
+      "-minrate #{k_format(value)}"
+    end
+    
+    def convert_buffer_size(value)
+      "-bufsize #{k_format(value)}"
+    end
+    
+    def convert_threads(value)
+      "-threads #{value}"
+    end
+    
     def convert_custom(value)
       value
     end
     
     def k_format(value)
-      "k" unless value.to_s.include?("k")
+      value.to_s.include?("k") ? value : "#{value}k"
     end
   end
 end
