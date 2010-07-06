@@ -1,3 +1,7 @@
+== 0.6.8.1 2010-07-06
+
+* Bugfix - aspect ratio was not calculated properly on movies with no DAR
+
 == 0.6.8 2010-07-06
 
 * Don't use encoding options with nil values
