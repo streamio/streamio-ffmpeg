@@ -74,6 +74,10 @@ module FFMPEG
         converted = EncodingOptions.new(:video_codec => "libx264", :audio_codec => "aac", :video_bitrate => "1000k").to_s
         converted.should match(/-acodec aac/)
       end
+      
+      it "should ignore options with nil value" do
+        EncodingOptions.new(:video_codec => "libx264", :frame_rate => nil).to_s.should == "-vcodec libx264 "
+      end
     end
   end
 end
