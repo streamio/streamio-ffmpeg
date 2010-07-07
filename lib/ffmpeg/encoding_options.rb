@@ -99,8 +99,24 @@ module FFMPEG
       "-bufsize #{k_format(value)}"
     end
     
+    def convert_video_bitrate_tolerance(value)
+      "-bt #{k_format(value)}"
+    end
+    
     def convert_threads(value)
       "-threads #{value}"
+    end
+    
+    def convert_video_preset(value)
+      "-vpre #{value}"
+    end
+    
+    def convert_audio_preset(value)
+      "-apre #{value}"
+    end
+    
+    def convert_file_preset(value)
+      "-fpre #{value}"
     end
     
     def convert_custom(value)

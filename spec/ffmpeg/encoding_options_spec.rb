@@ -78,12 +78,28 @@ module FFMPEG
         EncodingOptions.new(:video_min_bitrate => 600).to_s.should == "-minrate 600k"
       end
       
+      it "should convert video bitrate tolerance" do
+        EncodingOptions.new(:video_bitrate_tolerance => 100).to_s.should == "-bt 100k"
+      end
+      
       it "should convert buffer size" do
         EncodingOptions.new(:buffer_size => 2000).to_s.should == "-bufsize 2000k"
       end
       
       it "should convert threads" do
         EncodingOptions.new(:threads => 2).to_s.should == "-threads 2"
+      end
+      
+      it "should convert video preset" do
+        EncodingOptions.new(:video_preset => "max").to_s.should == "-vpre max"
+      end
+      
+      it "should convert audio preset" do
+        EncodingOptions.new(:audio_preset => "max").to_s.should == "-apre max"
+      end
+      
+      it "should convert file preset" do
+        EncodingOptions.new(:file_preset => "max.ffpreset").to_s.should == "-fpre max.ffpreset"
       end
       
       it "should convert a lot of them simultaneously" do
