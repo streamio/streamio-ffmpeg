@@ -54,7 +54,7 @@ Give custom command line options with a string.
 
 Use the EncodingOptions parser for humanly readable transcoding options. Below you'll find most of the supported options. Note that the :custom key will be used as is without modification so use it for any tricky business you might need.
 
-  options = {:video_codec => "libx264", :frame_rate => 10, :resolution => "320x240", :video_bitrate => 300,
+  options = {:video_codec => "libx264", :frame_rate => 10, :resolution => "320x240", :video_bitrate => 300, :video_bitrate_tolerance => 100,
              :croptop => 60, :cropbottom => 60, :cropleft => 10, :cropright => 10, :aspect => 1.333333,
              :audio_codec => "libfaac", :audio_bitrate => 32, :audio_sample_rate => 22050, :audio_channels => 1,
              :threads => 2,
@@ -87,7 +87,12 @@ Preserve aspect ratio on width or height by using the preserve_aspect_ratio tran
 For constant bitrate encoding use video_min_bitrate and video_max_bitrate with buffer_size.
 
   options = {:video_min_bitrate => 600, :video_max_bitrate => 600, :buffer_size => 2000}
-  movie.transcode("movie.mp4", options)
+  movie.transcode("movie.flv", options)
+
+Use ffpreset files to avoid headaches when encoding with libx264 (http://www.ffmpeg.org/ffmpeg-doc.html#SEC13).
+
+  options = {:video_codec => "libx264", :video_preset => "medium"} # audio_preset and file_preset also availible
+  movie.transcode("movie.mp4", options) # encodes video using libx264-medium.ffpreset
 
 == Copyright
 

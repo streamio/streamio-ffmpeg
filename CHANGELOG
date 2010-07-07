@@ -1,3 +1,8 @@
+== 0.7.0 2010-07-07
+
+* Support for ffpresets through video_preset, audio_preset and file_preset encoding options
+* Added encoding option video_bitrate_tolerance
+
 == 0.6.8.1 2010-07-06
 
 * Bugfix - aspect ratio was not calculated properly on movies with no DAR
