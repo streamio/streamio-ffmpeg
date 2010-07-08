@@ -5,11 +5,16 @@ module FFMPEG
     end
     
     def to_s
-      parameters = collect do |key, value|
+      params = collect do |key, value|
         send("convert_#{key}", value) if value && supports_option?(key)
-      end.join(" ")
-      parameters << " #{convert_aspect(calculate_aspect)}" if calculate_aspect?
-      parameters
+      end
+      
+      # put the preset parameters last
+      params = params.reject { |p| p =~ /\-.pre/ } + params.select { |p| p =~ /\-.pre/ }
+      
+      params_string = params.join(" ")
+      params_string << " #{convert_aspect(calculate_aspect)}" if calculate_aspect?
+      params_string
     end
     
     def width

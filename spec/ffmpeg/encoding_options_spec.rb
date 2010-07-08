@@ -102,6 +102,15 @@ module FFMPEG
         EncodingOptions.new(:file_preset => "max.ffpreset").to_s.should == "-fpre max.ffpreset"
       end
       
+      it "should put the preset parameters last" do
+        opts = Hash.new
+        opts[:video_codec] = "libx264"
+        opts[:video_preset] = "normal"
+        
+        converted = EncodingOptions.new(opts).to_s
+        converted.should == "-vcodec libx264 -vpre normal"
+      end
+      
       it "should convert a lot of them simultaneously" do
         converted = EncodingOptions.new(:video_codec => "libx264", :audio_codec => "aac", :video_bitrate => "1000k").to_s
         converted.should match(/-acodec aac/)
