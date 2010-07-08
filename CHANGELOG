@@ -1,3 +1,8 @@
+== 0.7.1 2010-07-08
+
+* Make sure preset parameters are always put last to avoid them ending up before any codec assignments
+* Testing against a fresh ffmpeg build (r24069)
+
 == 0.7.0 2010-07-07
 
 * Support for ffpresets through video_preset, audio_preset and file_preset encoding options
