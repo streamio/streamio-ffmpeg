@@ -139,6 +139,23 @@ module FFMPEG
         encoded = Transcoder.new(movie, "#{tmp_path}/image.jpg", :custom => "-ss 00:00:03 -vframes 1 -f image2").run
         encoded.resolution.should == "640x480"
       end
+      
+      it "should validate duration to the specified duration if given" do
+        movie = Movie.new("#{fixture_path}/movies/awesome movie.mov")
+        
+        encoded = Transcoder.new(movie, "#{tmp_path}/durationalized.mp4", :duration => 2).run
+        
+        encoded.duration.should >= 1.8
+        encoded.duration.should <= 2.2
+      end
+      
+      it "should validate duration to original movies duration if duration specified to higher number than original" do
+        movie = Movie.new("#{fixture_path}/movies/awesome movie.mov")
+        
+        expect { 
+          Transcoder.new(movie, "#{tmp_path}/durationalized.mp4", :duration => 10).run
+        }.to_not raise_error
+      end
     end
   end
 end

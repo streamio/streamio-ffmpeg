@@ -112,6 +112,10 @@ module FFMPEG
       "-threads #{value}"
     end
     
+    def convert_duration(value)
+      "-t #{value}"
+    end
+    
     def convert_video_preset(value)
       "-vpre #{value}"
     end

@@ -90,6 +90,10 @@ module FFMPEG
         EncodingOptions.new(:threads => 2).to_s.should == "-threads 2"
       end
       
+      it "should convert duration" do
+        EncodingOptions.new(:duration => 30).to_s.should == "-t 30"
+      end
+      
       it "should convert video preset" do
         EncodingOptions.new(:video_preset => "max").to_s.should == "-vpre max"
       end
