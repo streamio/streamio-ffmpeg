@@ -28,7 +28,7 @@ module FFMPEG
        
       if video_stream
         @video_codec, @colorspace, resolution = video_stream.split(/\s?,\s?/)
-        @resolution = resolution.split(" ").first # get rid of [PAR 1:1 DAR 16:9]
+        @resolution = resolution.split(" ").first rescue nil # get rid of [PAR 1:1 DAR 16:9]
         @dar = $1 if video_stream[/DAR (\d+:\d+)/]
       end
       
