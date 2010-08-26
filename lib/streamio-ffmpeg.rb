@@ -2,13 +2,12 @@ $LOAD_PATH.unshift File.dirname(__FILE__)
 
 require 'logger'
 
+require 'ffmpeg/version'
 require 'ffmpeg/movie'
 require 'ffmpeg/transcoder'
 require 'ffmpeg/encoding_options'
  
 module FFMPEG
-  VERSION = '0.5.0'
-  
   # FFMPEG logs information about its progress when it's transcoding.
   # Jack in your own logger through this method if you wish to.
   #
