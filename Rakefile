@@ -11,13 +11,12 @@ task :default => :spec
 
 desc "Push a new version to Rubygems"
 task :publish do
-  require 'streamio-ffmpeg/version'
+  require 'ffmpeg/version'
 
   sh "gem build streamio-ffmpeg.gemspec"
-  sh "gem push streamio-ffmpeg-#{Magick::VERSION}.gem"
-  sh "git tag v#{Magick::VERSION}"
-  sh "git push origin v#{Magick::VERSION}"
+  sh "gem push streamio-ffmpeg-#{FFMPEG::VERSION}.gem"
+  sh "git tag v#{FFMPEG::VERSION}"
+  sh "git push origin v#{FFMPEG::VERSION}"
   sh "git push origin master"
   sh "git clean -fd"
-  exec "rake pages"
 end
