@@ -37,7 +37,6 @@ module FFMPEG
             FFMPEG.logger.error "Failed encoding...\nCommand\n#{command}\nOutput\n#{output}\n"
             raise "Failed encoding: #{line}"
           end
-          last_output = line
         end
       end
 
@@ -45,9 +44,9 @@ module FFMPEG
         FFMPEG.logger.info "Transcoding of #{@movie.path} to #{@output_file} succeeded\n"
         yield(1.0) if block_given?
       else
-        errors = @errors.empty? ? "" : "Errors: #{@errors.join(", ")}"
+        errors = @errors.empty? ? "" : " Errors: #{@errors.join(", ")}. "
         FFMPEG.logger.error "Failed encoding...\n#{command}\n\n#{output}\n#{errors}\n"
-        raise "Failed encoding. Last output: #{last_output}. #{errors}"
+        raise "Failed encoding.#{errors}Full output: #{output}"
       end
       
       encoded
