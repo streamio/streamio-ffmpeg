@@ -96,4 +96,4 @@ Use ffpreset files to avoid headaches when encoding with libx264 (http://www.ffm
 
 == Copyright
 
-Copyright (c) 2010 David Backeus. See LICENSE for details.
+Copyright (c) 2010 Streamio Networks AB. See LICENSE for details.
