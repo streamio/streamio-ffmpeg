@@ -1,3 +1,9 @@
+== 0.7.3 2010-08-26
+
+* Replaced Jewler with simple dynamic gemspec file
+* Spec files now not in published gem to make it a lot smaller in size
+* Full output from ffmpeg command in error raised during transcoding
+
 == 0.7.2 2010-08-11
 
 * Added encoding option duration
