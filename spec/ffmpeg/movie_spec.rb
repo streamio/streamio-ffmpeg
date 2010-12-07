@@ -58,6 +58,18 @@ module FFMPEG
         end
       end
 
+      describe "given a file with start-time" do
+        before(:each) do
+          fake_output = StringIO.new(File.read("#{fixture_path}/outputs/file_with_start_value.txt"))
+          Open3.stub!(:popen3).and_return([nil,nil,fake_output])
+          @movie = Movie.new(__FILE__)
+        end
+        
+        it "should calculate correct duration" do
+          @movie.duration.to_s.should == "15.062"
+        end
+      end
+
       describe "given an awesome movie file" do
         before(:all) do
           @movie = Movie.new("#{fixture_path}/movies/awesome movie.mov")

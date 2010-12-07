@@ -1,6 +1,6 @@
 module FFMPEG
   class Movie
-    attr_reader :path, :duration, :bitrate
+    attr_reader :path, :duration, :time, :bitrate
     attr_reader :video_stream, :video_codec, :colorspace, :resolution, :dar
     attr_reader :audio_stream, :audio_codec, :audio_sample_rate
     
@@ -14,6 +14,11 @@ module FFMPEG
       
       output[/Duration: (\d{2}):(\d{2}):(\d{2}\.\d{1})/]
       @duration = ($1.to_i*60*60) + ($2.to_i*60) + $3.to_f
+      
+      output[/start: (\d*\.\d*)/]
+      @time = $1 ? $1.to_f : 0.0
+      
+      @duration -= @time
       
       output[/bitrate: (\d*)/]
       @bitrate = $1 ? $1.to_i : nil
