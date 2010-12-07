@@ -1,3 +1,7 @@
+== 0.7.4 2010-12-07
+
+* Fixed broken duration on movies with start times over 0 by reducing duration with start-time 
+
 == 0.7.3 2010-08-26
 
 * Replaced Jewler with simple dynamic gemspec file
