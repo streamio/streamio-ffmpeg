@@ -107,6 +107,10 @@ module FFMPEG
           @movie.resolution.should == "640x480"
         end
 
+        it "should know the video bitrate" do
+          @movie.video_bitrate.should == 371
+        end
+
         it "should know the width and height" do
           @movie.width.should == 640
           @movie.height.should == 480
@@ -130,6 +134,10 @@ module FFMPEG
 
         it "should know the number of audio channels" do
           @movie.audio_channels.should == 2
+        end
+
+        it "should know the audio birrate" do
+          @movie.audio_bitrate.should == 75
         end
 
         it "should should be valid" do

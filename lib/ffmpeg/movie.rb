@@ -1,8 +1,8 @@
 module FFMPEG
   class Movie
     attr_reader :path, :duration, :time, :bitrate
-    attr_reader :video_stream, :video_codec, :colorspace, :resolution, :dar
-    attr_reader :audio_stream, :audio_codec, :audio_sample_rate
+    attr_reader :video_stream, :video_codec, :video_bitrate, :colorspace, :resolution, :dar
+    attr_reader :audio_stream, :audio_codec, :audio_birate, :audio_sample_rate
     
     def initialize(path)
       raise Errno::ENOENT, "the file '#{path}' does not exist" unless File.exists?(path)
@@ -32,13 +32,15 @@ module FFMPEG
       @uncertain_duration = output.include?("Estimating duration from bitrate, this may be inaccurate")
        
       if video_stream
-        @video_codec, @colorspace, resolution = video_stream.split(/\s?,\s?/)
+        @video_codec, @colorspace, resolution, video_bitrate = video_stream.split(/\s?,\s?/)
+        @video_bitrate = video_bitrate.to_i
         @resolution = resolution.split(" ").first rescue nil # get rid of [PAR 1:1 DAR 16:9]
         @dar = $1 if video_stream[/DAR (\d+:\d+)/]
       end
       
       if audio_stream
-        @audio_codec, audio_sample_rate, @audio_channels = audio_stream.split(/\s?,\s?/)
+        @audio_codec, audio_sample_rate, @audio_channels, unused, audio_birate = audio_stream.split(/\s?,\s?/)
+        @audio_birate = audio_bitrate.to_i
         @audio_sample_rate = audio_sample_rate[/\d*/].to_i
       end
       
