@@ -38,8 +38,9 @@ module FFMPEG
       end
       
       it "should use specified aspect ratio if given" do
-        EncodingOptions.new(:resolution => "640x480", 
-                            :aspect => 1.77777777777778).to_s.should == "-s 640x480 -aspect 1.77777777777778"
+        output = EncodingOptions.new(:resolution => "640x480", :aspect => 1.77777777777778).to_s
+        output.should include("-s 640x480")
+        output.should include("-aspect 1.77777777777778")
       end
       
       it "should convert video bitrate" do
