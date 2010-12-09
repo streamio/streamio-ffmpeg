@@ -1,0 +1,19 @@
+FFmpeg version 0.6.1, Copyright (c) 2000-2010 the FFmpeg developers
+  built on Nov 18 2010 13:51:50 with gcc 4.2.1 (Apple Inc. build 5664)
+  configuration: --disable-debug --prefix=/usr/local/Cellar/ffmpeg/0.6.1 --enable-shared --enable-pthreads --enable-nonfree --enable-gpl --disable-indev=jack --enable-libx264 --enable-libfaac --enable-libfaad --enable-libmp3lame --enable-libtheora --enable-libvorbis --enable-libvpx --enable-libxvid
+  libavutil     50.15. 1 / 50.15. 1
+  libavcodec    52.72. 2 / 52.72. 2
+  libavformat   52.64. 2 / 52.64. 2
+  libavdevice   52. 2. 0 / 52. 2. 0
+  libswscale     0.11. 0 /  0.11. 0
+[mov,mp4,m4a,3gp,3g2,mj2 @ 0x10180b000]max_analyze_duration reached
+Input #0, mov,mp4,m4a,3gp,3g2,mj2, from '/Users/druiden/Movies/clips/4cebb32fb35ea857d9000039_4cfe13671ee3ba063400002c.f4v':
+  Metadata:
+    major_brand     : f4v 
+    minor_version   : 0
+    compatible_brands: isommp42m4v 
+  Duration: 00:00:28.11, start: 13.038000, bitrate: 411 kb/s
+    Stream #0.0(eng): Video: h264, yuv420p, 320x214 [PAR 1:1 DAR 160:107], 25 tbr, 1k tbn, 50 tbc
+    Stream #0.1(eng): Audio: mp3, 44100 Hz, 2 channels, s16, 96 kb/s
+    Stream #0.2(eng): Data: amf0 / 0x30666D61
+At least one output file must be specified
