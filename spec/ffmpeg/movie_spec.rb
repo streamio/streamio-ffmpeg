@@ -136,7 +136,7 @@ module FFMPEG
           @movie.audio_channels.should == 2
         end
 
-        it "should know the audio birrate" do
+        it "should know the audio bitrate" do
           @movie.audio_bitrate.should == 75
         end
 
