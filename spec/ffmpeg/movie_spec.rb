@@ -66,7 +66,7 @@ module FFMPEG
         end
         
         it "should calculate correct duration" do
-          @movie.duration.to_s.should == "15.062"
+          @movie.duration.to_s.start_with?("15.062").should be_true
         end
       end
 

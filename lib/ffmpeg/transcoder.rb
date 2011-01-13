@@ -99,6 +99,7 @@ module FFMPEG
     def validate_duration?
       return false if @movie.uncertain_duration?
       return false if %w(.jpg .png).include?(File.extname(@output_file))
+      return false if @raw_options.is_a?(String)
       true
     end
   end
