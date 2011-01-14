@@ -12,6 +12,8 @@ module FFMPEG
       stdin, stdout, stderr = Open3.popen3("ffmpeg -i '#{path}'") # Output will land in stderr
       output = stderr.read
       
+      fix_encoding(output)
+      
       output[/Duration: (\d{2}):(\d{2}):(\d{2}\.\d{1})/]
       @duration = ($1.to_i*60*60) + ($2.to_i*60) + $3.to_f
       
@@ -95,6 +97,12 @@ module FFMPEG
     def escape(path)
       map  =  { '\\' => '\\\\', '</' => '<\/', "\r\n" => '\n', "\n" => '\n', "\r" => '\n', '"' => '\\"', "'" => "\\'" }
       path.gsub(/(\\|<\/|\r\n|[\n\r"'])/) { map[$1] }
+    end
+    
+    def fix_encoding(output)
+      output[/test/] # Running a regexp on the string throws error if it's not UTF-8
+    rescue ArgumentError
+      output.force_encoding("ISO-8859-1")
     end
   end
 end

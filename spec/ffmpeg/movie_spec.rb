@@ -69,7 +69,15 @@ module FFMPEG
           @movie.duration.to_s.start_with?("15.062").should be_true
         end
       end
-
+      
+      describe "given a file with ISO-8859-1 characters in output" do
+        it "should not crash" do
+          fake_output = StringIO.new(File.read("#{fixture_path}/outputs/file_with_iso-8859-1.txt"))
+          Open3.stub!(:popen3).and_return([nil,nil,fake_output])
+          expect { Movie.new(__FILE__) }.to_not raise_error
+        end
+      end
+      
       describe "given an awesome movie file" do
         before(:all) do
           @movie = Movie.new("#{fixture_path}/movies/awesome movie.mov")
