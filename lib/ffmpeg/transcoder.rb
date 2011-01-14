@@ -27,6 +27,7 @@ module FFMPEG
       last_output = nil
       Open3.popen3(command) do |stdin, stdout, stderr|
         stderr.each("r") do |line|
+          fix_encoding(line)
           output << line
           if line =~ /time=(\d+.\d+)/
             time = $1.to_f
@@ -101,6 +102,12 @@ module FFMPEG
       return false if %w(.jpg .png).include?(File.extname(@output_file))
       return false if @raw_options.is_a?(String)
       true
+    end
+    
+    def fix_encoding(output)
+      output[/test/]
+    rescue ArgumentError
+      output.force_encoding("ISO-8859-1")
     end
   end
 end
