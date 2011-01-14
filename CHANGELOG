@@ -1,3 +1,7 @@
+== 0.7.6 2011-01-14
+
+* Another ruby 1.9 encoding fix
+
 == 0.7.5 2011-01-14
 
 * Fixed some ruby 1.9 issues
