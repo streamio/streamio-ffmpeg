@@ -41,8 +41,8 @@ module FFMPEG
       end
 
       if encoding_succeeded?
-        FFMPEG.logger.info "Transcoding of #{@movie.path} to #{@output_file} succeeded\n"
         yield(1.0) if block_given?
+        FFMPEG.logger.info "Transcoding of #{@movie.path} to #{@output_file} succeeded\n"
       else
         errors = @errors.empty? ? "" : " Errors: #{@errors.join(", ")}. "
         FFMPEG.logger.error "Failed encoding...\n#{command}\n\n#{output}\n#{errors}\n"
