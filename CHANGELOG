@@ -1,3 +1,8 @@
+== 0.7.7 2011-02-01
+
+* Movies with starttime are now considered as having uncertain duration as its behavior is not consistent across formats
+* Upgrade development environment to RSpec 2.4
+
 == 0.7.6 2011-01-14
 
 * Another ruby 1.9 encoding fix
