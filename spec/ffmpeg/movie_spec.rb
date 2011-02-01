@@ -65,8 +65,8 @@ module FFMPEG
           @movie = Movie.new(__FILE__)
         end
         
-        it "should calculate correct duration" do
-          @movie.duration.to_s.start_with?("15.062").should be_true
+        it "should have an uncertain duration" do
+          @movie.should be_uncertain_duration
         end
       end
       
