@@ -1,13 +1,12 @@
 $LOAD_PATH.unshift(File.dirname(__FILE__))
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 require 'streamio-ffmpeg'
-require 'spec'
-require 'spec/autorun'
+require 'rspec'
 require 'fileutils'
 
 FFMPEG.logger = Logger.new(nil)
 
-Spec::Runner.configure do |config|
+RSpec.configure do |config|
 end
 
 def fixture_path

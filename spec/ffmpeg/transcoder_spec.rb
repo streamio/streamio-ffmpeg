@@ -107,9 +107,7 @@ module FFMPEG
         encoded.audio_channels.should == 2
       end
       
-      it "should not crash on ISO-8859-1 characters" do
-        # Wasnt able to find a way to spec this :/
-      end
+      pending "should not crash on ISO-8859-1 characters (dont know how to spec this)"
       
       it "should fail when given an invalid movie" do
         FFMPEG.logger.should_receive(:error)

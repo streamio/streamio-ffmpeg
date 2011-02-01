@@ -1,6 +1,7 @@
 $LOAD_PATH.unshift File.dirname(__FILE__)
 
 require 'logger'
+require 'stringio'
 
 require 'ffmpeg/version'
 require 'ffmpeg/movie'
