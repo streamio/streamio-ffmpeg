@@ -78,6 +78,18 @@ module FFMPEG
         end
       end
       
+      describe "given a file with 5.1 audio" do
+        before(:each) do
+          fake_output = StringIO.new(File.read("#{fixture_path}/outputs/file_with_surround_sound.txt"))
+          Open3.stub!(:popen3).and_return([nil,nil,fake_output])
+          @movie = Movie.new(__FILE__)
+        end
+        
+        it "should have 6 audio channels" do
+          @movie.audio_channels.should == 6
+        end
+      end
+      
       describe "given an awesome movie file" do
         before(:all) do
           @movie = Movie.new("#{fixture_path}/movies/awesome movie.mov")

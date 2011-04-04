@@ -81,6 +81,7 @@ module FFMPEG
       return @audio_channels[/\d*/].to_i if @audio_channels["channels"]
       return 1 if @audio_channels["mono"]
       return 2 if @audio_channels["stereo"]
+      return 6 if @audio_channels["5.1"]
     end
     
     def frame_rate
