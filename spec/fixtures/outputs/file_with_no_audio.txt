@@ -1,0 +1,18 @@
+FFmpeg version 0.6.1, Copyright (c) 2000-2010 the FFmpeg developers
+  built on Nov 18 2010 13:51:50 with gcc 4.2.1 (Apple Inc. build 5664)
+  configuration: --disable-debug --prefix=/usr/local/Cellar/ffmpeg/0.6.1 --enable-shared --enable-pthreads --enable-nonfree --enable-gpl --disable-indev=jack --enable-libx264 --enable-libfaac --enable-libfaad --enable-libmp3lame --enable-libtheora --enable-libvorbis --enable-libvpx --enable-libxvid
+  libavutil     50.15. 1 / 50.15. 1
+  libavcodec    52.72. 2 / 52.72. 2
+  libavformat   52.64. 2 / 52.64. 2
+  libavdevice   52. 2. 0 / 52. 2. 0
+  libswscale     0.11. 0 /  0.11. 0
+
+Seems stream 0 codec frame rate differs from container frame rate: 2500.00 (2500/1) -> 25.00 (25/1)
+Input #0, mov,mp4,m4a,3gp,3g2,mj2, from 'broken.mov':
+  Metadata:
+    major_brand     : qt  
+    minor_version   : 537199360
+    compatible_brands: qt  
+  Duration: 00:00:23.12, start: 0.000000, bitrate: 28033 kb/s
+    Stream #0.0(eng): Video: Apple ProRes 422, 410x620, 28029 kb/s, 25 fps, 25 tbr, 2500 tbn, 2500 tbc
+At least one output file must be specified

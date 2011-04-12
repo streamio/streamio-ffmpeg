@@ -78,6 +78,7 @@ module FFMPEG
     end
     
     def audio_channels
+      return nil unless @audio_channels
       return @audio_channels[/\d*/].to_i if @audio_channels["channels"]
       return 1 if @audio_channels["mono"]
       return 2 if @audio_channels["stereo"]
