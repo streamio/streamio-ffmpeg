@@ -1,7 +1,6 @@
-$LOAD_PATH.unshift(File.dirname(__FILE__))
-$LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
-require 'streamio-ffmpeg'
-require 'rspec'
+require 'bundler'
+Bundler.require
+
 require 'fileutils'
 
 FFMPEG.logger = Logger.new(nil)

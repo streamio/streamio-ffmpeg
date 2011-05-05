@@ -1,6 +1,6 @@
-$LOAD_PATH.unshift 'lib'
+require 'bundler'
+Bundler.require
 
-require 'rake/rdoctask'
 require 'rspec/core/rake_task'
 
 RSpec::Core::RakeTask.new('spec') do |t|
