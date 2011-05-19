@@ -5,8 +5,6 @@ module FFMPEG
     attr_reader :audio_stream, :audio_codec, :audio_bitrate, :audio_sample_rate
     
     def initialize(path)
-      raise Errno::ENOENT, "the file '#{path}' does not exist" unless File.exists?(path)
-      
       @path = escape(path)
 
       stdin, stdout, stderr = Open3.popen3("ffmpeg -i '#{path}'") # Output will land in stderr
@@ -45,6 +43,8 @@ module FFMPEG
       end
       
       @invalid = @video_stream.to_s.empty? && @audio_stream.to_s.empty?
+      
+      raise Errno::ENOENT, "the file '#{path}' does not exist" if @invalid
     end
     
     def valid?
