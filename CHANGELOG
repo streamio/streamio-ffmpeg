@@ -1,3 +1,11 @@
+== 0.8.0 2011-05-26
+
+* Duration is now ALWAYS considered uncertain (we've noticed that ffmpeg is not always correct)
+* This means that the duration check will normally never run (unless you manually hack @uncertain_duration to false)
+* Movie#audio_channels now returns nil if there is no audio stream (instead of crashing)
+* Development: Use Bundler
+* Development: Update RSpec to 2.6
+
 == 0.7.8 2011-04-04
 
 * Fixed number of audio channels on files with 5.1 audio
