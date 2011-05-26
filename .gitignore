@@ -21,3 +21,4 @@ pkg
 ## PROJECT::SPECIFIC
 script/*
 tmp/*
+Gemfile.lock
