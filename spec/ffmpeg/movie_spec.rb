@@ -107,8 +107,8 @@ module FFMPEG
           @movie = Movie.new("#{fixture_path}/movies/awesome movie.mov")
         end
 
-        it "should not have uncertain duration" do
-          @movie.should_not be_uncertain_duration
+        it "should have uncertain duration (all movies are considered uncertain these days)" do
+          @movie.should be_uncertain_duration
         end
         
         it "should remember the movie path" do

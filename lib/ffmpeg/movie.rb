@@ -29,7 +29,7 @@ module FFMPEG
       output[/Audio: (.*)/]
       @audio_stream = $1
       
-      @uncertain_duration = output.include?("Estimating duration from bitrate, this may be inaccurate") || @time > 0
+      @uncertain_duration = true #output.include?("Estimating duration from bitrate, this may be inaccurate") || @time > 0
        
       if video_stream
         @video_codec, @colorspace, resolution, video_bitrate = video_stream.split(/\s?,\s?/)
