@@ -36,10 +36,11 @@ module FFMPEG
         movie = Movie.new("#{fixture_path}/movies/awesome movie.mov")
         
         transcoder = Transcoder.new(movie, "#{tmp_path}/awesome.flv")
-        stored_progress = 0
-        transcoder.run { |progress| stored_progress = progress }
+        progress_updates = []
+        transcoder.run { |progress| progress_updates << progress }
         transcoder.encoded.should be_valid
-        stored_progress.should == 1.0
+        progress_updates.should include(0.0, 1.0)
+        progress_updates.length.should >= 3
         File.exists?("#{tmp_path}/awesome.flv").should be_true
       end
       

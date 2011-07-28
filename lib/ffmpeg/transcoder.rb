@@ -20,17 +20,26 @@ module FFMPEG
       apply_transcoder_options
     end
     
+    # ffmpeg <  0.8: frame=  413 fps= 48 q=31.0 size=    2139kB time=16.52 bitrate=1060.6kbits/s
+    # ffmpeg >= 0.8: frame= 4855 fps= 46 q=31.0 size=   45306kB time=00:02:42.28 bitrate=2287.0kbits/
     def run
       command = "ffmpeg -y -i '#{@movie.path}' #{@raw_options} '#{@output_file}'"
       FFMPEG.logger.info("Running transcoding...\n#{command}\n")
       output = ""
       last_output = nil
       Open3.popen3(command) do |stdin, stdout, stderr|
+        yield(0.0) if block_given?
         stderr.each("r") do |line|
           fix_encoding(line)
           output << line
-          if line =~ /time=(\d+.\d+)/
-            time = $1.to_f
+          if line.include?("time=")
+            if line =~ /time=(\d+):(\d+):(\d+.\d+)/ # ffmpeg 0.8 and above style
+              time = ($1.to_i * 3600) + ($2.to_i * 60) + $3.to_f
+            elsif line =~ /time=(\d+.\d+)/ # ffmpeg 0.7 and below style
+              time = $1.to_f
+            else # better make sure it wont blow up in case of unexpected output
+              time = 0.0
+            end
             progress = time / @movie.duration
             yield(progress) if block_given?
           end
