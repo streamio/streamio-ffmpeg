@@ -1,3 +1,8 @@
+== 0.8.1 2011-07-28
+
+* Fix progress yielding with ffmpeg 0.8
+* Updated specs to pass with ffmpeg 0.8
+
 == 0.8.0 2011-05-26
 
 * Duration is now ALWAYS considered uncertain (we've noticed that ffmpeg is not always correct)
