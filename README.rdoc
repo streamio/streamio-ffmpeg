@@ -94,6 +94,14 @@ Use ffpreset files to avoid headaches when encoding with libx264 (http://www.ffm
   options = {:video_codec => "libx264", :video_preset => "medium"} # audio_preset and file_preset also availible
   movie.transcode("movie.mp4", options) # encodes video using libx264-medium.ffpreset
 
+== Specify the path to ffmpeg
+
+By default, streamio assumes that the ffmpeg binary is available in the execution path and named ffmpeg and so will run commands that look something like "ffmpeg -i /path/to/input.file ...". Use the FFMPEG.ffmpeg_binary setter to specify the full path to the binary if necessary:
+
+  FFMPEG.ffmpeg_binary = '/usr/local/bin/ffmpeg'
+
+This will cause the same command to run as "/usr/local/bin/ffmpeg -i /path/to/input.file ..." instead.
+
 == Copyright
 
 Copyright (c) 2010 Streamio Networks AB. See LICENSE for details.
