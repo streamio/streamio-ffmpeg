@@ -1,0 +1,29 @@
+ffmpeg version 0.8, Copyright (c) 2000-2011 the FFmpeg developers
+  built on Jul 20 2011 10:41:26 with gcc 4.2.1 (Apple Inc. build 5664)
+  configuration: --prefix=/usr/local/Cellar/ffmpeg/0.8 --enable-gpl --enable-version3 --enable-nonfree --enable-hardcoded-tables --enable-libx264 --enable-libfaac --enable-libmp3lame --enable-libtheora --enable-libvorbis --enable-libvpx --enable-libxvid
+  libavutil    51.  9. 1 / 51.  9. 1
+  libavcodec   53.  7. 0 / 53.  7. 0
+  libavformat  53.  4. 0 / 53.  4. 0
+  libavdevice  53.  1. 1 / 53.  1. 1
+  libavfilter   2. 23. 0 /  2. 23. 0
+  libswscale    2.  0. 0 /  2.  0. 0
+  libpostproc  51.  2. 0 / 51.  2. 0
+[aac @ 0x101820400] Audio object type 23 is not supported.
+    Last message repeated 471 times
+[mov,mp4,m4a,3gp,3g2,mj2 @ 0x101807c00] max_analyze_duration 5000000 reached at 5002667
+
+Seems stream 1 codec frame rate differs from container frame rate: 96000.00 (96000/1) -> 48000.00 (96000/2)
+Input #0, mov,mp4,m4a,3gp,3g2,mj2, from 'no_audio_channel_info.mov':
+  Metadata:
+    major_brand     : qt  
+    minor_version   : 537199360
+    compatible_brands: qt  
+    creation_time   : 2009-05-26 14:36:22
+  Duration: 00:13:15.81, start: 0.000000, bitrate: 4825 kb/s
+    Stream #0.0(eng): Audio: aac, stereo, 182 kb/s
+    Metadata:
+      creation_time   : 2009-05-26 14:36:22
+    Stream #0.1(eng): Video: h264 (Main), yuv420p, 768x434, 4636 kb/s, 25 fps, 48k tbr, 48k tbn, 96k tbc
+    Metadata:
+      creation_time   : 2009-05-26 14:36:22
+At least one output file must be specified

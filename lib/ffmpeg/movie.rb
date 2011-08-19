@@ -44,7 +44,8 @@ module FFMPEG
         @audio_sample_rate = audio_sample_rate[/\d*/].to_i
       end
       
-      @invalid = @video_stream.to_s.empty? && @audio_stream.to_s.empty?
+      @invalid = true if @video_stream.to_s.empty? && @audio_stream.to_s.empty?
+      @invalid = true if output.include?("is not supported")
     end
     
     def valid?
