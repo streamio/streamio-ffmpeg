@@ -1,3 +1,8 @@
+== 0.8.2 2011-08-19
+
+* Path to ffmpeg binary can now be specified (thanks jonathandean)
+* If ffmpeg output contains "is not supported" the Movie will be considered invalid
+
 == 0.8.1 2011-07-28
 
 * Fix progress yielding with ffmpeg 0.8
