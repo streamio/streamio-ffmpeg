@@ -15,5 +15,5 @@ Gem::Specification.new do |s|
   
   s.add_development_dependency(%q<rspec>, ["~> 2.6.0"])
 
-  s.files        = Dir.glob("lib/**/*") + %w(README.rdoc LICENSE CHANGELOG)
+  s.files        = Dir.glob("lib/**/*") + %w(README.md LICENSE CHANGELOG)
 end
