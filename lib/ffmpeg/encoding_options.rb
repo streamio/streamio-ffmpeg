@@ -132,6 +132,10 @@ module FFMPEG
       "-fpre #{value}"
     end
     
+    def convert_keyframe_interval(value)
+      "-g #{value}"
+    end
+    
     def convert_custom(value)
       value
     end
