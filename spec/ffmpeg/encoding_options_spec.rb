@@ -107,13 +107,15 @@ module FFMPEG
         EncodingOptions.new(:file_preset => "max.ffpreset").to_s.should == "-fpre max.ffpreset"
       end
       
-      it "should put the preset parameters last" do
+      it "should put the parameters in order of codecs, presets, others" do
         opts = Hash.new
+        opts[:frame_rate] = 25
         opts[:video_codec] = "libx264"
         opts[:video_preset] = "normal"
+        opts[:custom] = "-g 25"
         
         converted = EncodingOptions.new(opts).to_s
-        converted.should == "-vcodec libx264 -vpre normal"
+        converted.should == "-vcodec libx264 -vpre normal -r 25 -g 25"
       end
       
       it "should convert a lot of them simultaneously" do

@@ -9,8 +9,12 @@ module FFMPEG
         send("convert_#{key}", value) if value && supports_option?(key)
       end
       
-      # put the preset parameters last
-      params = params.reject { |p| p =~ /\-.pre/ } + params.select { |p| p =~ /\-.pre/ }
+      # codecs should go before the presets so that the files will be matched successfully
+      # all other parameters go after so that we can override whatever is in the preset
+      codecs = params.select { |p| p =~ /codec/ }
+      presets = params.select { |p| p =~ /\-.pre/ }
+      other = params - codecs - presets
+      params = codecs + presets + other
       
       params_string = params.join(" ")
       params_string << " #{convert_aspect(calculate_aspect)}" if calculate_aspect?
