@@ -135,6 +135,10 @@ module FFMPEG
     def convert_keyframe_interval(value)
       "-g #{value}"
     end
+
+    def convert_seek_time(value)
+      "-ss #{value}"
+    end
     
     def convert_custom(value)
       value
