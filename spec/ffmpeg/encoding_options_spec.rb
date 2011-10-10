@@ -110,6 +110,10 @@ module FFMPEG
       it "should convert file preset" do
         EncodingOptions.new(:file_preset => "max.ffpreset").to_s.should == "-fpre max.ffpreset"
       end
+
+      it "should specify seek time" do
+        EncodingOptions.new(:seek_time => 1).to_s.should == "-ss 1"
+      end
       
       it "should put the parameters in order of codecs, presets, others" do
         opts = Hash.new
