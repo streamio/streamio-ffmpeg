@@ -128,7 +128,7 @@ module FFMPEG
         end
 
         it "should parse duration to number of seconds" do
-          @movie.duration.should == 7.5
+          @movie.duration.should == 7.56
         end
 
         it "should parse the bitrate" do

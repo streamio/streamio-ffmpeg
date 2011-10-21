@@ -14,7 +14,7 @@ module FFMPEG
       
       fix_encoding(output)
       
-      output[/Duration: (\d{2}):(\d{2}):(\d{2}\.\d{1})/]
+      output[/Duration: (\d{2}):(\d{2}):(\d{2}\.\d{2})/]
       @duration = ($1.to_i*60*60) + ($2.to_i*60) + $3.to_f
       
       output[/start: (\d*\.\d*)/]
