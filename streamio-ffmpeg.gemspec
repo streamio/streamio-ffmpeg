@@ -13,7 +13,7 @@ Gem::Specification.new do |s|
   s.summary     = "Reads metadata and transcodes movies."
   s.description = "Simple yet powerful wrapper around ffmpeg to get metadata from movies and do transcoding."
   
-  s.add_development_dependency(%q<rspec>, ["~> 2.6.0"])
+  s.add_development_dependency(%q<rspec>, ["~> 2.7"])
 
   s.files        = Dir.glob("lib/**/*") + %w(README.md LICENSE CHANGELOG)
 end
