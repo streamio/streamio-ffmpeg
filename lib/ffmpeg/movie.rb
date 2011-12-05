@@ -9,8 +9,9 @@ module FFMPEG
       
       @path = path
 
-      stdin, stdout, stderr = Open3.popen3("#{FFMPEG.ffmpeg_binary} -i #{Shellwords.escape(path)}") # Output will land in stderr
-      output = stderr.read
+      # ffmpeg will output to stderr
+      command = "#{FFMPEG.ffmpeg_binary} -i #{Shellwords.escape(path)}"
+      output = Open3.popen3(command) { |stdin, stdout, stderr| stderr.read }
       
       fix_encoding(output)
       
