@@ -108,6 +108,14 @@ module FFMPEG
         encoded.audio_channels.should == 2
       end
       
+      it "should transcode the movie which name include single quotation mark" do
+        FileUtils.rm_f "#{tmp_path}/output.flv"
+        
+        movie = Movie.new("#{fixture_path}/movies/awesome'movie.mov")
+        
+        lambda { Transcoder.new(movie, "#{tmp_path}/output.flv").run }.should_not raise_error
+      end
+      
       pending "should not crash on ISO-8859-1 characters (dont know how to spec this)"
       
       it "should fail when given an invalid movie" do
