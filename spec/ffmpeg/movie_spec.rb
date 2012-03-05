@@ -57,6 +57,22 @@ module FFMPEG
           @movie.calculated_aspect_ratio.to_s[0..15].should == "1.73827160493827" # substringed to be 1.9 compatible
         end
       end
+      
+      describe "given an impossible DAR" do
+        before(:all) do
+          fake_output = StringIO.new(File.read("#{fixture_path}/outputs/file_with_weird_dar.txt"))
+          Open3.stub!(:popen3).and_return([nil,nil,fake_output])
+          @movie = Movie.new(__FILE__)
+        end
+        
+        it "should parse the DAR" do
+          @movie.dar.should == "0:1"
+        end
+
+        it "should calulate using width and height instead" do
+          @movie.calculated_aspect_ratio.to_s[0..15].should == "1.77777777777777" # substringed to be 1.9 compatible 
+        end
+      end
 
       describe "given a file with start-time" do
         before(:each) do

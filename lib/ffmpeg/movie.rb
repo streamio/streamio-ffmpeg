@@ -65,13 +65,7 @@ module FFMPEG
     end
     
     def calculated_aspect_ratio
-      if dar
-        w, h = dar.split(":")
-        w.to_f / h.to_f
-      else
-        aspect = width.to_f / height.to_f
-        aspect.nan? ? nil : aspect
-      end
+      aspect_from_dar || aspect_from_dimensions
     end
     
     def size
@@ -95,6 +89,18 @@ module FFMPEG
     end
     
     protected
+    def aspect_from_dar
+      return nil unless dar
+      w, h = dar.split(":")
+      aspect = w.to_f / h.to_f
+      aspect.zero? ? nil : aspect
+    end
+    
+    def aspect_from_dimensions
+      aspect = width.to_f / height.to_f
+      aspect.nan? ? nil : aspect
+    end
+    
     def escape(path)
       map  =  { '\\' => '\\\\', '</' => '<\/', "\r\n" => '\n', "\n" => '\n', "\r" => '\n', '"' => '\\"', "'" => "\\'" }
       path.gsub(/(\\|<\/|\r\n|[\n\r"'])/) { map[$1] }
