@@ -1,3 +1,8 @@
+== 0.8.5 2011-03-05
+
+* If a clip has a DAR that doesn't make sense fall back to calculating aspect ratio from dimensions
+* Allow filenames with single quote characters (thanks to youpy)
+
 == 0.8.4 2011-11-30
 
 * Duration now one decimal more accurate (thanks to Russel Brooks)
