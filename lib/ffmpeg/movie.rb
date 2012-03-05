@@ -7,7 +7,7 @@ module FFMPEG
     def initialize(path)
       raise Errno::ENOENT, "the file '#{path}' does not exist" unless File.exists?(path)
       
-      @path = escape(path)
+      @path = path
 
       stdin, stdout, stderr = Open3.popen3("#{FFMPEG.ffmpeg_binary} -i '#{path}'") # Output will land in stderr
       output = stderr.read
@@ -99,11 +99,6 @@ module FFMPEG
     def aspect_from_dimensions
       aspect = width.to_f / height.to_f
       aspect.nan? ? nil : aspect
-    end
-    
-    def escape(path)
-      map  =  { '\\' => '\\\\', '</' => '<\/', "\r\n" => '\n', "\n" => '\n', "\r" => '\n', '"' => '\\"', "'" => "\\'" }
-      path.gsub(/(\\|<\/|\r\n|[\n\r"'])/) { map[$1] }
     end
     
     def fix_encoding(output)
