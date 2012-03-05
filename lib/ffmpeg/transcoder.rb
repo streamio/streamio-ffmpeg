@@ -1,4 +1,5 @@
 require 'open3'
+require 'shellwords'
 
 module FFMPEG
   class Transcoder
@@ -23,7 +24,7 @@ module FFMPEG
     # ffmpeg <  0.8: frame=  413 fps= 48 q=31.0 size=    2139kB time=16.52 bitrate=1060.6kbits/s
     # ffmpeg >= 0.8: frame= 4855 fps= 46 q=31.0 size=   45306kB time=00:02:42.28 bitrate=2287.0kbits/
     def run
-      command = "#{FFMPEG.ffmpeg_binary} -y -i '#{@movie.path}' #{@raw_options} '#{@output_file}'"
+      command = "#{FFMPEG.ffmpeg_binary} -y -i #{Shellwords.escape(@movie.path)} #{@raw_options} '#{@output_file}'"
       FFMPEG.logger.info("Running transcoding...\n#{command}\n")
       output = ""
       last_output = nil
