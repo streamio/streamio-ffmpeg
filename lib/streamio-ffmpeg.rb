@@ -6,7 +6,10 @@ require 'stringio'
 require 'ffmpeg/version'
 require 'ffmpeg/movie'
 require 'ffmpeg/transcoder'
+require 'ffmpeg/thumbnailer'
 require 'ffmpeg/encoding_options'
+require 'ffmpeg/thumbnailing_options'
+
  
 module FFMPEG
   # FFMPEG logs information about its progress when it's transcoding.
