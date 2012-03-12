@@ -122,6 +122,17 @@ Use ffpreset files to avoid headaches when encoding with libx264 (http://www.ffm
 options = {:video_codec => "libx264", :video_preset => "medium"} # audio_preset and file_preset also availible
 movie.transcode("movie.mp4", options) # encodes video using libx264-medium.ffpreset
 ```
+### Thumbnails
+
+By default, the thumbnail will have the same resolution as the movie
+
+``` ruby
+position = 122 #in seconds
+height = 100
+widht = 150
+options = FFMPEG::ThumnbailingOptions.new(position,width,height)
+movie.thumbnail("/path/to/thumb.jpg",options)
+```
 
 Specify the path to ffmpeg
 --------------------------
