@@ -3,8 +3,14 @@ require 'shellwords'
 
 module FFMPEG
   class Thumbnailer
-    def initialize(movie,output_file,options = {})
-      @options = ThumnbailingOptions.new(options)
+    def initialize(movie,output_file,options = ThumbnailingOptions.new)
+      
+      if options.is_a?(ThumbnailingOptions)
+        @options = options
+      elsif options.is_a?(Hash)
+        @options = ThumbnailingOptions.new(options)
+      end
+      
       @movie = movie
       @output_file = output_file
     end

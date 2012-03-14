@@ -1,5 +1,5 @@
 module FFMPEG
-  class ThumnbailingOptions
+  class ThumbnailingOptions
     attr_reader :preceding, :following
     DEFAULT_POSITION = 4
     ##
