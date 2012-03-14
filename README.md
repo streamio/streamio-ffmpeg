@@ -127,10 +127,7 @@ movie.transcode("movie.mp4", options) # encodes video using libx264-medium.ffpre
 By default, the thumbnail will have the same resolution as the movie
 
 ``` ruby
-position = 122 #in seconds
-height = 100
-widht = 150
-options = FFMPEG::ThumnbailingOptions.new(position,width,height)
+options = {:position => 222, :height=>100 , :width=> 200}
 movie.thumbnail("/path/to/thumb.jpg",options)
 ```
 

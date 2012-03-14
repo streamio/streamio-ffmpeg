@@ -3,10 +3,10 @@ require 'shellwords'
 
 module FFMPEG
   class Thumbnailer
-    def initialize(movie,output_file,options = ThumbnailingOptions.new)
+    def initialize(movie,output_file,options = {})
+      @options = ThumnbailingOptions.new(options)
       @movie = movie
       @output_file = output_file
-      @options = options
     end
     
     def run
