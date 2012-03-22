@@ -6,9 +6,9 @@ require 'stringio'
 require 'ffmpeg/version'
 require 'ffmpeg/movie'
 require 'ffmpeg/transcoder'
-require 'ffmpeg/thumbnailer'
+require 'ffmpeg/screenshot'
 require 'ffmpeg/encoding_options'
-require 'ffmpeg/thumbnailing_options'
+require 'ffmpeg/screenshot_options'
 
  
 module FFMPEG

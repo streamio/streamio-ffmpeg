@@ -88,8 +88,8 @@ module FFMPEG
       Transcoder.new(self, output_file, options, transcoder_options).run &block
     end
     
-    def thumbnail(output_file, options = {})
-      Thumbnailer.new(self,output_file,options).run
+    def screenshot(output_file, options = {})
+      Screenshot.new(self,output_file,options).run
     end
     
     protected

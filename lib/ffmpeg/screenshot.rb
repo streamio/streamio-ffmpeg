@@ -2,13 +2,13 @@ require 'open3'
 require 'shellwords'
 
 module FFMPEG
-  class Thumbnailer
-    def initialize(movie,output_file,options = ThumbnailingOptions.new)
+  class Screenshot
+    def initialize(movie,output_file,options = ScreenshotOptions.new)
       
-      if options.is_a?(ThumbnailingOptions)
+      if options.is_a?(ScreenshotOptions)
         @options = options
       elsif options.is_a?(Hash)
-        @options = ThumbnailingOptions.new(options)
+        @options = ScreenshotOptions.new(options)
       end
       
       @movie = movie

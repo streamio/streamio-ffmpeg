@@ -125,9 +125,10 @@ movie.transcode("movie.mp4", options) # encodes video using libx264-medium.ffpre
 ### Thumbnails
 
 By default, the thumbnail will have the same resolution as the movie
+If :safe options is set to false, will be almost instantaneous but may produce a grey screenshot
 
 ``` ruby
-options = {:position => 222, :height=>100 , :width=> 200}
+options = {:position => 222, :height=>100 , :width=> 200, :safe => true}
 movie.thumbnail("/path/to/thumb.jpg",options)
 ```
 
