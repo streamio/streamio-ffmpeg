@@ -60,7 +60,7 @@ movie.transcode("tmp/movie.mp4") # Default ffmpeg settings for mp4 format
 Keep track of progress with an optional block.
 
 ``` ruby
-movie.transcode(movie.mp4") { |progress| puts progress } # 0.2 ... 0.5 ... 1.0
+movie.transcode("movie.mp4") { |progress| puts progress } # 0.2 ... 0.5 ... 1.0
 ```
 
 Give custom command line options with a string.
