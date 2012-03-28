@@ -9,6 +9,14 @@ module FFMPEG
       end
     end
     
+    describe "given a file containing a single quotation mark in the filename" do
+      it "should run ffmpeg successfully" do
+        @movie = Movie.new("#{fixture_path}/movies/awesome'movie.mov")
+        @movie.duration.should == 7.56
+        @movie.frame_rate.should == 16.75
+      end
+    end
+    
     describe "parsing" do
       describe "given a non movie file" do
         before(:all) do
