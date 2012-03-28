@@ -116,6 +116,14 @@ module FFMPEG
         lambda { Transcoder.new(movie, "#{tmp_path}/output.flv").run }.should_not raise_error
       end
       
+      it "should transcode when output filename includes single quotation mark" do
+        FileUtils.rm_f "#{tmp_path}/output with 'quote.flv"
+        
+        movie = Movie.new("#{fixture_path}/movies/awesome movie.mov")
+        
+        lambda { Transcoder.new(movie, "#{tmp_path}/output with 'quote.flv").run }.should_not raise_error
+      end
+      
       pending "should not crash on ISO-8859-1 characters (dont know how to spec this)"
       
       it "should fail when given an invalid movie" do
