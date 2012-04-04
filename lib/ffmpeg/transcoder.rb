@@ -1,6 +1,65 @@
 require 'open3'
 require 'shellwords'
 
+
+begin
+  require 'timeout'
+  MyTimer = Timeout
+rescue LoadError
+  require 'system_timer'
+  MyTimer = SystemTimer
+end
+
+
+#
+# Mix in timeout support to determine if FFMPEG has hung
+#
+class IO
+
+  def each_with_timeout(timeout, sep_string=$/)
+    q = Queue.new
+    th = nil
+
+    timer_set = lambda do |timeout|
+      th = new_thread{ to(timeout){ q.pop } }
+    end
+
+    timer_cancel = lambda do |timeout|
+      th.kill if th rescue nil
+    end
+
+    timer_set[timeout]
+    begin
+      self.each(sep_string) do |buf|
+        timer_cancel[timeout]
+        yield buf
+        timer_set[timeout]
+      end
+    ensure
+      timer_cancel[timeout]
+    end
+  end
+
+  private
+
+  def new_thread *a, &b
+    cur = Thread.current
+    Thread.new(*a) do |*a|
+      begin
+        b[*a]
+      rescue Exception => e
+        cur.raise e
+      end
+    end
+  end
+
+  def to timeout = nil
+    MyTimer.timeout(timeout){ yield }
+  end
+
+end
+
+
 module FFMPEG
   class Transcoder
     def initialize(movie, output_file, options = EncodingOptions.new, transcoder_options = {})
@@ -28,26 +87,40 @@ module FFMPEG
       FFMPEG.logger.info("Running transcoding...\n#{command}\n")
       output = ""
       last_output = nil
-      Open3.popen3(command) do |stdin, stdout, stderr|
-        yield(0.0) if block_given?
-        stderr.each("r") do |line|
-          fix_encoding(line)
-          output << line
-          if line.include?("time=")
-            if line =~ /time=(\d+):(\d+):(\d+.\d+)/ # ffmpeg 0.8 and above style
-              time = ($1.to_i * 3600) + ($2.to_i * 60) + $3.to_f
-            elsif line =~ /time=(\d+.\d+)/ # ffmpeg 0.7 and below style
-              time = $1.to_f
-            else # better make sure it wont blow up in case of unexpected output
-              time = 0.0
+      Open3.popen3(command) do |stdin, stdout, stderr, wait_thr|
+        pid = wait_thr.pid
+        begin
+          yield(0.0) if block_given?
+          next_line = Proc.new do |line|
+            fix_encoding(line)
+            output << line
+            if line.include?("time=")
+              if line =~ /time=(\d+):(\d+):(\d+.\d+)/ # ffmpeg 0.8 and above style
+                time = ($1.to_i * 3600) + ($2.to_i * 60) + $3.to_f
+              elsif line =~ /time=(\d+.\d+)/ # ffmpeg 0.7 and below style
+                time = $1.to_f
+              else # better make sure it wont blow up in case of unexpected output
+                time = 0.0
+              end
+              progress = time / @movie.duration
+              yield(progress) if block_given?
             end
-            progress = time / @movie.duration
-            yield(progress) if block_given?
+            if line =~ /Unsupported codec/
+              FFMPEG.logger.error "Failed encoding...\nCommand\n#{command}\nOutput\n#{output}\n"
+              raise "Failed encoding: #{line}"
+            end
           end
-          if line =~ /Unsupported codec/
-            FFMPEG.logger.error "Failed encoding...\nCommand\n#{command}\nOutput\n#{output}\n"
-            raise "Failed encoding: #{line}"
+          
+          if @transcoder_options[:timeout].nil?
+            stderr.each("r", &next_line)
+          else
+            stderr.each_with_timeout(@transcoder_options[:timeout], "r", &next_line)
           end
+        
+        rescue Timeout::Error => e
+          Process.kill('SIGKILL', pid)
+          FFMPEG.logger.error "Process hung...\nCommand\n#{command}\nOutput\n#{output}\n"
+          raise "Process hung"
         end
       end
 
