@@ -2,64 +2,6 @@ require 'open3'
 require 'shellwords'
 
 
-begin
-  require 'timeout'
-  MyTimer = Timeout
-rescue LoadError
-  require 'system_timer'
-  MyTimer = SystemTimer
-end
-
-
-#
-# Mix in timeout support to determine if FFMPEG has hung
-#
-class IO
-
-  def each_with_timeout(timeout, sep_string=$/)
-    q = Queue.new
-    th = nil
-
-    timer_set = lambda do |timeout|
-      th = new_thread{ to(timeout){ q.pop } }
-    end
-
-    timer_cancel = lambda do |timeout|
-      th.kill if th rescue nil
-    end
-
-    timer_set[timeout]
-    begin
-      self.each(sep_string) do |buf|
-        timer_cancel[timeout]
-        yield buf
-        timer_set[timeout]
-      end
-    ensure
-      timer_cancel[timeout]
-    end
-  end
-
-  private
-
-  def new_thread *a, &b
-    cur = Thread.current
-    Thread.new(*a) do |*a|
-      begin
-        b[*a]
-      rescue Exception => e
-        cur.raise e
-      end
-    end
-  end
-
-  def to timeout = nil
-    MyTimer.timeout(timeout){ yield }
-  end
-
-end
-
-
 module FFMPEG
   class Transcoder
     def initialize(movie, output_file, options = EncodingOptions.new, transcoder_options = {})
@@ -111,10 +53,10 @@ module FFMPEG
             end
           end
           
-          if @transcoder_options[:timeout].nil?
-            stderr.each("r", &next_line)
+          if @timeout.class == Fixnum
+          	stderr.each_with_timeout(@timeout, "r", &next_line)
           else
-            stderr.each_with_timeout(@transcoder_options[:timeout], "r", &next_line)
+            stderr.each("r", &next_line)
           end
         
         rescue Timeout::Error => e
@@ -164,7 +106,9 @@ module FFMPEG
     end
     
     private
+    
     def apply_transcoder_options
+      @timeout = @transcoder_options[:timeout].nil? ? 200 : @transcoder_options[:timeout]
       return if @movie.calculated_aspect_ratio.nil?
       case @transcoder_options[:preserve_aspect_ratio].to_s
       when "width"

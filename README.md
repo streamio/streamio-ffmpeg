@@ -123,6 +123,16 @@ options = {:video_codec => "libx264", :video_preset => "medium"} # audio_preset 
 movie.transcode("movie.mp4", options) # encodes video using libx264-medium.ffpreset
 ```
 
+### Thumbnails
+
+By default, the thumbnail will have the same resolution as the movie
+If :safe options is set to false, will be almost instantaneous but may produce a grey screenshot
+
+``` ruby
+options = {:position => 222, :height=>100 , :width=> 200}	# :safe => true by default
+movie.thumbnail("/path/to/thumb.jpg",options)
+```
+
 Specify the path to ffmpeg
 --------------------------
 
@@ -133,6 +143,21 @@ FFMPEG.ffmpeg_binary = '/usr/local/bin/ffmpeg'
 ```
 
 This will cause the same command to run as "/usr/local/bin/ffmpeg -i /path/to/input.file ..." instead.
+
+Automatically kill hung processes
+---------------------------------
+
+By default, streamio will wait for 200 seconds between IO feedback from any FFMPEG process. After which an error is logged and the process killed.
+It is possible to disable this behaviour or modify the timeout by modifying the transcoder options:
+
+``` ruby
+# Change the timeout default
+transcoder_options = {:timeout => 30}
+
+# Disable the timeout altogether
+transcoder_options = {:timeout => false}
+```
+
 
 Copyright
 ---------
