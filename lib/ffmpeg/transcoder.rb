@@ -4,6 +4,17 @@ require 'shellwords'
 
 module FFMPEG
   class Transcoder
+  	@@default_timeout = 200
+  	
+  	def self.timeout=(time)
+  		@@default_timeout = time
+  	end
+  	
+  	def self.timeout
+  		@@default_timeout
+  	end
+  	
+  	
     def initialize(movie, output_file, options = EncodingOptions.new, transcoder_options = {})
       @movie = movie
       @output_file = output_file
@@ -108,7 +119,7 @@ module FFMPEG
     private
     
     def apply_transcoder_options
-      @timeout = @transcoder_options[:timeout].nil? ? 200 : @transcoder_options[:timeout]
+      @timeout = @transcoder_options[:timeout].nil? ? @@default_timeout : @transcoder_options[:timeout]
       return if @movie.calculated_aspect_ratio.nil?
       case @transcoder_options[:preserve_aspect_ratio].to_s
       when "width"
