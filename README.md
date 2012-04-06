@@ -148,14 +148,17 @@ Automatically kill hung processes
 ---------------------------------
 
 By default, streamio will wait for 200 seconds between IO feedback from any FFMPEG process. After which an error is logged and the process killed.
-It is possible to disable this behaviour or modify the timeout by modifying the transcoder options:
+It is possible to disable this behaviour or modify the timeout by modifying the transcoder options or by setting a new default:
 
 ``` ruby
-# Change the timeout default
+# Change the timeout
 transcoder_options = {:timeout => 30}
 
 # Disable the timeout altogether
 transcoder_options = {:timeout => false}
+
+# Change the default
+Transcoder.timeout = 30 # Can also be set false here too
 ```
 
 
