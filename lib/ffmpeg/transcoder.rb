@@ -24,11 +24,19 @@ module FFMPEG
     # ffmpeg <  0.8: frame=  413 fps= 48 q=31.0 size=    2139kB time=16.52 bitrate=1060.6kbits/s
     # ffmpeg >= 0.8: frame= 4855 fps= 46 q=31.0 size=   45306kB time=00:02:42.28 bitrate=2287.0kbits/
     def run
-      command = "#{FFMPEG.ffmpeg_binary} -y -i #{Shellwords.escape(@movie.path)} #{@raw_options} #{Shellwords.escape(@output_file)}"
+      if @output_file.is_a?(IO) || @output_file.is_a?(Tempfile)
+        command = "#{FFMPEG.ffmpeg_binary} -y -i #{Shellwords.escape(@movie.path)} #{@raw_options} -"
+      else
+        command = "#{FFMPEG.ffmpeg_binary} -y -i #{Shellwords.escape(@movie.path)} #{@raw_options} #{Shellwords.escape(@output_file)}"        
+      end
       FFMPEG.logger.info("Running transcoding...\n#{command}\n")
       output = ""
       last_output = nil
       Open3.popen3(command) do |stdin, stdout, stderr|
+        if @output_file.is_a?(IO) || @output_file.is_a?(Tempfile)
+          @output_file << stdout.read
+        end
+        
         yield(0.0) if block_given?
         stderr.each("r") do |line|
           fix_encoding(line)

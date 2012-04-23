@@ -10,8 +10,25 @@ module FFMPEG
       @path = path
 
       # ffmpeg will output to stderr
-      command = "#{FFMPEG.ffmpeg_binary} -i #{Shellwords.escape(path)}"
-      output = Open3.popen3(command) { |stdin, stdout, stderr| stderr.read }
+      if path.is_a?(IO) || path.is_a?(Tempfile)
+        command = "#{FFMPEG.ffmpeg_binary} -i -"
+        path.rewind if path.respond_to?(:rewind)
+      else
+        command = "#{FFMPEG.ffmpeg_binary} -i #{Shellwords.escape(path)}"        
+      end
+      output = Open3.popen3(command) do |stdin, stdout, stderr| 
+        if path.is_a?(IO) || path.is_a?(Tempfile)
+          begin
+            stdin << path.read
+            path.rewind if path.respond_to?(:rewind)
+            stdin.close_write
+          rescue Errno::EPIPE
+            stderr.read
+          end
+        else
+          stderr.read
+        end
+      end
       
       fix_encoding(output)
       
