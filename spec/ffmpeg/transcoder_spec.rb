@@ -30,6 +30,13 @@ module FFMPEG
         FFMPEG.logger.should_receive(:info).at_least(:once)
       end
       
+      it "should fail when IO timeout is exceeded" do
+        FFMPEG.logger.should_receive(:error)
+        movie = Movie.new("#{fixture_path}/movies/awesome_widescreen.mov")
+        transcoder = Transcoder.new(movie, "#{tmp_path}/timeout.mp4", {}, {:timeout => 1})
+        lambda { transcoder.run }.should raise_error(RuntimeError, /Process hung/)
+      end
+      
       it "should transcode the movie with progress given an awesome movie" do
         FileUtils.rm_f "#{tmp_path}/awesome.flv"
         

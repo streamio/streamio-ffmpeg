@@ -89,6 +89,10 @@ module FFMPEG
       Transcoder.new(self, output_file, options, transcoder_options).run &block
     end
     
+    def screenshot(output_file, options = {})
+    	Screenshot.new(self,output_file,options).run
+    end
+    
     protected
     def aspect_from_dar
       return nil unless dar
