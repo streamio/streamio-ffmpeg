@@ -22,6 +22,7 @@ module FFMPEG
             stdin << path.read
             path.rewind if path.respond_to?(:rewind)
             stdin.close_write
+            stderr.read
           rescue Errno::EPIPE
             stderr.read
           end
