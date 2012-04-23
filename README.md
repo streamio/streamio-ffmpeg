@@ -12,7 +12,7 @@ Installation
 
     (sudo) gem install streamio-ffmpeg
 
-This version is tested against ffmpeg 0.8. So no guarantees with earlier (or much later) versions. Output and input standards have inconveniently changed rather a lot between versions of ffmpeg. My goal is to keep this library in sync with new versions of ffmpeg as they come along.
+This version is tested against ffmpeg 0.10.2. So no guarantees with earlier (or much later) versions. Output and input standards have inconveniently changed rather a lot between versions of ffmpeg. My goal is to keep this library in sync with new versions of ffmpeg as they come along.
 
 Usage
 -----
