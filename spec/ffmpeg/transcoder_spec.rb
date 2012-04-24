@@ -3,7 +3,7 @@ require 'spec_helper.rb'
 module FFMPEG
   describe Transcoder do
     describe "initialization" do
-      before(:each) do
+      before do
         @movie = Movie.new("#{fixture_path}/movies/awesome movie.mov")
         @output_path = "#{tmp_path}/awesome.flv"
       end
@@ -26,7 +26,7 @@ module FFMPEG
     end
     
     describe "transcoding" do
-      before(:each) do
+      before do
         FFMPEG.logger.should_receive(:info).at_least(:once)
       end
       
@@ -61,8 +61,8 @@ module FFMPEG
         encoded.audio_channels.should == 1
       end
       
-      describe "aspect ratio preservation" do
-        before(:each) do
+      context "with aspect ratio preservation" do
+        before do
           @movie = Movie.new("#{fixture_path}/movies/awesome_widescreen.mov")
           @options = {:resolution => "320x240"}
         end
