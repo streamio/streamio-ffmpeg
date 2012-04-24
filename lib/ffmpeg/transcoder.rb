@@ -74,15 +74,6 @@ module FFMPEG
         return false
       end
       
-      if validate_duration?
-        precision = @raw_options[:duration] ? 1.5 : 1.1
-        desired_duration = @raw_options[:duration] && @raw_options[:duration] < @movie.duration ? @raw_options[:duration] : @movie.duration
-        if (encoded.duration >= (desired_duration * precision) or encoded.duration <= (desired_duration / precision))
-          @errors << "encoded file duration differed from original/specified duration (wanted: #{desired_duration}sec, got: #{encoded.duration}sec)"
-          return false
-        end
-      end
-      
       true
     end
     
@@ -105,13 +96,6 @@ module FFMPEG
         new_width += 1 if new_width.odd?
         @raw_options[:resolution] = "#{new_width}x#{@raw_options.height}"
       end
-    end
-    
-    def validate_duration?
-      return false if @movie.uncertain_duration?
-      return false if %w(.jpg .png).include?(File.extname(@output_file))
-      return false if @raw_options.is_a?(String)
-      true
     end
     
     def fix_encoding(output)

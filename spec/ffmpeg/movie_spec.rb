@@ -28,16 +28,6 @@ module FFMPEG
         end
       end
       
-      describe "given a mp3 file" do
-        before(:all) do
-          @movie = Movie.new("#{fixture_path}/sounds/napoleon.mp3")
-        end
-        
-        it "should have uncertain duration" do
-          @movie.should be_uncertain_duration
-        end
-      end
-      
       describe "Errno::EMFILE: Too many open files" do
         it "should not raise error" do
           lambda {
@@ -89,18 +79,6 @@ module FFMPEG
           @movie.calculated_aspect_ratio.to_s[0..15].should == "1.77777777777777" # substringed to be 1.9 compatible 
         end
       end
-
-      describe "given a file with start-time" do
-        before(:each) do
-          fake_output = StringIO.new(File.read("#{fixture_path}/outputs/file_with_start_value.txt"))
-          Open3.stub!(:popen3).and_yield(nil, nil, fake_output)
-          @movie = Movie.new(__FILE__)
-        end
-        
-        it "should have an uncertain duration" do
-          @movie.should be_uncertain_duration
-        end
-      end
       
       describe "given a file with ISO-8859-1 characters in output" do
         it "should not crash" do
@@ -149,10 +127,6 @@ module FFMPEG
       describe "given an awesome movie file" do
         before(:all) do
           @movie = Movie.new("#{fixture_path}/movies/awesome movie.mov")
-        end
-
-        it "should have uncertain duration (all movies are considered uncertain these days)" do
-          @movie.should be_uncertain_duration
         end
         
         it "should remember the movie path" do

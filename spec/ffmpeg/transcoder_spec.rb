@@ -133,22 +133,6 @@ module FFMPEG
         lambda { transcoder.run }.should raise_error(RuntimeError, /no output file created/)
       end
       
-      it "should fail if duration differs from original" do
-        movie = Movie.new("#{fixture_path}/sounds/napoleon.mp3")
-        movie.stub!(:duration).and_return(200)
-        movie.stub!(:uncertain_duration?).and_return(false)
-        transcoder = Transcoder.new(movie, "#{tmp_path}/duration_fail.flv")
-        lambda { transcoder.run }.should raise_error(RuntimeError, /encoded file duration differed from original/)
-      end
-      
-      it "should skip duration check if originals duration is uncertain" do
-        movie = Movie.new("#{fixture_path}/sounds/napoleon.mp3")
-        movie.stub!(:duration).and_return(200)
-        movie.stub!(:uncertain_duration?).and_return(true)
-        transcoder = Transcoder.new(movie, "#{tmp_path}/duration_fail.flv")
-        lambda { transcoder.run }.should_not raise_error(RuntimeError)
-      end
-      
       it "should be able to transcode to images" do
         movie = Movie.new("#{fixture_path}/movies/awesome movie.mov")
         
@@ -159,21 +143,13 @@ module FFMPEG
         encoded.resolution.should == "640x480"
       end
       
-      it "should validate duration to the specified duration if given" do
+      it "should encode to the specified duration if given" do
         movie = Movie.new("#{fixture_path}/movies/awesome movie.mov")
         
         encoded = Transcoder.new(movie, "#{tmp_path}/durationalized.mp4", :duration => 2).run
         
         encoded.duration.should >= 1.8
         encoded.duration.should <= 2.2
-      end
-      
-      it "should validate duration to original movies duration if duration specified to higher number than original" do
-        movie = Movie.new("#{fixture_path}/movies/awesome movie.mov")
-        
-        expect { 
-          Transcoder.new(movie, "#{tmp_path}/durationalized.mp4", :duration => 10).run
-        }.to_not raise_error
       end
     end
   end
