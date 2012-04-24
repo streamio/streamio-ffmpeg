@@ -63,7 +63,7 @@ module FFMPEG
           end
           
           if @@timeout != false
-            stderr.each_with_timeout(@timeout, "r", &next_line)
+            stderr.each_with_timeout(@@timeout, "r", &next_line)
           else
             stderr.each("r", &next_line)
           end
