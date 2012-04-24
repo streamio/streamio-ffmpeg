@@ -55,7 +55,7 @@ module FFMPEG
         yield(1.0) if block_given?
         FFMPEG.logger.info "Transcoding of #{@movie.path} to #{@output_file} succeeded\n"
       else
-        errors = @errors.empty? ? "" : " Errors: #{@errors.join(", ")}. "
+        errors = "Errors: #{@errors.join(", ")}. "
         FFMPEG.logger.error "Failed encoding...\n#{command}\n\n#{output}\n#{errors}\n"
         raise "Failed encoding.#{errors}Full output: #{output}"
       end
@@ -64,16 +64,8 @@ module FFMPEG
     end
     
     def encoding_succeeded?
-      unless File.exists?(@output_file)
-        @errors << "no output file created"
-        return false
-      end
-      
-      unless encoded.valid?
-        @errors << "encoded file is invalid"
-        return false
-      end
-      
+      @errors << "no output file created" and return false unless File.exists?(@output_file)
+      @errors << "encoded file is invalid" and return false unless encoded.valid?
       true
     end
     
