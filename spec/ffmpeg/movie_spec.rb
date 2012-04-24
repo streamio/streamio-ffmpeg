@@ -215,5 +215,17 @@ module FFMPEG
         movie.transcode("#{tmp_path}/awesome.flv", {:custom => "-vcodec libx264"}, :preserve_aspect_ratio => :width)
       end
     end
+    
+    describe "screenshot" do
+      it "should run the transcoder with screenshot option" do
+        movie = Movie.new("#{fixture_path}/movies/awesome movie.mov")
+        
+        mockery = mock(Transcoder)
+        Transcoder.should_receive(:new).with(movie, "#{tmp_path}/awesome.jpg", {:seek_time => 2, :dimensions => "640x480", :screenshot => true}, :preserve_aspect_ratio => :width).and_return(mockery)
+        mockery.should_receive(:run)
+        
+        movie.screenshot("#{tmp_path}/awesome.jpg", {:seek_time => 2, :dimensions => "640x480"}, :preserve_aspect_ratio => :width)
+      end
+    end
   end
 end

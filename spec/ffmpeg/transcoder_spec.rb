@@ -2,6 +2,8 @@ require 'spec_helper.rb'
 
 module FFMPEG
   describe Transcoder do
+    let(:movie) { Movie.new("#{fixture_path}/movies/awesome movie.mov") }
+      
     describe "initialization" do
       before do
         @movie = Movie.new("#{fixture_path}/movies/awesome movie.mov")
@@ -133,16 +135,6 @@ module FFMPEG
         lambda { transcoder.run }.should raise_error(FFMPEG::Error, /no output file created/)
       end
       
-      it "should be able to transcode to images" do
-        movie = Movie.new("#{fixture_path}/movies/awesome movie.mov")
-        
-        encoded = Transcoder.new(movie, "#{tmp_path}/image.png", :custom => "-ss 00:00:03 -vframes 1 -f image2").run
-        encoded.resolution.should == "640x480"
-        
-        encoded = Transcoder.new(movie, "#{tmp_path}/image.jpg", :custom => "-ss 00:00:03 -vframes 1 -f image2").run
-        encoded.resolution.should == "640x480"
-      end
-      
       it "should encode to the specified duration if given" do
         movie = Movie.new("#{fixture_path}/movies/awesome movie.mov")
         
@@ -150,6 +142,23 @@ module FFMPEG
         
         encoded.duration.should >= 1.8
         encoded.duration.should <= 2.2
+      end
+      
+      context "with screenshot option" do
+        it "should transcode to original movies resolution by default" do
+          encoded = Transcoder.new(movie, "#{tmp_path}/image.jpg", :screenshot => true).run
+          encoded.resolution.should == "640x480"
+        end
+        
+        it "should transcode absolute resolution if specified" do
+          encoded = Transcoder.new(movie, "#{tmp_path}/image.bmp", :screenshot => true, :seek_time => 3, :resolution => '400x200').run
+          encoded.resolution.should == "400x200"
+        end
+        
+        it "should be able to preserve aspect ratio" do
+          encoded = Transcoder.new(movie, "#{tmp_path}/image.png", {:screenshot => true, :seek_time => 4, :resolution => '320x500'}, :preserve_aspect_ratio => :width).run
+          encoded.resolution.should == "320x240"
+        end
       end
     end
   end

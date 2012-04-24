@@ -123,6 +123,26 @@ options = {:video_codec => "libx264", :video_preset => "medium"} # audio_preset 
 movie.transcode("movie.mp4", options) # encodes video using libx264-medium.ffpreset
 ```
 
+### Taking Screenshots
+
+You can use the screenshot method to make taking screenshots a bit simpler.
+
+``` ruby
+movie.screenshot("screenshot.jpg")
+```
+
+The screenshot method has the very same API as transcode so the same options will work.
+
+``` ruby
+movie.screenshot("screenshot.bmp", :seek_time => 5, :resolution => '320x240')
+```
+
+You can preserve aspect ratio the same way as when using transcode.
+
+``` ruby
+movie.screenshot("screenshot.png", {:seek_time => 2, :resolution => '200x120'}, :preserve_aspect_ratio => :width)
+```
+
 Specify the path to ffmpeg
 --------------------------
 
