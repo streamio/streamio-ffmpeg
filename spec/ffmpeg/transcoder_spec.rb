@@ -130,7 +130,7 @@ module FFMPEG
         FFMPEG.logger.should_receive(:error)
         movie = Movie.new(__FILE__)
         transcoder = Transcoder.new(movie, "#{tmp_path}/fail.flv")
-        lambda { transcoder.run }.should raise_error(RuntimeError, /no output file created/)
+        lambda { transcoder.run }.should raise_error(FFMPEG::Error, /no output file created/)
       end
       
       it "should be able to transcode to images" do

@@ -4,10 +4,11 @@ require 'logger'
 require 'stringio'
 
 require 'ffmpeg/version'
+require 'ffmpeg/errors'
 require 'ffmpeg/movie'
 require 'ffmpeg/transcoder'
 require 'ffmpeg/encoding_options'
- 
+
 module FFMPEG
   # FFMPEG logs information about its progress when it's transcoding.
   # Jack in your own logger through this method if you wish to.
