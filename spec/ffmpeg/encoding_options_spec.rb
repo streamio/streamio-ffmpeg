@@ -115,6 +115,10 @@ module FFMPEG
         EncodingOptions.new(:seek_time => 1).to_s.should == "-ss 1"
       end
       
+      it "should specify screenshot parameters" do
+        EncodingOptions.new(:screenshot => true).to_s.should == "-vframes 1 -f image2"
+      end
+      
       it "should put the parameters in order of codecs, presets, others" do
         opts = Hash.new
         opts[:frame_rate] = 25
