@@ -5,25 +5,22 @@ module FFMPEG
     let(:movie) { Movie.new("#{fixture_path}/movies/awesome movie.mov") }
       
     describe "initialization" do
-      before do
-        @movie = Movie.new("#{fixture_path}/movies/awesome movie.mov")
-        @output_path = "#{tmp_path}/awesome.flv"
-      end
+      let(:output_path) { "#{tmp_path}/awesome.flv" }
       
       it "should accept EncodingOptions as options" do
-        lambda { Transcoder.new(@movie, @output_path, EncodingOptions.new) }.should_not raise_error(ArgumentError)
+        lambda { Transcoder.new(movie, output_path, EncodingOptions.new) }.should_not raise_error(ArgumentError)
       end
       
       it "should accept Hash as options" do
-        lambda { Transcoder.new(@movie, @output_path, :video_codec => "libx264") }.should_not raise_error(ArgumentError)
+        lambda { Transcoder.new(movie, output_path, :video_codec => "libx264") }.should_not raise_error(ArgumentError)
       end
       
       it "should accept String as options" do
-        lambda { Transcoder.new(@movie, @output_path, "-vcodec libx264") }.should_not raise_error(ArgumentError)
+        lambda { Transcoder.new(movie, output_path, "-vcodec libx264") }.should_not raise_error(ArgumentError)
       end
       
       it "should not accept anything else as options" do
-        lambda { Transcoder.new(@movie, @output_path, ["array?"]) }.should raise_error(ArgumentError, /Unknown options format/)
+        lambda { Transcoder.new(movie, output_path, ["array?"]) }.should raise_error(ArgumentError, /Unknown options format/)
       end
     end
     
@@ -34,8 +31,6 @@ module FFMPEG
       
       it "should transcode the movie with progress given an awesome movie" do
         FileUtils.rm_f "#{tmp_path}/awesome.flv"
-        
-        movie = Movie.new("#{fixture_path}/movies/awesome movie.mov")
         
         transcoder = Transcoder.new(movie, "#{tmp_path}/awesome.flv")
         progress_updates = []
@@ -49,7 +44,6 @@ module FFMPEG
       it "should transcode the movie with EncodingOptions" do
         FileUtils.rm_f "#{tmp_path}/optionalized.mp4"
         
-        movie = Movie.new("#{fixture_path}/movies/awesome movie.mov")
         options = {:video_codec => "libx264", :frame_rate => 10, :resolution => "320x240", :video_bitrate => 300,
                    :audio_codec => "libfaac", :audio_bitrate => 32, :audio_sample_rate => 22050, :audio_channels => 1,
                    :custom => "-flags +loop -cmp +chroma -partitions +parti4x4+partp8x8 -flags2 +mixed_refs -me_method umh -subq 6 -refs 6 -rc_eq 'blurCplx^(1-qComp)' -coder 0 -me_range 16 -g 250 -keyint_min 25 -sc_threshold 40 -i_qfactor 0.71 -qcomp 0.6 -qmin 10 -qmax 51 -qdiff 4 -level 21"}
@@ -103,8 +97,6 @@ module FFMPEG
       it "should transcode the movie with String options" do
         FileUtils.rm_f "#{tmp_path}/string_optionalized.flv"
         
-        movie = Movie.new("#{fixture_path}/movies/awesome movie.mov")
-        
         encoded = Transcoder.new(movie, "#{tmp_path}/string_optionalized.flv", "-s 300x200 -ac 2").run
         encoded.resolution.should == "300x200"
         encoded.audio_channels.should == 2
@@ -121,8 +113,6 @@ module FFMPEG
       it "should transcode when output filename includes single quotation mark" do
         FileUtils.rm_f "#{tmp_path}/output with 'quote.flv"
         
-        movie = Movie.new("#{fixture_path}/movies/awesome movie.mov")
-        
         lambda { Transcoder.new(movie, "#{tmp_path}/output with 'quote.flv").run }.should_not raise_error
       end
       
@@ -136,8 +126,6 @@ module FFMPEG
       end
       
       it "should encode to the specified duration if given" do
-        movie = Movie.new("#{fixture_path}/movies/awesome movie.mov")
-        
         encoded = Transcoder.new(movie, "#{tmp_path}/durationalized.mp4", :duration => 2).run
         
         encoded.duration.should >= 1.8
