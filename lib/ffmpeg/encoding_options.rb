@@ -61,7 +61,7 @@ module FFMPEG
     end
     
     def convert_video_bitrate(value)
-      "-b #{k_format(value)}"
+      "-b:v #{k_format(value)}"
     end
     
     def convert_audio_codec(value)
@@ -69,7 +69,7 @@ module FFMPEG
     end
     
     def convert_audio_bitrate(value)
-      "-ab #{k_format(value)}"
+      "-b:a #{k_format(value)}"
     end
     
     def convert_audio_sample_rate(value)

@@ -37,11 +37,11 @@ module FFMPEG
       end
       
       it "should convert video bitrate" do
-        EncodingOptions.new(:video_bitrate => "600k").to_s.should == "-b 600k"
+        EncodingOptions.new(:video_bitrate => "600k").to_s.should == "-b:v 600k"
       end
       
       it "should use k unit for video bitrate" do
-        EncodingOptions.new(:video_bitrate => 600).to_s.should == "-b 600k"
+        EncodingOptions.new(:video_bitrate => 600).to_s.should == "-b:v 600k"
       end
       
       it "should convert audio codec" do
@@ -49,11 +49,11 @@ module FFMPEG
       end
       
       it "should convert audio bitrate" do
-        EncodingOptions.new(:audio_bitrate => "128k").to_s.should == "-ab 128k"
+        EncodingOptions.new(:audio_bitrate => "128k").to_s.should == "-b:a 128k"
       end
       
       it "should use k unit for audio bitrate" do
-        EncodingOptions.new(:audio_bitrate => 128).to_s.should == "-ab 128k"
+        EncodingOptions.new(:audio_bitrate => 128).to_s.should == "-b:a 128k"
       end
       
       it "should convert audio sample rate" do
