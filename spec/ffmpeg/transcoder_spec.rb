@@ -49,9 +49,11 @@ module FFMPEG
                    :custom => "-flags +loop -cmp +chroma -partitions +parti4x4+partp8x8 -flags2 +mixed_refs -me_method umh -subq 6 -refs 6 -rc_eq 'blurCplx^(1-qComp)' -coder 0 -me_range 16 -g 250 -keyint_min 25 -sc_threshold 40 -i_qfactor 0.71 -qcomp 0.6 -qmin 10 -qmax 51 -qdiff 4 -level 21"}
         
         encoded = Transcoder.new(movie, "#{tmp_path}/optionalized.mp4", options).run
+        encoded.video_bitrate.should be_within(10).of(300)
         encoded.video_codec.should =~ /h264/
         encoded.resolution.should == "320x240"
         encoded.frame_rate.should == 10.0
+        encoded.audio_bitrate.should == be_within(2).of(32)
         encoded.audio_codec.should =~ /aac/
         encoded.audio_sample_rate.should == 22050
         encoded.audio_channels.should == 1
