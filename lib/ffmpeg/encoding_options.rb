@@ -48,22 +48,6 @@ module FFMPEG
       self[:aspect].nil? && self[:resolution]
     end
     
-    def convert_croptop(value)
-      "-croptop #{value}"
-    end
-    
-    def convert_cropbottom(value)
-      "-cropbottom #{value}"
-    end
-    
-    def convert_cropleft(value)
-      "-cropleft #{value}"
-    end
-    
-    def convert_cropright(value)
-      "-cropright #{value}"
-    end
-    
     def convert_video_codec(value)
       "-vcodec #{value}"
     end
