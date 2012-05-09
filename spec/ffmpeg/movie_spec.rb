@@ -141,6 +141,14 @@ module FFMPEG
           @movie.bitrate.should == 481
         end
 
+        it "should return nil rotation when no rotation exists" do
+          @movie.rotation.should == nil
+        end
+
+        it "should parse the creation_time" do
+          @movie.creation_time.should == Time.at(1265403904)
+        end
+
         it "should parse video stream information" do
           @movie.video_stream.should == "h264 (Main) (avc1 / 0x31637661), yuv420p, 640x480 [SAR 1:1 DAR 4:3], 371 kb/s, 16.75 fps, 600 tbr, 600 tbn, 1200 tbc"
         end
@@ -201,6 +209,16 @@ module FFMPEG
         it "should know the file size" do
           @movie.size.should == 455546
         end
+      end
+    end
+
+    context "given a rotated movie file" do
+      before(:all) do
+        @movie = Movie.new("#{fixture_path}/movies/sideways movie.mov")
+      end
+
+      it "should parse the rotation" do
+        @movie.rotation.should == 90
       end
     end
     
