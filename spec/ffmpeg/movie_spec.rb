@@ -60,7 +60,7 @@ module FFMPEG
         end
         
         it "should have correct calculated_aspect_ratio" do
-          @movie.calculated_aspect_ratio.to_s[0..15].should == "1.73827160493827" # substringed to be 1.9 compatible
+          @movie.calculated_aspect_ratio.to_s[0..14].should == "1.7382716049382" # substringed to be 1.9 compatible
         end
       end
       
@@ -76,7 +76,7 @@ module FFMPEG
         end
 
         it "should calulate using width and height instead" do
-          @movie.calculated_aspect_ratio.to_s[0..15].should == "1.77777777777777" # substringed to be 1.9 compatible 
+          @movie.calculated_aspect_ratio.to_s[0..14].should == "1.7777777777777" # substringed to be 1.9 compatible
         end
       end
       
@@ -203,7 +203,7 @@ module FFMPEG
         end
         
         it "should calculate the aspect ratio" do
-          @movie.calculated_aspect_ratio.to_s[0..15].should == "1.33333333333333" # substringed to be 1.9 compatible
+          @movie.calculated_aspect_ratio.to_s[0..14].should == "1.3333333333333" # substringed to be 1.9 compatible
         end
         
         it "should know the file size" do
