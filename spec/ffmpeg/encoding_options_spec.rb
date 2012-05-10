@@ -117,10 +117,9 @@ module FFMPEG
         opts[:frame_rate] = 25
         opts[:video_codec] = "libx264"
         opts[:video_preset] = "normal"
-        opts[:custom] = "-g 25"
         
         converted = EncodingOptions.new(opts).to_s
-        converted.should == "-vcodec libx264 -vpre normal -r 25 -g 25"
+        converted.should == "-vcodec libx264 -vpre normal -r 25"
       end
       
       it "should convert a lot of them simultaneously" do
