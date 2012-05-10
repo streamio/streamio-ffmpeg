@@ -146,7 +146,7 @@ module FFMPEG
         end
 
         it "should parse the creation_time" do
-          @movie.creation_time.should == Time.at(1265403904)
+          @movie.creation_time.should == Time.parse("2010-02-05 16:05:04")
         end
 
         it "should parse video stream information" do

@@ -1,3 +1,5 @@
+require 'time'
+
 module FFMPEG
   class Movie
     attr_reader :path, :duration, :time, :bitrate, :rotation, :creation_time
