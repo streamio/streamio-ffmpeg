@@ -154,6 +154,22 @@ FFMPEG.ffmpeg_binary = '/usr/local/bin/ffmpeg'
 
 This will cause the same command to run as "/usr/local/bin/ffmpeg -i /path/to/input.file ..." instead.
 
+
+Automatically kill hung processes
+---------------------------------
+
+By default, streamio will wait for 200 seconds between IO feedback from the FFMPEG process. After which an error is logged and the process killed.
+It is possible to modify this behaviour by setting a new default:
+
+``` ruby
+# Change the timeout
+Transcoder.timeout = 30
+
+# Disable the timeout altogether
+Transcoder.timeout = false
+```
+
+
 Copyright
 ---------
 
