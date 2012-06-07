@@ -21,12 +21,12 @@ end
 # Monkey Patch timeout support into the IO class
 #
 class IO
-	def each_with_timeout(timeout, sep_string=$/)
+	def each_with_timeout(pid, timeout, sep_string=$/)
 		q = Queue.new
 		th = nil
 
 		timer_set = lambda do |timeout|
-			th = new_thread{ to(timeout){ q.pop } }
+			th = new_thread(pid){ to(timeout){ q.pop } }
 		end
 
 		timer_cancel = lambda do |timeout|
@@ -49,13 +49,19 @@ class IO
 	private
 	
 	
-	def new_thread(*a, &b)
+	def new_thread(pid, *a, &b)
 		cur = Thread.current
 		Thread.new(*a) do |*a|
 			begin
 				b[*a]
 			rescue Exception => e
 				cur.raise e
+				if RUBY_PLATFORM =~ /(win|w)(32|64)$/
+					require 'win32/process'
+					Process.kill(1, pid)
+				else
+					Process.kill('INT', pid)
+				end
 			end
 		end
 	end

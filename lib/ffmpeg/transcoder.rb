@@ -1,6 +1,10 @@
 require 'open3'
 require 'shellwords'
 
+if RUBY_PLATFORM =~ /(win|w)(32|64)$/
+	require 'win32/process'
+end
+
 module FFMPEG
   class Transcoder
     @@timeout = 200
@@ -63,13 +67,12 @@ module FFMPEG
           end
           
           if @@timeout != false
-            stderr.each_with_timeout(@@timeout, "r", &next_line)
+            stderr.each_with_timeout(pid, @@timeout, "r", &next_line)
           else
             stderr.each("r", &next_line)
           end
             
         rescue Timeout::Error => e
-          Process.kill('SIGKILL', pid)
           FFMPEG.logger.error "Process hung...\nCommand\n#{command}\nOutput\n#{output}\n"
           raise "Process hung"
         end
