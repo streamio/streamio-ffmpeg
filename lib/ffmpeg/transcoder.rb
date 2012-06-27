@@ -74,7 +74,7 @@ module FFMPEG
             
         rescue Timeout::Error => e
           FFMPEG.logger.error "Process hung...\nCommand\n#{command}\nOutput\n#{output}\n"
-          raise "Process hung"
+          raise FFMPEG::Error, "Process hung. Full output: #{output}"
         end
       end
 

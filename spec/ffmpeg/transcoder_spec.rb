@@ -29,15 +29,21 @@ module FFMPEG
         FFMPEG.logger.should_receive(:info).at_least(:once)
       end
       
-      it "should fail when IO timeout is exceeded" do
-        FFMPEG.logger.should_receive(:error)
-        movie = Movie.new("#{fixture_path}/movies/awesome_widescreen.mov")
-        Transcoder.timeout = 1
-        transcoder = Transcoder.new(movie, "#{tmp_path}/timeout.mp4")
-        lambda { transcoder.run }.should raise_error(RuntimeError, /Process hung/)
-      end
+      context "with a movie causing ffmpeg to freeze" do
+        before do
+          @original_timeout = Transcoder.timeout
+          Transcoder.timeout = 1
+          @freezing_movie = Movie.new("#{fixture_path}/movies/freezing_movie.mp4")
+        end
         
-      Transcoder.timeout = 200
+        pending "should fail when the timeout is exceeded (dont have any freezing movie yet)" do
+          FFMPEG.logger.should_receive(:error)
+          transcoder = Transcoder.new(@freezing_movie, "#{tmp_path}/timeout.mp4")
+          lambda { transcoder.run }.should raise_error(FFMPEG::Error, /Process hung/)
+        end
+        
+        after { Transcoder.timeout = @original_timeout }
+      end
         
       it "should transcode the movie with progress given an awesome movie" do
         FileUtils.rm_f "#{tmp_path}/awesome.flv"
