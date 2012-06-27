@@ -62,7 +62,7 @@ module FFMPEG
         
         options = {:video_codec => "libx264", :frame_rate => 10, :resolution => "320x240", :video_bitrate => 300,
                    :audio_codec => "libfaac", :audio_bitrate => 32, :audio_sample_rate => 22050, :audio_channels => 1,
-                   :custom => "-flags +loop -cmp +chroma -partitions +parti4x4+partp8x8 -flags2 +mixed_refs -me_method umh -subq 6 -refs 6 -rc_eq 'blurCplx^(1-qComp)' -coder 0 -me_range 16 -g 250 -keyint_min 25 -sc_threshold 40 -i_qfactor 0.71 -qcomp 0.6 -qmin 10 -qmax 51 -qdiff 4 -level 21"} # TODO: This fails on ffmpeg master since mixed_refs is no longer an option
+                   :custom => "-flags +mv4+aic -trellis 2 -cmp 2 -subcmp 2 -g 300"}
         
         encoded = Transcoder.new(movie, "#{tmp_path}/optionalized.mp4", options).run
         encoded.video_bitrate.should be_within(10).of(300)
