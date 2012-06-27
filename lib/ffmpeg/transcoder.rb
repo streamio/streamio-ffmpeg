@@ -1,10 +1,6 @@
 require 'open3'
 require 'shellwords'
 
-if RUBY_PLATFORM =~ /(win|w)(32|64)$/
-	require 'win32/process'
-end
-
 module FFMPEG
   class Transcoder
     @@timeout = 200
