@@ -29,17 +29,36 @@ module FFMPEG
         FFMPEG.logger.should_receive(:info).at_least(:once)
       end
       
-      context "with a movie causing ffmpeg to freeze" do
+      context "when ffmpeg freezes" do
         before do
           @original_timeout = Transcoder.timeout
+          @original_ffmpeg_binary = FFMPEG.ffmpeg_binary
+          
           Transcoder.timeout = 1
-          @freezing_movie = Movie.new("#{fixture_path}/movies/freezing_movie.mp4")
+          FFMPEG.ffmpeg_binary = "#{fixture_path}/bin/ffmpeg-hanging"
         end
         
-        pending "should fail when the timeout is exceeded (dont have any freezing movie yet)" do
+        it "should fail when the timeout is exceeded" do
           FFMPEG.logger.should_receive(:error)
-          transcoder = Transcoder.new(@freezing_movie, "#{tmp_path}/timeout.mp4")
+          transcoder = Transcoder.new(movie, "#{tmp_path}/timeout.mp4")
           lambda { transcoder.run }.should raise_error(FFMPEG::Error, /Process hung/)
+        end
+        
+        after do
+          Transcoder.timeout = @original_timeout
+          FFMPEG.ffmpeg_binary = @original_ffmpeg_binary
+        end
+      end
+      
+      context "with timeout disabled" do
+        before do
+          @original_timeout = Transcoder.timeout
+          Transcoder.timeout = false
+        end
+        
+        it "should still work" do
+          encoded = Transcoder.new(movie, "#{tmp_path}/awesome.mpg").run
+          encoded.resolution.should == "640x480"
         end
         
         after { Transcoder.timeout = @original_timeout }
