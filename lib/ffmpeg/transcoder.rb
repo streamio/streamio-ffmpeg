@@ -6,7 +6,7 @@ module FFMPEG
     @@timeout = 200
 
     def self.timeout=(time)
-      @@timeout = time == false ? false : time.to_i
+      @@timeout = time
     end
 
     def self.timeout
@@ -62,7 +62,7 @@ module FFMPEG
             end
           end
           
-          if @@timeout != false
+          if @@timeout
             stderr.each_with_timeout(pid, @@timeout, "r", &next_line)
           else
             stderr.each("r", &next_line)
