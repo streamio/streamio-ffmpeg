@@ -39,7 +39,6 @@ module FFMPEG
       output = ""
       last_output = nil
       Open3.popen3(command) do |stdin, stdout, stderr, wait_thr|
-        pid = wait_thr.pid
         begin
           yield(0.0) if block_given?
           next_line = Proc.new do |line|
@@ -63,7 +62,7 @@ module FFMPEG
           end
           
           if @@timeout
-            stderr.each_with_timeout(pid, @@timeout, "r", &next_line)
+            stderr.each_with_timeout(wait_thr.pid, @@timeout, "r", &next_line)
           else
             stderr.each("r", &next_line)
           end
