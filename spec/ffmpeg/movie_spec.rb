@@ -29,6 +29,16 @@ module FFMPEG
           @movie.should_not be_valid
         end
       end
+
+      context "given an empty flv file (could not find codec parameters)" do
+        before(:all) do
+          @movie = Movie.new("#{fixture_path}/movies/empty.flv")
+        end
+
+        it "should not be valid" do
+          @movie.should_not be_valid
+        end
+      end
       
       context "given a broken mp4 file" do
         before(:all) do

@@ -53,6 +53,7 @@ module FFMPEG
       
       @invalid = true if @video_stream.to_s.empty? && @audio_stream.to_s.empty?
       @invalid = true if output.include?("is not supported")
+      @invalid = true if output.include?("could not find codec parameters")
     end
     
     def valid?
