@@ -3,12 +3,6 @@ require 'spec_helper.rb'
 module FFMPEG
   describe Movie do
     describe "initializing" do
-      it "should not be vulnerable to 'Too many open files' error" do
-        expect {
-          128.times { Movie.new("#{fixture_path}/sounds/napoleon.mp3") }
-        }.to_not raise_error(Errno::EMFILE, /Too many open files/)
-      end
-      
       context "given a non existing file" do
         it "should throw ArgumentError" do
           lambda { Movie.new("i_dont_exist") }.should raise_error(Errno::ENOENT, /does not exist/)
