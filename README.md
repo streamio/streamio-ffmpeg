@@ -116,13 +116,6 @@ options = {:video_min_bitrate => 600, :video_max_bitrate => 600, :buffer_size =>
 movie.transcode("movie.flv", options)
 ```
 
-Use ffpreset files to avoid headaches when encoding with libx264 (http://www.ffmpeg.org/ffmpeg-doc.html#SEC13).
-
-``` ruby
-options = {:video_codec => "libx264", :video_preset => "medium"} # audio_preset and file_preset also availible
-movie.transcode("movie.mp4", options) # encodes video using libx264-medium.ffpreset
-```
-
 ### Taking Screenshots
 
 You can use the screenshot method to make taking screenshots a bit simpler.

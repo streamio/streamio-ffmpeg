@@ -1,3 +1,27 @@
+== 0.9.0 2012-07-24
+
+New:
+* Bumped target ffmpeg version to 0.11.1
+* Add hung process detection with configurable timeout (thanks stakach)
+* Raise FFMPEG::Error instead of generic RuntimeError on failed transcodings
+* Movie#screenshot for more intuitive screenshotting (README has details)
+* Movie#creation_time and Movie#rotation attributes when metadata is available (thanks Innonate)
+
+Bugs:
+* Fixed too many open files bug (thanks to akicho8)
+* Fixed missing path escaping (thanks to mikesager)
+* Fixed README typo (thanks to Linutux)
+* Files outputing "could not find codec parameters" are now recognized as invalid
+
+Deprecations:
+* Removed Movie#uncertain_duration?
+* Removed all the deprecated crop options (use :custom => '-vf crop=x:x:x:x' if you need it)
+
+Refactorings:
+* Removed the deprecated duration validation code
+* Polish on the transcoder class
+* Polish on the spec suite
+
 == 0.8.5 2011-03-05
 
 * If a clip has a DAR that doesn't make sense fall back to calculating aspect ratio from dimensions
