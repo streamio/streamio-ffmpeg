@@ -28,6 +28,22 @@ module FFMPEG
         it "should not be valid" do
           @movie.should_not be_valid
         end
+        
+        it "should have a duration of 0" do
+          @movie.duration.should == 0
+        end 
+        
+        it "should have nil height" do
+          @movie.height.should be_nil
+        end
+        
+        it "should have nil width" do
+          @movie.width.should be_nil
+        end
+      
+        it "should have nil frame_rate" do
+          @movie.frame_rate.should be_nil
+        end 
       end
 
       context "given an empty flv file (could not find codec parameters)" do
