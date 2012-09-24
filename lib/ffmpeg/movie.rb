@@ -85,6 +85,7 @@ module FFMPEG
     end
     
     def frame_rate
+      return nil if video_stream.nil? 
       video_stream[/(\d*\.?\d*)\s?fps/] ? $1.to_f : nil
     end
     
