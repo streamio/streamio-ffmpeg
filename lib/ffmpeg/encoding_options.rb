@@ -5,16 +5,19 @@ module FFMPEG
     end
     
     def to_s
+
       params = collect do |key, value|
         send("convert_#{key}", value) if value && supports_option?(key)
       end
       
       # codecs should go before the presets so that the files will be matched successfully
       # all other parameters go after so that we can override whatever is in the preset
-      codecs = params.select { |p| p =~ /codec/ }
+      source  = params.select {|p| p =~ /\-i/ }
+      seek    = params.select {|p| p =~ /\-ss/ }
+      codecs  = params.select { |p| p =~ /codec/ }
       presets = params.select { |p| p =~ /\-.pre/ }
-      other = params - codecs - presets
-      params = codecs + presets + other
+      other   = params - codecs - presets - source - seek
+      params  = seek + source + codecs + presets + other
       
       params_string = params.join(" ")
       params_string << " #{convert_aspect(calculate_aspect)}" if calculate_aspect?
@@ -130,6 +133,10 @@ module FFMPEG
     
     def convert_custom(value)
       value
+    end
+
+    def convert_input(value)
+      "-i #{Shellwords.escape(value)}"
     end
     
     def k_format(value)
