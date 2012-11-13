@@ -185,6 +185,57 @@ module FFMPEG
           encoded.resolution.should == "320x240"
         end
       end
+    
+      context "with autorotation" do
+        before do
+          @movie = Movie.new("#{fixture_path}/movies/sideways movie.mov")
+          @options = {}
+        end
+        it "shouldn't rotate when autorotate is false" do
+          special_options = {:autorotate => false}
+          encoded = Transcoder.new(@movie, "#{tmp_path}/autorotated.mp4", @options, special_options).run
+          encoded.resolution.should == @movie.resolution
+        end
+        it "shouldn't rotate when move is not rotated" do
+          @movie = Movie.new("#{fixture_path}/movies/awesome_widescreen.mov")
+          special_options = {:autorotate => true}
+          encoded = Transcoder.new(@movie, "#{tmp_path}/autorotated.mp4", @options, special_options).run
+          encoded.resolution.should == @movie.resolution
+        end
+        it "should reset the autorotate metadata" do
+          special_options = {:autorotate => true}
+          encoded = Transcoder.new(@movie, "#{tmp_path}/autorotated.mp4", @options, special_options).run
+          @movie.rotation.should_not == nil
+          encoded.rotation.should == nil
+        end
+        it "should rotate when move is rotated and autorotate is true" do
+          special_options = {:autorotate => true}
+          encoded = Transcoder.new(@movie, "#{tmp_path}/autorotated.mp4", @options, special_options).run
+          rotated_resolution = @movie.resolution.split('x').reverse.join('x')
+          encoded.resolution.should == rotated_resolution
+        end
+        it "inverts aspect ratio when autorotating" do
+          @options = {:resolution => "660x42"}
+          special_options = {:autorotate => true, :preserve_aspect_ratio => :width}
+          encoded = Transcoder.new(@movie, "#{tmp_path}/autorotated.mp4", @options, special_options).run
+          rotated_resolution = @movie.resolution.split('x').reverse.join('x')
+          encoded.width.should == 660
+          encoded.height.should == 880
+        end
+      end
+    end
+    
+    context "the #even method" do
+      def evenize(number)
+        @movie = Movie.new("#{fixture_path}/movies/sideways movie.mov")
+        t = Transcoder.new(@movie, "#{tmp_path}/preserved_aspect.mp4")
+        t.send(:evenize, number)
+      end
+      it { evenize(2.2).should == 2 }
+      it { evenize(3.2).should == 4 }
+      it { evenize(0.2).should == 0 }
+      it { evenize(42).should == 42 }
+      it { evenize(43).should == 44 }
     end
   end
 end
