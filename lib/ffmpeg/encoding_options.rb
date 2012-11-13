@@ -132,6 +132,14 @@ module FFMPEG
       value
     end
     
+    def convert_metadata(value)
+      "-metadata:#{value}"
+    end
+
+    def convert_video_filter(value)
+      "-vf #{value}"
+    end
+    
     def k_format(value)
       value.to_s.include?("k") ? value : "#{value}k"
     end

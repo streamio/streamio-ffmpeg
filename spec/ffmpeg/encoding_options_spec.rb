@@ -130,6 +130,17 @@ module FFMPEG
       it "should ignore options with nil value" do
         EncodingOptions.new(:video_codec => "libx264", :frame_rate => nil).to_s.should == "-vcodec libx264 "
       end
+
+      it "should convert metadata" do
+        setting = 's:v:0 rotate=0'
+        EncodingOptions.new(:metadata => setting).to_s.should == "-metadata:#{setting}"
+      end
+
+      it "should convert video filter" do
+        setting = 'transpose=1'
+        EncodingOptions.new(:video_filter => setting).to_s.should == "-vf #{setting}"
+      end
+
     end
   end
 end
