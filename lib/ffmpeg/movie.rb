@@ -5,7 +5,8 @@ module FFMPEG
     attr_reader :path, :duration, :time, :bitrate, :rotation, :creation_time
     attr_reader :video_stream, :video_codec, :video_bitrate, :colorspace, :resolution, :dar
     attr_reader :audio_stream, :audio_codec, :audio_bitrate, :audio_sample_rate
-    
+    attr_reader :container
+
     def initialize(path)
       raise Errno::ENOENT, "the file '#{path}' does not exist" unless File.exists?(path)
       
@@ -50,6 +51,9 @@ module FFMPEG
         @audio_bitrate = audio_bitrate =~ %r(\A(\d+) kb/s\Z) ? $1.to_i : nil
         @audio_sample_rate = audio_sample_rate[/\d*/].to_i
       end
+
+      output[/Input #\d+, (.*?),\s/]
+      @container = $1
       
       @invalid = true if @video_stream.to_s.empty? && @audio_stream.to_s.empty?
       @invalid = true if output.include?("is not supported")
