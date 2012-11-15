@@ -96,6 +96,7 @@ module FFMPEG
     end
     
     private
+
     def apply_transcoder_options
       autorotate = (@transcoder_options[:autorotate] && @movie.rotation)
       apply_autorotate if autorotate
@@ -113,25 +114,36 @@ module FFMPEG
       @raw_options[:video_filter] = filters[@movie.rotation]
     end
     
+    # TODO refactor
     def apply_preserve_aspect_ratio(autorotate = false)
-      case @transcoder_options[:preserve_aspect_ratio].to_s
+
+      return if @movie.calculated_aspect_ratio.nil?
+
+      side = @transcoder_options[:preserve_aspect_ratio]
+
+      return unless side
+
+      size = @raw_options.send(side)
+      side = side.to_s
+
+      if autorotate && autorotate_changes_orientation?
+        side = (side == 'height' ? 'width' : 'height')
+      end
+
+      case side
       when "width"
-        new_height = @raw_options.width / aspect_ratio(autorotate)
+        new_height = size / @movie.calculated_aspect_ratio
         new_height = evenize(new_height)
-        @raw_options[:resolution] = "#{@raw_options.width}x#{new_height}"
+        @raw_options[:resolution] = "#{size}x#{new_height}"
       when "height"
-        new_width = @raw_options.height * aspect_ratio(autorotate)
+        new_width = size * @movie.calculated_aspect_ratio
         new_width = evenize(new_width)
-        @raw_options[:resolution] = "#{new_width}x#{@raw_options.height}"
+        @raw_options[:resolution] = "#{new_width}x#{size}"
       end
     end
     
-    def aspect_ratio(autorotate)
-      if (autorotate && [90, 270].include?(@movie.rotation))
-        1 / @movie.calculated_aspect_ratio
-      else
-        @movie.calculated_aspect_ratio
-      end
+    def autorotate_changes_orientation?
+      [90, 270].include?(@movie.rotation)
     end
     
     # ffmpeg requires full, even numbers for its resolution string -- this method ensures that
