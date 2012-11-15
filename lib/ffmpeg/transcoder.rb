@@ -1,8 +1,15 @@
 require 'open3'
 require 'shellwords'
+require 'ffmpeg/transcoders/autorotator'
+require 'ffmpeg/transcoders/scaler'
 
 module FFMPEG
+
   class Transcoder
+
+    include FFMPEG::Transcoders::Autorotator
+    include FFMPEG::Transcoders::Scaler
+
     @@timeout = 200
 
     def self.timeout=(time)
@@ -98,64 +105,16 @@ module FFMPEG
     private
 
     def apply_transcoder_options
-      autorotate = (@transcoder_options[:autorotate] && @movie.rotation)
-      apply_autorotate if autorotate
-      apply_preserve_aspect_ratio(autorotate) if @movie.calculated_aspect_ratio
+      apply_autorotate
+      changes_orientation = changes_orientation?
+      apply_preserve_aspect_ratio(changes_orientation)
     end
-    
-    def apply_autorotate
-      # remove the rotation information on the video stream so rotation-aware players don't rotate twice
-      @raw_options[:metadata] = 's:v:0 rotate=0'
-      filters = {
-        90  => 'transpose=1',
-        180 => 'hflip,vflip',
-        270 => 'transpose=2'
-      }
-      @raw_options[:video_filter] = filters[@movie.rotation]
-    end
-    
-    # TODO refactor
-    def apply_preserve_aspect_ratio(autorotate = false)
 
-      return if @movie.calculated_aspect_ratio.nil?
-
-      side = @transcoder_options[:preserve_aspect_ratio]
-
-      return unless side
-
-      size = @raw_options.send(side)
-      side = side.to_s
-
-      if autorotate && autorotate_changes_orientation?
-        side = (side == 'height' ? 'width' : 'height')
-      end
-
-      case side
-      when "width"
-        new_height = size / @movie.calculated_aspect_ratio
-        new_height = evenize(new_height)
-        @raw_options[:resolution] = "#{size}x#{new_height}"
-      when "height"
-        new_width = size * @movie.calculated_aspect_ratio
-        new_width = evenize(new_width)
-        @raw_options[:resolution] = "#{new_width}x#{size}"
-      end
-    end
-    
-    def autorotate_changes_orientation?
-      [90, 270].include?(@movie.rotation)
-    end
-    
-    # ffmpeg requires full, even numbers for its resolution string -- this method ensures that
-    def evenize(number)
-      number = number.ceil.even? ? number.ceil : number.floor
-      number.odd? ? number += 1 : number # needed if new_height ended up with no decimals in the first place
-    end
-    
     def fix_encoding(output)
       output[/test/]
     rescue ArgumentError
       output.force_encoding("ISO-8859-1")
     end
   end
+
 end
