@@ -113,7 +113,7 @@ module FFMPEG
           encoded = Transcoder.new(@movie, "#{tmp_path}/preserved_aspect.mp4", @options, special_options).run
           encoded.resolution.should == "426x240"
         end
-        
+
         it "should not be used if original resolution is undeterminable" do
           @movie.should_receive(:calculated_aspect_ratio).and_return(nil)
           special_options = {:preserve_aspect_ratio => :height}
@@ -129,6 +129,28 @@ module FFMPEG
           encoded = Transcoder.new(@movie, "#{tmp_path}/preserved_aspect.mp4", @options, special_options).run
           encoded.resolution.should == "320x260" # 320 / 1.234 should at first be rounded to 259
         end
+
+        context "enlarged scaling disabled" do
+
+          it "it works to shrink" do
+            @options = {:resolution => "160x120"}
+            special_options = {:preserve_aspect_ratio => :width, :enlarge => false}
+            encoded = Transcoder.new(@movie, "#{tmp_path}/preserved_aspect.mp4", @options, special_options).run
+            encoded.resolution.should == "160x90"
+          end
+
+          it "it does not to enlarge" do
+            special_options = {:preserve_aspect_ratio => :height, :enlarge => false}
+            # original resolution: "320x180"
+            # target resolution: "320x240"
+            # preserved target resolution: "426x240"
+            # expected resolution: "320x180", video may not be enlarged
+            original_resolution = @movie.resolution   
+            encoded = Transcoder.new(@movie, "#{tmp_path}/preserved_aspect.mp4", @options, special_options).run
+            encoded.resolution.should == original_resolution 
+          end
+        end
+        
       end
 
       it "should transcode the movie with String options" do
@@ -192,35 +214,56 @@ module FFMPEG
           @options = {}
         end
         it "shouldn't rotate when autorotate is false" do
-          special_options = {:autorotate => false}
-          encoded = Transcoder.new(@movie, "#{tmp_path}/autorotated.mp4", @options, special_options).run
+          transcoder_options = {:autorotate => false}
+          encoded = Transcoder.new(@movie, "#{tmp_path}/autorotated.mp4", @options, transcoder_options).run
           encoded.resolution.should == @movie.resolution
         end
         it "shouldn't rotate when move is not rotated" do
           @movie = Movie.new("#{fixture_path}/movies/awesome_widescreen.mov")
-          special_options = {:autorotate => true}
-          encoded = Transcoder.new(@movie, "#{tmp_path}/autorotated.mp4", @options, special_options).run
+          transcoder_options = {:autorotate => true}
+          encoded = Transcoder.new(@movie, "#{tmp_path}/autorotated.mp4", @options, transcoder_options).run
           encoded.resolution.should == @movie.resolution
         end
         it "should reset the autorotate metadata" do
-          special_options = {:autorotate => true}
-          encoded = Transcoder.new(@movie, "#{tmp_path}/autorotated.mp4", @options, special_options).run
+          transcoder_options = {:autorotate => true}
+          encoded = Transcoder.new(@movie, "#{tmp_path}/autorotated.mp4", @options, transcoder_options).run
           @movie.rotation.should_not == nil
           encoded.rotation.should == nil
         end
         it "should rotate when move is rotated and autorotate is true" do
-          special_options = {:autorotate => true}
-          encoded = Transcoder.new(@movie, "#{tmp_path}/autorotated.mp4", @options, special_options).run
+          transcoder_options = {:autorotate => true}
+          encoded = Transcoder.new(@movie, "#{tmp_path}/autorotated.mp4", @options, transcoder_options).run
           rotated_resolution = @movie.resolution.split('x').reverse.join('x')
           encoded.resolution.should == rotated_resolution
         end
         it "inverts aspect ratio when autorotating" do
+          # by default also enlarges the video
           @options = {:resolution => "660x42"}
-          special_options = {:autorotate => true, :preserve_aspect_ratio => :width}
-          encoded = Transcoder.new(@movie, "#{tmp_path}/autorotated.mp4", @options, special_options).run
+          transcoder_options = {:autorotate => true, :preserve_aspect_ratio => :width}
+          encoded = Transcoder.new(@movie, "#{tmp_path}/autorotated.mp4", @options, transcoder_options).run
           rotated_resolution = @movie.resolution.split('x').reverse.join('x')
           encoded.width.should == 660
           encoded.height.should == 880
+        end
+        context "enlarged scaling disabled" do
+
+          it "it works to shrink" do
+            # original resolution: 640x480
+            # original rotated resolution: 480x640
+            # target resolution 240x42
+            # expected resoltuion: 240x320
+            @options = {:resolution => "240x42"}
+            special_options = {:preserve_aspect_ratio => :width, :enlarge => false}
+            encoded = Transcoder.new(@movie, "#{tmp_path}/preserved_aspect.mp4", @options, special_options).run
+            encoded.resolution.should == "240x320"
+          end
+
+          it "it does not enlarge" do
+            @options = {:resolution => "660x42"}
+            transcoder_options = {:autorotate => true, :preserve_aspect_ratio => :width, :enlarge => false}
+            encoded = Transcoder.new(@movie, "#{tmp_path}/autorotated.mp4", @options, transcoder_options).run
+            rotated_resolution = "480x640"
+          end
         end
       end
     end

@@ -10,10 +10,21 @@ module FFMPEG
         
         def apply_preserve_aspect_ratio(change_orientation=false)
           return unless preserve_aspect_ratio?
+
           side = @transcoder_options[:preserve_aspect_ratio].to_s
           size = @raw_options.send(side)
           side = invert_side(side) if change_orientation            
+
+          if @transcoder_options[:enlarge] == false
+            original_size = @movie.send(side)
+            size = original_size if original_size < size
+          end
+
           set_new_resolution(side, size)
+        end
+
+        def calculate_size(side)
+          
         end
 
         def set_new_resolution(side, size)
