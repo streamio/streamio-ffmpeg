@@ -13,7 +13,12 @@ module FFMPEG
       @path = path
 
       # ffmpeg will output to stderr
-      command = "#{FFMPEG.ffmpeg_binary} -i #{Shellwords.escape(path)}"
+      if RUBY_PLATFORM =~ /(win|w)(32|64)$/
+        command = %Q[#{FFMPEG.ffmpeg_binary}" -i "#{path}]
+      else
+        command = "#{FFMPEG.ffmpeg_binary} -i #{Shellwords.escape(path)}"
+      end
+
       output = Open3.popen3(command) { |stdin, stdout, stderr| stderr.read }
       
       fix_encoding(output)
