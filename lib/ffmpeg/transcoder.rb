@@ -5,6 +5,10 @@ require 'ffmpeg/transcoders/scaler'
 
 module FFMPEG
 
+  # transcoder options:
+  # - preserve_aspect_ration: [:width|:height]
+  # - scale_and_enlarge: boolean, default: true 
+  # - autorotate: boolean
   class Transcoder
 
     include FFMPEG::Transcoders::Autorotator
@@ -20,7 +24,7 @@ module FFMPEG
       @@timeout
     end
 
-    def initialize(movie, output_file, options = EncodingOptions.new, transcoder_options = {})
+    def initialize(movie, output_file, options = EncodingOptions.new, transcoder_options = {:enlarge => true})
       @movie = movie
       @output_file = output_file
       
