@@ -122,7 +122,7 @@ transcoder_options = {:preserve_aspect_ratio => :width, :enlarge => false}
 # The movie will be scaled down to output resolution "320x240"
 ```
 
-Active autorotate transcoder option to autorotate videos that have metadata rotation.
+Activate autorotate transcoder option to autorotate videos that have metadata rotation.
 ``` ruby
 # With original resolution "640x480", rotation "90"
 widescreen_movie.transcode("movie.mp4", options, {:autorotate => true}) 
