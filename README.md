@@ -109,6 +109,27 @@ transcoder_options = {:preserve_aspect_ratio => :height}
 widescreen_movie.transcode("movie.mp4", options, transcoder_options) # Output resolution will be 426x240
 ```
 
+Disable the enlarge transcoding option to avoid lossy scaling.
+
+``` ruby
+# With original resolution will be 640x480
+encoding_options = {:resolution => "1080x2"}
+transcoder_options = {:preserve_aspect_ratio => :width, :enlarge => false}
+# The movie will not be scaled up
+
+encoding_options = {:resolution => "320x2"}
+transcoder_options = {:preserve_aspect_ratio => :width, :enlarge => false}
+# The movie will be scaled down to output resolution "320x240"
+```
+
+Active autorotate transcoder option to autorotate videos that have metadata rotation.
+``` ruby
+# given the movie with original resolution "640x480", rotation "90"
+widescreen_movie.transcode("movie.mp4", options, {:autorotate => true}) 
+# The movie is rotated 90 degrees counterclockwise
+# Output resolution is "480x640"
+```
+
 For constant bitrate encoding use video_min_bitrate and video_max_bitrate with buffer_size.
 
 ``` ruby
