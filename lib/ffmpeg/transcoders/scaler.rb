@@ -8,11 +8,29 @@ module FFMPEG
           %w(width height).include?(@transcoder_options[:preserve_aspect_ratio].to_s)
         end
         
+        # Scaling with autorotation 
+        #
+        # If scaled in conjuction with autorotation 
+        # and the rotation results in an orientation change
+        # we must "invert" the side that is preserved
+        # as scaling takes place prior to rotation
+        #
+        # Example: 
+        #
+        # Original: resolution => 640x480, rotation => 90 
+        # Requested: resolution => 660x2, preserved_aspect_ration => :width, autorotate => true
+        #
+        # => the orientation will change from landscape to portrait
+        # => we have to invert the preserved_aspect_ration => :height
+        #
+        # Output: resolution => 660x880
+        # 
         def apply_preserve_aspect_ratio(change_orientation=false)
           return unless preserve_aspect_ratio?
 
           side = @transcoder_options[:preserve_aspect_ratio].to_s
           size = @raw_options.send(side)
+
           side = invert_side(side) if change_orientation            
 
           if @transcoder_options[:enlarge] == false
@@ -21,10 +39,6 @@ module FFMPEG
           end
 
           set_new_resolution(side, size)
-        end
-
-        def calculate_size(side)
-          
         end
 
         def set_new_resolution(side, size)
