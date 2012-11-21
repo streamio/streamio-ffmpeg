@@ -5,7 +5,7 @@ module FFMPEG
 
         def preserve_aspect_ratio?
           @movie.calculated_aspect_ratio && 
-          %w(width height).include?(@transcoder_options[:preserve_aspect_ratio].to_s)
+          [:width, :height].include?(@transcoder_options[:preserve_aspect_ratio])
         end
         
         # Scaling with autorotation 
@@ -23,14 +23,16 @@ module FFMPEG
         # => the orientation will change from landscape to portrait
         # => we have to invert the preserved_aspect_ration => :height
         #
-        # Output: resolution => 660x880
-        # 
+        # Expected Output: resolution => 660x880
+        #
+        # Required Encoding (ffmpeg version < 1.0, scales before rotating, not implemented): resolution => 880x660
+        # Required Encoding (ffmpeg version == 1.0, rotates before scaling, this implementation): resolution => 660x880
+        #
         def apply_preserve_aspect_ratio(change_orientation=false)
           return unless preserve_aspect_ratio?
 
-          side = @transcoder_options[:preserve_aspect_ratio].to_s
+          side = @transcoder_options[:preserve_aspect_ratio]
           size = @raw_options.send(side)
-
           side = invert_side(side) if change_orientation            
 
           if @transcoder_options[:enlarge] == false
@@ -38,24 +40,26 @@ module FFMPEG
             size = original_size if original_size < size
           end
 
-          set_new_resolution(side, size)
-        end
-
-        def set_new_resolution(side, size)
           case side
-          when "width"
+          when :width
             new_height = size / @movie.calculated_aspect_ratio
             new_height = evenize(new_height)
             @raw_options[:resolution] = "#{size}x#{new_height}"
-          when "height"
+          when :height
             new_width = size * @movie.calculated_aspect_ratio
             new_width = evenize(new_width)
             @raw_options[:resolution] = "#{new_width}x#{size}"
           end
+
+          invert_resolution if change_orientation 
         end
 
         def invert_side(side)
-          side == 'height' ? 'width' : 'height'
+          side == :height ? :width : :height
+        end
+
+        def invert_resolution
+          @raw_options[:resolution] = @raw_options[:resolution].split("x").reverse.join("x")
         end
         
         # ffmpeg requires full, even numbers for its resolution string -- this method ensures that
