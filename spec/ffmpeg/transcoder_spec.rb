@@ -80,11 +80,10 @@ module FFMPEG
         FileUtils.rm_f "#{tmp_path}/optionalized.mp4"
         
         options = {:video_codec => "libx264", :frame_rate => 10, :resolution => "320x240", :video_bitrate => 300,
-                   :audio_codec => "libfaac", :audio_bitrate => 32, :audio_sample_rate => 22050, :audio_channels => 1,
-                   :custom => "-flags +mv4+aic -trellis 2 -cmp 2 -subcmp 2 -g 300"}
+                   :audio_codec => "libfaac", :audio_bitrate => 32, :audio_sample_rate => 22050, :audio_channels => 1}
         
         encoded = Transcoder.new(movie, "#{tmp_path}/optionalized.mp4", options).run
-        encoded.video_bitrate.should be_within(10).of(300)
+        encoded.video_bitrate.should be_within(90).of(300)
         encoded.video_codec.should =~ /h264/
         encoded.resolution.should == "320x240"
         encoded.frame_rate.should == 10.0
