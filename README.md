@@ -12,7 +12,16 @@ Installation
 
     (sudo) gem install streamio-ffmpeg
 
-This version is tested against ffmpeg 0.11.1. So no guarantees with earlier (or much later) versions. Output and input standards have inconveniently changed rather a lot between versions of ffmpeg. My goal is to keep this library in sync with new versions of ffmpeg as they come along.
+Compatibility
+-------------
+
+### Ruby
+
+Only guaranteed to work with MRI Ruby 1.9.3 or later.
+
+### ffmpeg
+
+The current gem is tested against ffmpeg 0.11.1. So no guarantees with earlier (or much later) versions. Output and input standards have inconveniently changed rather a lot between versions of ffmpeg. My goal is to keep this library in sync with new versions of ffmpeg as they come along.
 
 Usage
 -----
