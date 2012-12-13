@@ -15,7 +15,6 @@ class IO
         sleep 0.1
         if last_update - Time.now < -seconds
           current_thread.raise Timeout::Error.new('output wait time expired')
-          Thread.current.kill
         end
       end
     end
@@ -31,5 +30,7 @@ class IO
       Process.kill('SIGKILL', pid)
     end
     raise
+  ensure
+    check_update_thread.kill
   end
 end
