@@ -7,7 +7,7 @@ require 'win32/process' if RUBY_PLATFORM =~ /(win|w)(32|64)$/
 #
 class IO
   def each_with_timeout(pid, seconds, sep_string=$/)
-  	last_update = Time.now
+    last_update = Time.now
 
     current_thread = Thread.current
     check_update_thread = Thread.new do
@@ -20,10 +20,10 @@ class IO
       end
     end
 
-  	each(sep_string) do |buffer|
-  		last_update = Time.now
-  		yield buffer
-  	end
+    each(sep_string) do |buffer|
+      last_update = Time.now
+      yield buffer
+    end
   rescue Timeout::Error
     if RUBY_PLATFORM =~ /(win|w)(32|64)$/
       Process.kill(1, pid)
