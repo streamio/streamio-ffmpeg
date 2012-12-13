@@ -18,6 +18,8 @@ Compatibility
 ### Ruby
 
 Only guaranteed to work with MRI Ruby 1.9.3 or later.
+Should work with rubinius head in 1.9 mode.
+Will not work in jruby until they fix: http://goo.gl/Z4UcX (should work in the upcoming 1.7.2)
 
 ### ffmpeg
 
