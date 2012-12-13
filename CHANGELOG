@@ -1,3 +1,17 @@
+== HEAD
+
+Improvements:
+* Simpler implementation for timeouts.
+  Should be far less cpu and memory dependent (don't spawn a thread for every line of output)
+  Timeout spec now passes in Rubinius (using 1.9 mode)
+
+Bugs:
+* Avoid crash if asking for frame_rate of a video without video stream.
+
+Deprecations:
+* Removed support for Ruby 1.8
+* Removed support for ffmpeg 0.7
+
 == 0.9.0 2012-07-24
 
 New:
