@@ -43,6 +43,6 @@ module FFMPEG
   #
   # @return [String] the path to the ffmpeg binary
   def self.ffmpeg_binary
-    @ffmpeg_binary.nil? ? 'ffmpeg' : @ffmpeg_binary
+    @ffmpeg_binary || 'ffmpeg'
   end
 end
