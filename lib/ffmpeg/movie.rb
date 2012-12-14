@@ -32,10 +32,10 @@ module FFMPEG
       output[/rotate\ {1,}:\ {1,}(\d*)/]
       @rotation = $1 ? $1.to_i : nil
 
-      output[/Video: (.*)/]
+      output[/Video:\ (.*)/]
       @video_stream = $1
       
-      output[/Audio: (.*)/]
+      output[/Audio:\ (.*)/]
       @audio_stream = $1
       
       if video_stream
