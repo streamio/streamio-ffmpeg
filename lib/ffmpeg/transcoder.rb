@@ -36,7 +36,6 @@ module FFMPEG
       command = "#{FFMPEG.ffmpeg_binary} -y -i #{Shellwords.escape(@movie.path)} #{@raw_options} #{Shellwords.escape(@output_file)}"
       FFMPEG.logger.info("Running transcoding...\n#{command}\n")
       output = ""
-      last_output = nil
       Open3.popen3(command) do |stdin, stdout, stderr, wait_thr|
         begin
           yield(0.0) if block_given?
