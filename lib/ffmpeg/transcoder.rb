@@ -61,7 +61,7 @@ module FFMPEG
             
         rescue Timeout::Error => e
           FFMPEG.logger.error "Process hung...\nCommand\n#{command}\nOutput\n#{output}\n"
-          raise FFMPEG::Error, "Process hung. Full output: #{output}"
+          raise Error, "Process hung. Full output: #{output}"
         end
       end
 
@@ -71,7 +71,7 @@ module FFMPEG
       else
         errors = "Errors: #{@errors.join(", ")}. "
         FFMPEG.logger.error "Failed encoding...\n#{command}\n\n#{output}\n#{errors}\n"
-        raise FFMPEG::Error, "Failed encoding.#{errors}Full output: #{output}"
+        raise Error, "Failed encoding.#{errors}Full output: #{output}"
       end
       
       encoded
