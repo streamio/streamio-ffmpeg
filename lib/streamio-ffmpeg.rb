@@ -19,7 +19,7 @@ module FFMPEG
   def self.logger=(log)
     @logger = log
   end
-  
+
   # Get FFMPEG logger.
   #
   # @return [Logger]
