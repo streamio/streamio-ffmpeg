@@ -51,10 +51,6 @@ module FFMPEG
               progress = time / @movie.duration
               yield(progress) if block_given?
             end
-            if line =~ /Unsupported codec/
-              FFMPEG.logger.error "Failed encoding...\nCommand\n#{command}\nOutput\n#{output}\n"
-              raise "Failed encoding: #{line}"
-            end
           end
           
           if @@timeout
