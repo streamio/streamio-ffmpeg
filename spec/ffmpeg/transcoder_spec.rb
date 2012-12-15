@@ -8,19 +8,19 @@ module FFMPEG
       let(:output_path) { "#{tmp_path}/awesome.flv" }
       
       it "should accept EncodingOptions as options" do
-        lambda { Transcoder.new(movie, output_path, EncodingOptions.new) }.should_not raise_error(ArgumentError)
+        expect { Transcoder.new(movie, output_path, EncodingOptions.new) }.not_to raise_error(ArgumentError)
       end
       
       it "should accept Hash as options" do
-        lambda { Transcoder.new(movie, output_path, video_codec: "libx264") }.should_not raise_error(ArgumentError)
+        expect { Transcoder.new(movie, output_path, video_codec: "libx264") }.not_to raise_error(ArgumentError)
       end
       
       it "should accept String as options" do
-        lambda { Transcoder.new(movie, output_path, "-vcodec libx264") }.should_not raise_error(ArgumentError)
+        expect { Transcoder.new(movie, output_path, "-vcodec libx264") }.not_to raise_error(ArgumentError)
       end
       
       it "should not accept anything else as options" do
-        lambda { Transcoder.new(movie, output_path, ["array?"]) }.should raise_error(ArgumentError, /Unknown options format/)
+        expect { Transcoder.new(movie, output_path, ["array?"]) }.to raise_error(ArgumentError, /Unknown options format/)
       end
     end
     
@@ -41,7 +41,7 @@ module FFMPEG
         it "should fail when the timeout is exceeded" do
           FFMPEG.logger.should_receive(:error)
           transcoder = Transcoder.new(movie, "#{tmp_path}/timeout.mp4")
-          lambda { transcoder.run }.should raise_error(FFMPEG::Error, /Process hung/)
+          expect { transcoder.run }.to raise_error(FFMPEG::Error, /Process hung/)
         end
         
         after do
@@ -143,13 +143,13 @@ module FFMPEG
         
         movie = Movie.new("#{fixture_path}/movies/awesome'movie.mov")
         
-        lambda { Transcoder.new(movie, "#{tmp_path}/output.flv").run }.should_not raise_error
+        expect { Transcoder.new(movie, "#{tmp_path}/output.flv").run }.not_to raise_error
       end
       
       it "should transcode when output filename includes single quotation mark" do
         FileUtils.rm_f "#{tmp_path}/output with 'quote.flv"
         
-        lambda { Transcoder.new(movie, "#{tmp_path}/output with 'quote.flv").run }.should_not raise_error
+        expect { Transcoder.new(movie, "#{tmp_path}/output with 'quote.flv").run }.not_to raise_error
       end
       
       pending "should not crash on ISO-8859-1 characters (dont know how to spec this)"
@@ -158,7 +158,7 @@ module FFMPEG
         FFMPEG.logger.should_receive(:error)
         movie = Movie.new(__FILE__)
         transcoder = Transcoder.new(movie, "#{tmp_path}/fail.flv")
-        lambda { transcoder.run }.should raise_error(FFMPEG::Error, /no output file created/)
+        expect { transcoder.run }.to raise_error(FFMPEG::Error, /no output file created/)
       end
       
       it "should encode to the specified duration if given" do

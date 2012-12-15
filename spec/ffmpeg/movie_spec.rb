@@ -5,7 +5,7 @@ module FFMPEG
     describe "initializing" do
       context "given a non existing file" do
         it "should throw ArgumentError" do
-          lambda { Movie.new("i_dont_exist") }.should raise_error(Errno::ENOENT, /does not exist/)
+          expect { Movie.new("i_dont_exist") }.to raise_error(Errno::ENOENT, /does not exist/)
         end
       end
       
