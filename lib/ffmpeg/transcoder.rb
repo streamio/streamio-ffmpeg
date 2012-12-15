@@ -54,9 +54,9 @@ module FFMPEG
           end
           
           if @@timeout
-            stderr.each_with_timeout(wait_thr.pid, @@timeout, "r", &next_line)
+            stderr.each_with_timeout(wait_thr.pid, @@timeout, 'frame=', &next_line)
           else
-            stderr.each("r", &next_line)
+            stderr.each('frame=', &next_line)
           end
             
         rescue Timeout::Error => e
