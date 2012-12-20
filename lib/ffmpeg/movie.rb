@@ -5,6 +5,7 @@ module FFMPEG
     attr_reader :path, :duration, :time, :bitrate, :rotation, :creation_time
     attr_reader :video_stream, :video_codec, :video_bitrate, :colorspace, :resolution, :dar
     attr_reader :audio_stream, :audio_codec, :audio_bitrate, :audio_sample_rate
+    attr_reader :container
 
     def initialize(path)
       raise Errno::ENOENT, "the file '#{path}' does not exist" unless File.exists?(path)
@@ -16,6 +17,9 @@ module FFMPEG
       output = Open3.popen3(command) { |stdin, stdout, stderr| stderr.read }
 
       fix_encoding(output)
+
+      output[/Input \#\d+\,\s*(\S+),\s*from/]
+      @container = $1
 
       output[/Duration: (\d{2}):(\d{2}):(\d{2}\.\d{2})/]
       @duration = ($1.to_i*60*60) + ($2.to_i*60) + $3.to_f
