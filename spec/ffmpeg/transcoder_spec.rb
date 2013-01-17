@@ -184,6 +184,27 @@ module FFMPEG
           encoded.resolution.should == "320x240"
         end
       end
+
+      context "audio only" do
+        before do
+          @original_timeout = Transcoder.timeout
+          @original_ffmpeg_binary = FFMPEG.ffmpeg_binary
+
+          Transcoder.timeout = 1
+          FFMPEG.ffmpeg_binary = "#{fixture_path}/bin/ffmpeg-audio-only"
+        end
+
+        it "should not fail when the timeout is exceeded" do
+          transcoder = Transcoder.new(movie, "#{tmp_path}/timeout.mp4")
+          expect { transcoder.run }.not_to raise_error(FFMPEG::Error, /Process hung/)
+        end
+
+        after do
+          Transcoder.timeout = @original_timeout
+          FFMPEG.ffmpeg_binary = @original_ffmpeg_binary
+        end
+      end
+
     end
   end
 end
