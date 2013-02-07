@@ -12,6 +12,7 @@ Changes:
 
 Bugs:
 * Avoid crash if asking for frame_rate of a video without video stream (thanks squidarth)
+* Fix crash when doing audio transcoding on ffmpeg >= 1.0.1 (thanks vitalis)
 
 Deprecations:
 * Removed support for Ruby 1.8
