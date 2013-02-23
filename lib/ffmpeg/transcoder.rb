@@ -16,7 +16,8 @@ module FFMPEG
     def initialize(movie, output_file, options = EncodingOptions.new, transcoder_options = {})
       @movie = movie
       @output_file = output_file
-      
+      @validate_output = transcoder_options[:validate_output] != false
+
       if options.is_a?(String) || options.is_a?(EncodingOptions)
         @raw_options = options
       elsif options.is_a?(Hash)
@@ -93,7 +94,7 @@ module FFMPEG
     
     def encoding_succeeded?
       @errors << "no output file created" and return false unless File.exists?(@output_file)
-      @errors << "encoded file is invalid" and return false unless encoded.valid?
+      (@errors << "encoded file is invalid" and return false unless encoded.valid?) if @validate_output
       true
     end
     

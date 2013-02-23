@@ -253,16 +253,64 @@ module FFMPEG
         movie.transcode("#{tmp_path}/awesome.flv", {:custom => "-vcodec libx264"}, :preserve_aspect_ratio => :width)
       end
     end
-    
+
     describe "screenshot" do
       it "should run the transcoder with screenshot option" do
         movie = Movie.new("#{fixture_path}/movies/awesome movie.mov")
-        
+
         mockery = mock(Transcoder)
         Transcoder.should_receive(:new).with(movie, "#{tmp_path}/awesome.jpg", {:seek_time => 2, :dimensions => "640x480", :screenshot => true}, :preserve_aspect_ratio => :width).and_return(mockery)
         mockery.should_receive(:run)
-        
+
         movie.screenshot("#{tmp_path}/awesome.jpg", {:seek_time => 2, :dimensions => "640x480"}, :preserve_aspect_ratio => :width)
+      end
+    end
+
+    context "given a movie with audio" do
+      before(:all) do
+        @movie = Movie.new("#{fixture_path}/movies/awesome movie.mov")
+      end
+
+      it "should have two total streams" do
+        @movie.streams.count.should == 2
+      end
+
+      it "should have one audio stream" do
+        @movie.streams.select { |s| s.type == :audio }.count.should == 1
+      end
+
+      it "should have one video stream" do
+        @movie.streams.select { |s| s.type == :video }.count.should == 1
+      end
+
+      it "should have no subtitle streams" do
+        @movie.streams.select { |s| s.type == :subtitle }.count.should == 0
+      end
+
+      it "should identify the  audio stream language" do
+        @movie.streams.select { |s| s.type == :audio }.first.language.should == 'und'
+      end
+    end
+
+    context "given an audio file" do
+      before(:all) do
+        @movie = Movie.new("#{fixture_path}/sounds/napoleon.mp3")
+      end
+
+      it "should have one total stream" do
+        @movie.streams.count.should == 1
+      end
+
+      it "should have one audio stream" do
+        @movie.streams.select { |s| s.type == :audio }.count.should == 1
+      end
+
+      it "should have no video streams" do
+        @movie.streams.select { |s| s.type == :video }.count.should == 0
+      end
+
+      it "should have no subtitle streams" do
+        @movie.streams.select { |s| s.type == :subtitle }.count.should == 0
       end
     end
   end
