@@ -229,6 +229,10 @@ module FFMPEG
         it "should know the file size" do
           @movie.size.should == 455546
         end
+
+        it "should know the container format" do
+          @movie.container.should =~ /mov/
+        end
       end
     end
 
@@ -287,7 +291,7 @@ module FFMPEG
         @movie.streams.select { |s| s.type == :subtitle }.count.should == 0
       end
 
-      it "should identify the  audio stream language" do
+      it "should identify the audio stream language" do
         @movie.streams.select { |s| s.type == :audio }.first.language.should == 'und'
       end
     end
@@ -311,6 +315,10 @@ module FFMPEG
 
       it "should have no subtitle streams" do
         @movie.streams.select { |s| s.type == :subtitle }.count.should == 0
+      end
+
+      it "should know the container format" do
+        @movie.container.should =~ /mp3/
       end
     end
   end
