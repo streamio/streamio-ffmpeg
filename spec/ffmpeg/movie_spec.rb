@@ -229,6 +229,10 @@ module FFMPEG
         it "should know the file size" do
           @movie.size.should == 455546
         end
+
+        it "should know the container format" do
+          @movie.container.should =~ /mov/
+        end
       end
     end
 
