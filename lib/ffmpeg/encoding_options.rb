@@ -128,6 +128,14 @@ module FFMPEG
       value ? "-vframes 1 -f image2" : ""
     end
 
+    def convert_x264_vprofile(value)
+      "-vprofile #{value}"
+    end
+
+    def convert_x264_preset(value)
+      "-preset #{value}"
+    end
+
     def convert_custom(value)
       value
     end
