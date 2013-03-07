@@ -206,5 +206,16 @@ module FFMPEG
       end
 
     end
+
+    describe "#run" do
+      it "should call for #transcode_movie, #validate_output_file and #encoded methods" do
+        transcoder = Transcoder.new(movie, "#{tmp_path}/output.flv")
+        transcoder.should_receive(:transcode_movie).and_return(transcoder)
+        transcoder.should_receive(:validate_output_file).and_return(true)
+        transcoder.should_receive(:encoded).and_return(movie)
+        transcoder.run
+      end
+    end
+
   end
 end
