@@ -25,9 +25,7 @@ module FFMPEG
     end
 
     describe "transcoding" do
-
       context 'with default transcoder_options' do
-
         before do
           FFMPEG.logger.should_receive(:info).at_least(:once)
         end
@@ -207,7 +205,6 @@ module FFMPEG
             FFMPEG.ffmpeg_binary = @original_ffmpeg_binary
           end
         end
-
       end
     end
 
@@ -228,8 +225,6 @@ module FFMPEG
         transcoder.should_not_receive(:encoded)
         transcoder.run.should == nil
       end
-
     end
-
   end
 end

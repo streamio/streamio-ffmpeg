@@ -179,11 +179,14 @@ Disabling output file validation
 
 By default Transcoder validates the output file, in case you use FFMPEG for HLS
 format that creates multiple outputs you can disable the validation by passing
-```validate: false``` to transcoder_options
+`validate: false` to transcoder_options.
+
+Note that transcode will not return the encoded movie object in this case since
+attempting to open a (possibly) invalid output file might result in an error being raised.
 
 ```ruby
 transcoder_options = { validate: false }
-movie.transcode("movie.mp4", options, transcoder_options) 
+movie.transcode("movie.mp4", options, transcoder_options) # returns nil
 ```
 
 
