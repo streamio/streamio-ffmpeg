@@ -130,6 +130,15 @@ module FFMPEG
       it "should ignore options with nil value" do
         EncodingOptions.new(video_codec: "libx264", frame_rate: nil).to_s.should == "-vcodec libx264 "
       end
+
+      it "should convert x264 vprofile" do
+        EncodingOptions.new(x264_vprofile: "high").to_s.should == "-vprofile high"
+      end
+
+      it "should convert x264 preset" do
+        EncodingOptions.new(x264_preset: "slow").to_s.should == "-preset slow"
+      end
+
     end
   end
 end
