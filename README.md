@@ -85,6 +85,7 @@ Use the EncodingOptions parser for humanly readable transcoding options. Below y
 ``` ruby
 options = {video_codec: "libx264", frame_rate: 10, resolution: "320x240", video_bitrate: 300, video_bitrate_tolerance: 100,
            aspect: 1.333333, keyframe_interval: 90,
+           x264_profile: "high", x264_preset: "slow",
            audio_codec: "libfaac", audio_bitrate: 32, audio_sample_rate: 22050, audio_channels: 1,
            threads: 2,
            custom: "-vf crop=60:60:10:10"}

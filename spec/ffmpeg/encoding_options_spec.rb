@@ -138,7 +138,6 @@ module FFMPEG
       it "should convert x264 preset" do
         EncodingOptions.new(x264_preset: "slow").to_s.should == "-preset slow"
       end
-
     end
   end
 end

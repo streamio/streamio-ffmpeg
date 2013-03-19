@@ -6,6 +6,7 @@ Improvements:
   Timeout spec now passes in Rubinius (using 1.9 mode)
 * Give helpful error message for windows users lacking the win32-process gem (thanks casoetan)
 * Add Movie#container (thanks vitalis)
+* Support vprofile and preset encoding options (thanks vitalis)
 
 Changes:
 * Default timeout lowered to 30 seconds
