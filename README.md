@@ -173,6 +173,18 @@ Transcoder.timeout = 10
 Transcoder.timeout = false
 ```
 
+Disabling output file validation
+------------------------------
+
+By default Transcoder validates the output file, in case you use FFMPEG for HLS
+format that creates multiple outputs you can disable the validation by passing
+```validate: false``` to transcoder_options
+
+```ruby
+transcoder_options = { validate: false }
+movie.transcode("movie.mp4", options, transcoder_options) 
+```
+
 
 Copyright
 ---------
