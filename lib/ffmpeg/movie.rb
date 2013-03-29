@@ -8,8 +8,17 @@ module FFMPEG
     attr_reader :container
 
     def initialize(path)
-      if not File.exists?(path) and not path =~ URI::regexp(["ftp", "http", "https"])
-        raise Errno::ENOENT, "the file '#{path}' does not exist" 
+      unless File.exists?(path) 
+        if path =~ URI::regexp(["ftp", "http", "https"])
+          url = URI.parse(path)
+          req = Net::HTTP.new(url.host, url.port)
+          res = req.request_head(url.path)
+          if res.code != "200"
+            raise Exeception.new("the url is not accessible")
+          end
+        else
+          raise Errno::ENOENT, "the file '#{path}' does not exist" 
+        end
       end
 
       @path = path

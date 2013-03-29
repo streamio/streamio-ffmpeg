@@ -8,10 +8,27 @@ module FFMPEG
           expect { Movie.new("i_dont_exist") }.to raise_error(Errno::ENOENT, /does not exist/)
         end
       end
+      
+      context "given a non existing url" do
+        it "should throw an Exception" do
+          expect { Movie.new("#{fixture_url_path}/movies/i_dont_exist") }.to raise_error(Exception, /the url is not accessible/)
+        end
+      end
 
       context "given a file containing a single quotation mark in the filename" do
         before(:all) do
           @movie = Movie.new("#{fixture_path}/movies/awesome'movie.mov")
+        end
+
+        it "should run ffmpeg successfully" do
+          @movie.duration.should == 7.56
+          @movie.frame_rate.should == 16.75
+        end
+      end
+      
+      context "given a valid file provided through an url" do
+        before(:all) do
+          @movie = Movie.new("#{fixture_url_path}/movies/awesome%20movie.mov?raw=true")
         end
 
         it "should run ffmpeg successfully" do
