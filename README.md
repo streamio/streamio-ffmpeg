@@ -19,11 +19,11 @@ Compatibility
 
 Only guaranteed to work with MRI Ruby 1.9.3 or later.
 Should work with rubinius head in 1.9 mode.
-Will not work in jruby until they fix: http://goo.gl/Z4UcX (should work in the upcoming 1.7.2)
+Will not work in jruby until they fix: http://goo.gl/Z4UcX (should work in the upcoming 1.7.5)
 
 ### ffmpeg
 
-The current gem is tested against ffmpeg 0.11.1. So no guarantees with earlier (or much later) versions. Output and input standards have inconveniently changed rather a lot between versions of ffmpeg. My goal is to keep this library in sync with new versions of ffmpeg as they come along.
+The current gem is tested against ffmpeg 1.2.1. So no guarantees with earlier (or much later) versions. Output and input standards have inconveniently changed rather a lot between versions of ffmpeg. My goal is to keep this library in sync with new versions of ffmpeg as they come along.
 
 Usage
 -----
@@ -193,4 +193,4 @@ movie.transcode("movie.mp4", options, transcoder_options) # returns nil
 Copyright
 ---------
 
-Copyright (c) 2011 Streamio AB. See LICENSE for details.
+Copyright (c) Streamio AB. See LICENSE for details.

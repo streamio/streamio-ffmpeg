@@ -1,4 +1,7 @@
-== HEAD
+== 1.0.0 2013-07-08
+
+New:
+* Bumped target ffmpeg version to 1.2.1
 
 Improvements:
 * Simpler implementation for timeouts.
