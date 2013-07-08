@@ -87,7 +87,7 @@ module FFMPEG
       context "given an impossible DAR" do
         before(:all) do
           fake_output = StringIO.new(File.read("#{fixture_path}/outputs/file_with_weird_dar.txt"))
-          Open3.stub!(:popen3).and_yield(nil,nil,fake_output)
+          Open3.stub(:popen3).and_yield(nil,nil,fake_output)
           @movie = Movie.new(__FILE__)
         end
 
@@ -103,7 +103,7 @@ module FFMPEG
       context "given a file with ISO-8859-1 characters in output" do
         it "should not crash" do
           fake_output = StringIO.new(File.read("#{fixture_path}/outputs/file_with_iso-8859-1.txt"))
-          Open3.stub!(:popen3).and_yield(nil, nil, fake_output)
+          Open3.stub(:popen3).and_yield(nil, nil, fake_output)
           expect { Movie.new(__FILE__) }.to_not raise_error
         end
       end
@@ -111,7 +111,7 @@ module FFMPEG
       context "given a file with 5.1 audio" do
         before(:all) do
           fake_output = StringIO.new(File.read("#{fixture_path}/outputs/file_with_surround_sound.txt"))
-          Open3.stub!(:popen3).and_yield(nil, nil, fake_output)
+          Open3.stub(:popen3).and_yield(nil, nil, fake_output)
           @movie = Movie.new(__FILE__)
         end
 
@@ -123,7 +123,7 @@ module FFMPEG
       context "given a file with no audio" do
         before(:all) do
           fake_output = StringIO.new(File.read("#{fixture_path}/outputs/file_with_no_audio.txt"))
-          Open3.stub!(:popen3).and_yield(nil, nil, fake_output)
+          Open3.stub(:popen3).and_yield(nil, nil, fake_output)
           @movie = Movie.new(__FILE__)
         end
 
@@ -135,7 +135,7 @@ module FFMPEG
       context "given a file with non supported audio" do
         before(:all) do
           fake_output = StringIO.new(File.read("#{fixture_path}/outputs/file_with_non_supported_audio.txt"))
-          Open3.stub!(:popen3).and_yield(nil, nil, fake_output)
+          Open3.stub(:popen3).and_yield(nil, nil, fake_output)
           @movie = Movie.new(__FILE__)
         end
 
@@ -250,9 +250,11 @@ module FFMPEG
       it "should run the transcoder" do
         movie = Movie.new("#{fixture_path}/movies/awesome movie.mov")
 
-        mockery = mock(Transcoder)
-        Transcoder.should_receive(:new).with(movie, "#{tmp_path}/awesome.flv", {custom: "-vcodec libx264"}, preserve_aspect_ratio: :width).and_return(mockery)
-        mockery.should_receive(:run)
+        transcoder_double = double(Transcoder)
+        Transcoder.should_receive(:new).
+          with(movie, "#{tmp_path}/awesome.flv", {custom: "-vcodec libx264"}, preserve_aspect_ratio: :width).
+          and_return(transcoder_double)
+        transcoder_double.should_receive(:run)
 
         movie.transcode("#{tmp_path}/awesome.flv", {custom: "-vcodec libx264"}, preserve_aspect_ratio: :width)
       end
@@ -262,9 +264,11 @@ module FFMPEG
       it "should run the transcoder with screenshot option" do
         movie = Movie.new("#{fixture_path}/movies/awesome movie.mov")
 
-        mockery = mock(Transcoder)
-        Transcoder.should_receive(:new).with(movie, "#{tmp_path}/awesome.jpg", {seek_time: 2, dimensions: "640x480", screenshot: true}, preserve_aspect_ratio: :width).and_return(mockery)
-        mockery.should_receive(:run)
+        transcoder_double = double(Transcoder)
+        Transcoder.should_receive(:new).
+          with(movie, "#{tmp_path}/awesome.jpg", {seek_time: 2, dimensions: "640x480", screenshot: true}, preserve_aspect_ratio: :width).
+          and_return(transcoder_double)
+        transcoder_double.should_receive(:run)
 
         movie.screenshot("#{tmp_path}/awesome.jpg", {seek_time: 2, dimensions: "640x480"}, preserve_aspect_ratio: :width)
       end

@@ -8,15 +8,15 @@ module FFMPEG
       let(:output_path) { "#{tmp_path}/awesome.flv" }
 
       it "should accept EncodingOptions as options" do
-        expect { Transcoder.new(movie, output_path, EncodingOptions.new) }.not_to raise_error(ArgumentError)
+        expect { Transcoder.new(movie, output_path, EncodingOptions.new) }.not_to raise_error
       end
 
       it "should accept Hash as options" do
-        expect { Transcoder.new(movie, output_path, video_codec: "libx264") }.not_to raise_error(ArgumentError)
+        expect { Transcoder.new(movie, output_path, video_codec: "libx264") }.not_to raise_error
       end
 
       it "should accept String as options" do
-        expect { Transcoder.new(movie, output_path, "-vcodec libx264") }.not_to raise_error(ArgumentError)
+        expect { Transcoder.new(movie, output_path, "-vcodec libx264") }.not_to raise_error
       end
 
       it "should not accept anything else as options" do
@@ -211,17 +211,17 @@ module FFMPEG
     context "with :validate => false set as transcoding_options" do
       let(:transcoder) { Transcoder.new(movie, "tmp.mp4", {},{:validate => false}) }
 
-      before { transcoder.stub!(:transcode_movie) }
+      before { transcoder.stub(:transcode_movie) }
       after { FileUtils.rm_f "#{tmp_path}/tmp.mp4" }
 
       it "should not validate the movie output" do
         transcoder.should_not_receive(:validate_output_file)
-        transcoder.stub!(:encoded)
+        transcoder.stub(:encoded)
         transcoder.run
       end
 
       it "should not return Movie object" do
-        transcoder.stub!(:validate_output_file)
+        transcoder.stub(:validate_output_file)
         transcoder.should_not_receive(:encoded)
         transcoder.run.should == nil
       end
