@@ -199,7 +199,7 @@ module FFMPEG
         end
 
         it "should parse audio stream information" do
-          @movie.audio_stream.should == "aac (mp4a / 0x6134706D), 44100 Hz, stereo, s16, 75 kb/s"
+          @movie.audio_stream.should == "aac (mp4a / 0x6134706D), 44100 Hz, stereo, fltp, 75 kb/s"
         end
 
         it "should know the audio codec" do
