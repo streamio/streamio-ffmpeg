@@ -136,6 +136,10 @@ module FFMPEG
       "-preset #{value}"
     end
 
+    def convert_watermark(value)
+      "-i #{value}"
+    end
+
     def convert_custom(value)
       value
     end
