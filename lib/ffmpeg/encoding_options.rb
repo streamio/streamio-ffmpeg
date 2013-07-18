@@ -140,6 +140,19 @@ module FFMPEG
       "-i #{value}"
     end
 
+    def convert_watermark_filter(value)
+      case value[:position].to_s
+      when "LT"
+        "-filter_complex 'scale=#{self[:resolution]},overlay=x=#{value[:padding_x]}:y=#{value[:padding_y]}'"
+      when "RT"
+        "-filter_complex 'scale=#{self[:resolution]},overlay=x=main_w-overlay_w-#{value[:padding_x]}:y=#{value[:padding_y]}'"
+      when "LB"
+        "-filter_complex 'scale=#{self[:resolution]},overlay=x=#{value[:padding_x]}:y=main_h-overlay_h-#{value[:padding_y]}'"
+      when "RB"
+        "-filter_complex 'scale=#{self[:resolution]},overlay=x=main_w-overlay_w-#{value[:padding_x]}:y=main_h-overlay_h-#{value[:padding_y]}'"
+      end  
+    end
+
     def convert_custom(value)
       value
     end
