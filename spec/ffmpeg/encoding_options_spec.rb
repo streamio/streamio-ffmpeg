@@ -138,6 +138,23 @@ module FFMPEG
       it "should convert x264 preset" do
         EncodingOptions.new(x264_preset: "slow").to_s.should == "-preset slow"
       end
+
+      it "should convert clear existing metadata flag" do
+        EncodingOptions.new(clear_existing_metadata: true).to_s.should == "-map_metadata -1"
+      end
+
+      it "should convert metadata given a String" do
+        EncodingOptions.new(metadata: "Application=\"SomeApp 1.0\"").to_s.should == "-metadata Application=\"SomeApp 1.0\""
+      end
+
+      it "should convert metadata given a Hash" do
+        metadata_options = { application: 'SomeApp 1.0', author: 'Some Guy' }
+        EncodingOptions.new(metadata: metadata_options).to_s.should == "-metadata application=\"SomeApp 1.0\" -metadata author=\"Some Guy\""
+      end
+
+      it "should put the metadata parameters in order, prioritizing :clear_existing_metadata first" do
+        EncodingOptions.new(metadata: { application: "SomeApp 1.0" }, clear_existing_metadata: true).to_s.should == "-map_metadata -1 -metadata application=\"SomeApp 1.0\""
+      end
     end
   end
 end

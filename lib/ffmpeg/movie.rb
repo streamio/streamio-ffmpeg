@@ -5,7 +5,7 @@ module FFMPEG
     attr_reader :path, :duration, :time, :bitrate, :rotation, :creation_time
     attr_reader :video_stream, :video_codec, :video_bitrate, :colorspace, :resolution, :dar
     attr_reader :audio_stream, :audio_codec, :audio_bitrate, :audio_sample_rate
-    attr_reader :container
+    attr_reader :container, :meta
 
     def initialize(path)
       raise Errno::ENOENT, "the file '#{path}' does not exist" unless File.exists?(path)
@@ -20,6 +20,9 @@ module FFMPEG
 
       output[/Input \#\d+\,\s*(\S+),\s*from/]
       @container = $1
+
+      output[/Metadata:(.*)Duration:/m]
+      @meta = parse_metadata($1)
 
       output[/Duration: (\d{2}):(\d{2}):(\d{2}\.\d{2})/]
       @duration = ($1.to_i*60*60) + ($2.to_i*60) + $3.to_f
@@ -118,6 +121,12 @@ module FFMPEG
       output[/test/] # Running a regexp on the string throws error if it's not UTF-8
     rescue ArgumentError
       output.force_encoding("ISO-8859-1")
+    end
+
+    def parse_metadata(string)
+      Hash[string.strip.split("\n").collect { |obj| obj.split(/[^\d]:[^\d]/).collect(&:strip) }]
+    rescue
+      nil
     end
   end
 end
