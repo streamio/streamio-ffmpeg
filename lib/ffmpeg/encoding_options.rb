@@ -13,8 +13,10 @@ module FFMPEG
       # all other parameters go after so that we can override whatever is in the preset
       codecs = params.select { |p| p =~ /codec/ }
       presets = params.select { |p| p =~ /\-.pre/ }
-      other = params - codecs - presets
-      params = codecs + presets + other
+      clear_metadata = params.select { |p| p =~ /map_metadata/ }
+      metadata = (params - clear_metadata).select { |p| p =~ /metadata/ }
+      other = params - codecs - presets - clear_metadata - metadata
+      params = codecs + presets + other + clear_metadata + metadata
 
       params_string = params.join(" ")
       params_string << " #{convert_aspect(calculate_aspect)}" if calculate_aspect?
@@ -134,6 +136,24 @@ module FFMPEG
 
     def convert_x264_preset(value)
       "-preset #{value}"
+    end
+
+    def convert_clear_existing_metadata(value)
+      if value === true
+        "-map_metadata -1"
+      else
+        ""
+      end
+    end
+
+    def convert_metadata(value)
+      if value.is_a?(Hash)
+        value.collect do |key, value|
+          "-metadata #{key.to_s}=\"#{value.to_s}\"".strip
+        end.join(' ')
+      else
+        "-metadata #{value.to_s}"
+      end
     end
 
     def convert_custom(value)
