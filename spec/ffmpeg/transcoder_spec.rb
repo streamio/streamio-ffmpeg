@@ -72,8 +72,8 @@ module FFMPEG
           progress_updates = []
           transcoder.run { |progress| progress_updates << progress }
           transcoder.encoded.should be_valid
-          progress_updates.should include(0.0, 1.0)
-          progress_updates.length.should >= 3
+          progress_updates.flatten.should include("00:00:07.58")
+          progress_updates.flatten.length.should >= 1
           File.exists?("#{tmp_path}/awesome.flv").should be_true
         end
 

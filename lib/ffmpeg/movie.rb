@@ -13,15 +13,17 @@ module FFMPEG
       inputs = []
       paths.each do |path|
         raise Errno::ENOENT, "the file '#{path}' does not exist" unless File.exists?(path)
-        inputs.push "-i #{Shellwords.escape(path)}"
+        inputs.push Shellwords.escape(path)
       end
 
       @paths = paths
 
       # ffmpeg will output to stderr
-      command = "#{FFMPEG.ffmpeg_binary} #{inputs.join " "}"
-      output = Open3.popen3(command) { |stdin, stdout, stderr| stderr.read }
+      source = (inputs.length > 1) ? "-f concat -i <(printf 'file %s\n' #{inputs.join " "})" : "-i #{inputs.first}"
+      command = "#{FFMPEG.ffmpeg_binary} #{source}"
+      command = "/bin/bash -c \"#{command}\""
 
+      output = Open3.popen3(command) { |stdin, stdout, stderr| stderr.read }
       fix_encoding(output)
 
       output[/Input \#\d+\,\s*(\S+),\s*from/]
