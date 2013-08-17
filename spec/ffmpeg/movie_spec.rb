@@ -150,7 +150,7 @@ module FFMPEG
         end
 
         it "should remember the movie path" do
-          @movie.path.should == "#{fixture_path}/movies/awesome movie.mov"
+          @movie.paths.should == ["#{fixture_path}/movies/awesome movie.mov"]
         end
 
         it "should parse duration to number of seconds" do
