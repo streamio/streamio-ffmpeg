@@ -2,20 +2,28 @@ require 'time'
 
 module FFMPEG
   class Movie
-    attr_reader :path, :duration, :time, :bitrate, :rotation, :creation_time
+    attr_reader :paths, :duration, :time, :bitrate, :rotation, :creation_time
     attr_reader :video_stream, :video_codec, :video_bitrate, :colorspace, :resolution, :dar
     attr_reader :audio_stream, :audio_codec, :audio_bitrate, :audio_sample_rate
     attr_reader :container
 
-    def initialize(path)
-      raise Errno::ENOENT, "the file '#{path}' does not exist" unless File.exists?(path)
+    def initialize(paths)
+      paths = [paths] unless paths.is_a? Array
 
-      @path = path
+      inputs = []
+      paths.each do |path|
+        raise Errno::ENOENT, "the file '#{path}' does not exist" unless File.exists?(path)
+        inputs.push Shellwords.escape(path)
+      end
+
+      @paths = paths
 
       # ffmpeg will output to stderr
-      command = "#{FFMPEG.ffmpeg_binary} -i #{Shellwords.escape(path)}"
-      output = Open3.popen3(command) { |stdin, stdout, stderr| stderr.read }
+      source = (inputs.length > 1) ? "-f concat -i <(printf 'file %s\n' #{inputs.join " "})" : "-i #{inputs.first}"
+      command = "#{FFMPEG.ffmpeg_binary} #{source}"
+      command = "/bin/bash -c \"#{command}\""
 
+      output = Open3.popen3(command) { |stdin, stdout, stderr| stderr.read }
       fix_encoding(output)
 
       output[/Input \#\d+\,\s*(\S+),\s*from/]
@@ -77,7 +85,11 @@ module FFMPEG
     end
 
     def size
-      File.size(@path)
+      size = 0
+      @paths.each do |path|
+        size += File.size(path)
+      end
+      size
     end
 
     def audio_channels

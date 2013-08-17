@@ -136,6 +136,14 @@ module FFMPEG
       "-preset #{value}"
     end
 
+    def convert_scale(value)
+      value ? "-filter:v scale=#{value}" : ""
+    end
+
+    def convert_deinterlace(value)
+      value ? "-filter:v #{value}" : ""
+    end
+
     def convert_custom(value)
       value
     end

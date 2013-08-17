@@ -54,13 +54,18 @@ module FFMPEG
     private
     # frame= 4855 fps= 46 q=31.0 size=   45306kB time=00:02:42.28 bitrate=2287.0kbits/
     def transcode_movie
-      @command = "#{FFMPEG.ffmpeg_binary} -y -i #{Shellwords.escape(@movie.path)} #{@raw_options} #{Shellwords.escape(@output_file)}"
+      inputs = @movie.paths.map {|path| Shellwords.escape(path)}
+      source = (inputs.length > 1) ? "-f concat -i <(printf 'file %s\n' #{inputs.join " "})" : "-i #{inputs.first}"
+
+      @command = "#{FFMPEG.ffmpeg_binary} -y #{source} #{@raw_options} #{Shellwords.escape(@output_file)}"
+      @command = "/bin/bash -c \"#{@command}\""
+
       FFMPEG.logger.info("Running transcoding...\n#{@command}\n")
       @output = ""
 
       Open3.popen3(@command) do |stdin, stdout, stderr, wait_thr|
         begin
-          yield(0.0) if block_given?
+          #yield([0.0, "00:00:00.00"]) if block_given? # the progress could be unknown in case multiple inputs are used
           next_line = Proc.new do |line|
             fix_encoding(line)
             @output << line
@@ -70,8 +75,9 @@ module FFMPEG
               else # better make sure it wont blow up in case of unexpected output
                 time = 0.0
               end
+              processed = "#{$1}:#{$2}:#{$3}"
               progress = time / @movie.duration
-              yield(progress) if block_given?
+              yield([progress, processed]) if block_given?
             end
           end
 
@@ -90,8 +96,8 @@ module FFMPEG
 
     def validate_output_file(&block)
       if encoding_succeeded?
-        yield(1.0) if block_given?
-        FFMPEG.logger.info "Transcoding of #{@movie.path} to #{@output_file} succeeded\n"
+        #yield(1.0) if block_given? # the progress could be unknown in case multiple inputs are used
+        FFMPEG.logger.info "Transcoding of #{@movie.paths.join ", "} to #{@output_file} succeeded\n"
       else
         errors = "Errors: #{@errors.join(", ")}. "
         FFMPEG.logger.error "Failed encoding...\n#{@command}\n\n#{@output}\n#{errors}\n"
