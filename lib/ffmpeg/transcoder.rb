@@ -54,7 +54,12 @@ module FFMPEG
     private
     # frame= 4855 fps= 46 q=31.0 size=   45306kB time=00:02:42.28 bitrate=2287.0kbits/
     def transcode_movie
-      @command = "#{FFMPEG.ffmpeg_binary} -y -i #{Shellwords.escape(@movie.path)} #{@raw_options} #{Shellwords.escape(@output_file)}"
+      inputs = []
+      @movie.paths.each do |path|
+        inputs.push "-i #{Shellwords.escape(path)}"
+      end
+
+      @command = "#{FFMPEG.ffmpeg_binary} -y #{inputs.join " "} #{@raw_options} #{Shellwords.escape(@output_file)}"
       FFMPEG.logger.info("Running transcoding...\n#{@command}\n")
       @output = ""
 
@@ -91,7 +96,7 @@ module FFMPEG
     def validate_output_file(&block)
       if encoding_succeeded?
         yield(1.0) if block_given?
-        FFMPEG.logger.info "Transcoding of #{@movie.path} to #{@output_file} succeeded\n"
+        FFMPEG.logger.info "Transcoding of #{@movie.paths.join ", "} to #{@output_file} succeeded\n"
       else
         errors = "Errors: #{@errors.join(", ")}. "
         FFMPEG.logger.error "Failed encoding...\n#{@command}\n\n#{@output}\n#{errors}\n"
