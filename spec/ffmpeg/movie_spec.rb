@@ -158,6 +158,11 @@ module FFMPEG
         it "should know the colorspace" do
           @movie.colorspace.should == "yuv420p(tv, bt709)"
         end
+        
+        it "should know the width and height" do
+          @movie.width.should == 960
+          @movie.height.should == 540
+        end
       end
 
       context "given an awesome movie file" do
