@@ -77,6 +77,10 @@ module FFMPEG
       aspect_from_dar || aspect_from_dimensions
     end
 
+    def calculated_pixel_aspect_ratio
+      aspect_from_sar || 1
+    end
+
     def size
       File.size(@path)
     end
@@ -106,6 +110,13 @@ module FFMPEG
     def aspect_from_dar
       return nil unless dar
       w, h = dar.split(":")
+      aspect = w.to_f / h.to_f
+      aspect.zero? ? nil : aspect
+    end
+
+    def aspect_from_sar
+      return nil unless sar
+      w, h = sar.split(":")
       aspect = w.to_f / h.to_f
       aspect.zero? ? nil : aspect
     end
