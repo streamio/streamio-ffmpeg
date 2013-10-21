@@ -43,7 +43,7 @@ module FFMPEG
       @audio_stream = $1
 
       if video_stream
-        @video_codec, @colorspace, resolution, video_bitrate = video_stream.split(/\s?,\s?/)
+        @video_codec, @colorspace, resolution, video_bitrate = video_stream.split(/\s?,(?![^,\)]+\))\s?/)
         @video_bitrate = video_bitrate =~ %r(\A(\d+) kb/s\Z) ? $1.to_i : nil
         @resolution = resolution.split(" ").first rescue nil # get rid of [PAR 1:1 DAR 16:9]
         @dar = $1 if video_stream[/DAR (\d+:\d+)/]
