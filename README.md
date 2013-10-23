@@ -128,6 +128,14 @@ options = {video_min_bitrate: 600, video_max_bitrate: 600, buffer_size: 2000}
 movie.transcode("movie.flv", options)
 ```
 
+Add watermark image on the video
+For example, you want to add a watermark on the video at right top corner with 10px padding.
+
+``` ruby
+options = {watermark: "full_path_of_watermark.png", resolution: "640x360", watermark_filter: {position: "RT", padding_x: 10, padding_y: 10}}
+```
+position can be "LT" (Left Top Corner), "RT" (Right Top Corner), "LB" (Left Bottom Corner), "RB" (Right Bottom Corner).
+
 ### Taking Screenshots
 
 You can use the screenshot method to make taking screenshots a bit simpler.
