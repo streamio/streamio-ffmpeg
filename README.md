@@ -128,7 +128,8 @@ options = {video_min_bitrate: 600, video_max_bitrate: 600, buffer_size: 2000}
 movie.transcode("movie.flv", options)
 ```
 
-Add watermark image on the video
+Add watermark image on the video.
+
 For example, you want to add a watermark on the video at right top corner with 10px padding.
 
 ``` ruby
