@@ -85,7 +85,7 @@ Use the EncodingOptions parser for humanly readable transcoding options. Below y
 ``` ruby
 options = {video_codec: "libx264", frame_rate: 10, resolution: "320x240", video_bitrate: 300, video_bitrate_tolerance: 100,
            aspect: 1.333333, keyframe_interval: 90,
-           x264_profile: "high", x264_preset: "slow",
+           x264_vprofile: "high", x264_preset: "slow",
            audio_codec: "libfaac", audio_bitrate: 32, audio_sample_rate: 22050, audio_channels: 1,
            threads: 2,
            custom: "-vf crop=60:60:10:10"}
@@ -127,6 +127,15 @@ For constant bitrate encoding use video_min_bitrate and video_max_bitrate with b
 options = {video_min_bitrate: 600, video_max_bitrate: 600, buffer_size: 2000}
 movie.transcode("movie.flv", options)
 ```
+
+Add watermark image on the video.
+
+For example, you want to add a watermark on the video at right top corner with 10px padding.
+
+``` ruby
+options = {watermark: "full_path_of_watermark.png", resolution: "640x360", watermark_filter: {position: "RT", padding_x: 10, padding_y: 10}}
+```
+position can be "LT" (Left Top Corner), "RT" (Right Top Corner), "LB" (Left Bottom Corner), "RB" (Right Bottom Corner).
 
 ### Taking Screenshots
 

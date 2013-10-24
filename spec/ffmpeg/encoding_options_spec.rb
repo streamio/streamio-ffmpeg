@@ -138,6 +138,42 @@ module FFMPEG
       it "should convert x264 preset" do
         EncodingOptions.new(x264_preset: "slow").to_s.should == "-preset slow"
       end
+
+      it "should specify input watermark file" do
+        EncodingOptions.new(watermark: "watermark.png").to_s.should == "-i watermark.png"
+      end
+
+      it "should specify watermark position at left top corner" do
+        opts = Hash.new
+        opts[:resolution] = "640x480"
+        opts[:watermark_filter] = { position: "LT", padding_x: 10, padding_y: 10 }
+        converted = EncodingOptions.new(opts).to_s
+        converted.should include "-filter_complex 'scale=640x480,overlay=x=10:y=10'"
+      end
+
+      it "should specify watermark position at right top corner" do
+        opts = Hash.new
+        opts[:resolution] = "640x480"
+        opts[:watermark_filter] = { position: "RT", padding_x: 10, padding_y: 10 }
+        converted = EncodingOptions.new(opts).to_s
+        converted.should include "-filter_complex 'scale=640x480,overlay=x=main_w-overlay_w-10:y=10'"
+      end
+
+      it "should specify watermark position at left bottom corner" do
+        opts = Hash.new
+        opts[:resolution] = "640x480"
+        opts[:watermark_filter] = { position: "LB", padding_x: 10, padding_y: 10 }
+        converted = EncodingOptions.new(opts).to_s
+        converted.should include "-filter_complex 'scale=640x480,overlay=x=10:y=main_h-overlay_h-10'"
+      end
+
+      it "should specify watermark position at left bottom corner" do
+        opts = Hash.new
+        opts[:resolution] = "640x480"
+        opts[:watermark_filter] = { position: "RB", padding_x: 10, padding_y: 10 }
+        converted = EncodingOptions.new(opts).to_s
+        converted.should include "overlay=x=main_w-overlay_w-10:y=main_h-overlay_h-10'"
+      end
     end
   end
 end

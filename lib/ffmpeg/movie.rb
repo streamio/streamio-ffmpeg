@@ -3,7 +3,7 @@ require 'time'
 module FFMPEG
   class Movie
     attr_reader :path, :duration, :time, :bitrate, :rotation, :creation_time
-    attr_reader :video_stream, :video_codec, :video_bitrate, :colorspace, :resolution, :dar
+    attr_reader :video_stream, :video_codec, :video_bitrate, :colorspace, :resolution, :sar, :dar
     attr_reader :audio_stream, :audio_codec, :audio_bitrate, :audio_sample_rate
     attr_reader :container
 
@@ -46,6 +46,7 @@ module FFMPEG
         @video_codec, @colorspace, resolution, video_bitrate = video_stream.split(/\s?,(?![^,\)]+\))\s?/)
         @video_bitrate = video_bitrate =~ %r(\A(\d+) kb/s\Z) ? $1.to_i : nil
         @resolution = resolution.split(" ").first rescue nil # get rid of [PAR 1:1 DAR 16:9]
+        @sar = $1 if video_stream[/SAR (\d+:\d+)/]
         @dar = $1 if video_stream[/DAR (\d+:\d+)/]
       end
 
@@ -74,6 +75,10 @@ module FFMPEG
 
     def calculated_aspect_ratio
       aspect_from_dar || aspect_from_dimensions
+    end
+
+    def calculated_pixel_aspect_ratio
+      aspect_from_sar || 1
     end
 
     def size
@@ -105,6 +110,13 @@ module FFMPEG
     def aspect_from_dar
       return nil unless dar
       w, h = dar.split(":")
+      aspect = w.to_f / h.to_f
+      aspect.zero? ? nil : aspect
+    end
+
+    def aspect_from_sar
+      return nil unless sar
+      w, h = sar.split(":")
       aspect = w.to_f / h.to_f
       aspect.zero? ? nil : aspect
     end
