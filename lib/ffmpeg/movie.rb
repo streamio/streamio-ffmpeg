@@ -44,18 +44,18 @@ module FFMPEG
 
 	  #ffmpeg input metadata information
       @metadata = Hash.new
-      ret = /Metadata:(.*)Duration/.match(output.gsub(/[\r|\n]/,","));
-      unless ret.nil?
-		metadata_str = ret[1]
-		metadata_arr = metadata_str.split(/\,/);
-		metadata_arr.each do |line|
-			unless line.nil? or line.empty?
-				value = line.split(":");
-				unless value.length < 2
-					@metadata[value[0].strip] = value[1].strip;
-				end
-			end
-		end
+      output[/Metadata:(.*)Duration:/m]
+	  metadata_str = $1
+	  unless metadata_str.nil?
+		  metadata_arr = metadata_str.split(/\n/);
+		  metadata_arr.each do |line|
+			  unless line.nil? or line.empty?
+				  value = line.split(":");
+				  unless value.length < 2
+					  @metadata[value[0].strip] = value[1].strip;
+				  end
+			  end
+		  end
 	  end
 	  
       if video_stream
