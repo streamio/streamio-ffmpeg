@@ -17,7 +17,7 @@ module FFMPEG
       output = Open3.popen3(command) { |stdin, stdout, stderr| stderr.read }
 
       fix_encoding(output)
-
+      
       output[/Input \#\d+\,\s*(\S+),\s*from/]
       @container = $1
 
@@ -42,6 +42,21 @@ module FFMPEG
       output[/Audio:\ (.*)/]
       @audio_stream = $1
 
+      @metadata = Hash.new
+      ret = /Metadata:(.*)Duration/.match(output.gsub(/[\r|\n]/,","));
+      unless ret.nil?
+		metadata_str = ret[1]
+		metadata_arr = metadata_str.split(/\,/);
+		metadata_arr.each do |line|
+			unless line.nil? or line.empty?
+				value = line.split(":");
+				unless value.length < 2
+					@metadata[value[0].strip] = value[1].strip;
+				end
+			end
+		end
+	  end
+	  
       if video_stream
         @video_codec, @colorspace, resolution, video_bitrate = video_stream.split(/\s?,(?![^,\)]+\))\s?/)
         @video_bitrate = video_bitrate =~ %r(\A(\d+) kb/s\Z) ? $1.to_i : nil
@@ -65,6 +80,10 @@ module FFMPEG
       not @invalid
     end
 
+    def metadata
+      @metadata
+    end
+    
     def width
       resolution.split("x")[0].to_i rescue nil
     end
