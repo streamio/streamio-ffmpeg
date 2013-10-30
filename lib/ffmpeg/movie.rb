@@ -42,6 +42,7 @@ module FFMPEG
       output[/Audio:\ (.*)/]
       @audio_stream = $1
 
+	  #ffmpeg input metadata information
       @metadata = Hash.new
       ret = /Metadata:(.*)Duration/.match(output.gsub(/[\r|\n]/,","));
       unless ret.nil?
