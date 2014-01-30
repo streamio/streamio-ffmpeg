@@ -114,6 +114,18 @@ module FFMPEG
         end
       end
 
+      context "given a colorspace with parenthesis but no commas such as yuv420p(tv)" do
+        before(:all) do
+          fake_output = StringIO.new(File.read("#{fixture_path}/outputs/file_with_colorspace_with_parenthesis_but_no_comma.txt"))
+          Open3.stub(:popen3).and_yield(nil,nil,fake_output)
+          @movie = Movie.new(__FILE__)
+        end
+
+        it "should have correct video stream" do
+          @movie.colorspace.should == "yuv420p(tv)"
+        end
+      end
+
       context "given an impossible SAR" do
         before(:all) do
           fake_output = StringIO.new(File.read("#{fixture_path}/outputs/file_with_weird_sar.txt"))

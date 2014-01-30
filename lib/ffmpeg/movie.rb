@@ -43,7 +43,8 @@ module FFMPEG
       @audio_stream = $1
 
       if video_stream
-        @video_codec, @colorspace, resolution, video_bitrate = video_stream.split(/\s?,(?![^,\)]+\))\s?/)
+        commas_except_in_parenthesis = /(?:\([^()]*\)|[^,])+/ # regexp to handle "yuv420p(tv, bt709)" colorspace etc from http://goo.gl/6oi645
+        @video_codec, @colorspace, resolution, video_bitrate = video_stream.scan(commas_except_in_parenthesis).map(&:strip)
         @video_bitrate = video_bitrate =~ %r(\A(\d+) kb/s\Z) ? $1.to_i : nil
         @resolution = resolution.split(" ").first rescue nil # get rid of [PAR 1:1 DAR 16:9]
         @sar = $1 if video_stream[/SAR (\d+:\d+)/]
