@@ -1,3 +1,11 @@
+== Master
+
+New:
+* Support watermarking (thanks smoothdvd)
+
+Improvements:
+* Allow parenthesis in colorspace (thanks walterdavis for initial code and rociiu for finding a bug with it)
+
 == 1.0.0 2013-07-08
 
 New:
