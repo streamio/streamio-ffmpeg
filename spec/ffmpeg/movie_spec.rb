@@ -185,7 +185,7 @@ module FFMPEG
           @movie.should_not be_valid
         end
       end
-      
+
       context "given a file with complex colorspace and decimal fps" do
         before(:all) do
           fake_output = StringIO.new(File.read("#{fixture_path}/outputs/file_with_complex_colorspace_and_decimal_fps.txt"))
@@ -196,11 +196,11 @@ module FFMPEG
         it "should know the framerate" do
           @movie.frame_rate.should == 23.98
         end
-        
+
         it "should know the colorspace" do
           @movie.colorspace.should == "yuv420p(tv, bt709)"
         end
-        
+
         it "should know the width and height" do
           @movie.width.should == 960
           @movie.height.should == 540
