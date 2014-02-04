@@ -15,8 +15,8 @@ module FFMPEG
         end
 
         it "should run ffmpeg successfully" do
-          @movie.duration.should == 7.56
-          @movie.frame_rate.should == 16.75
+          expect(@movie.duration).to be_within(0.01).of(7.56)
+          expect(@movie.frame_rate).to be_within(0.01).of(16.75)
         end
       end
 
@@ -185,11 +185,11 @@ module FFMPEG
         end
 
         it "should parse duration to number of seconds" do
-          @movie.duration.should == 7.56
+          expect(@movie.duration).to be_within(0.01).of(7.56)
         end
 
         it "should parse the bitrate" do
-          @movie.bitrate.should == 481
+          @movie.bitrate.should == 481846
         end
 
         it "should return nil rotation when no rotation exists" do
@@ -201,7 +201,7 @@ module FFMPEG
         end
 
         it "should parse video stream information" do
-          @movie.video_stream.should == "h264 (Main) (avc1 / 0x31637661), yuv420p(tv, bt709), 640x480 [SAR 1:1 DAR 4:3], 371 kb/s, 16.75 fps, 600 tbr, 600 tbn, 1200 tbc (default)"
+          @movie.video_stream.should == "h264 (Main) (avc1 / 0x31637661), yuv420p, 640x480 [SAR 1:1 DAR 4:3]"
         end
 
         it "should know the video codec" do
@@ -209,7 +209,7 @@ module FFMPEG
         end
 
         it "should know the colorspace" do
-          @movie.colorspace.should == "yuv420p(tv, bt709)"
+          @movie.colorspace.should == "yuv420p"
         end
 
         it "should know the resolution" do
@@ -217,7 +217,7 @@ module FFMPEG
         end
 
         it "should know the video bitrate" do
-          @movie.video_bitrate.should == 371
+          @movie.video_bitrate.should == 371185
         end
 
         it "should know the width and height" do
@@ -226,11 +226,11 @@ module FFMPEG
         end
 
         it "should know the framerate" do
-          @movie.frame_rate.should == 16.75
+          expect(@movie.frame_rate).to be_within(0.01).of(16.75)
         end
 
         it "should parse audio stream information" do
-          @movie.audio_stream.should == "aac (LC) (mp4a / 0x6134706D), 44100 Hz, stereo, fltp, 75 kb/s (default)"
+          @movie.audio_stream.should == "aac (mp4a / 0x6134706d), 44100 Hz, stereo, fltp, 75832 bit/s"
         end
 
         it "should know the audio codec" do
@@ -246,7 +246,7 @@ module FFMPEG
         end
 
         it "should know the audio bitrate" do
-          @movie.audio_bitrate.should == 75
+          @movie.audio_bitrate.should == 75832
         end
 
         it "should should be valid" do
