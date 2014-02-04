@@ -1,0 +1,27 @@
+ffprobe version 2.1.1-static Copyright (c) 2007-2013 the FFmpeg developers
+  built on Feb  4 2014 13:01:52 with gcc 4.6 (Ubuntu/Linaro 4.6.3-1ubuntu5)
+  configuration: --prefix=/home/ryan/Source/ffmpeg-static/target --extra-cflags='-I/home/ryan/Source/ffmpeg-static/target/include -static' --extra-ldflags='-L/home/ryan/Source/ffmpeg-static/target/lib -lm -static' --extra-version=static --disable-debug --disable-shared --enable-static --extra-cflags=--static --disable-ffplay --disable-ffserver --disable-doc --enable-gpl --enable-pthreads --enable-postproc --enable-gray --enable-runtime-cpudetect --disable-libfaac --enable-libmp3lame --enable-libopus --enable-libtheora --enable-libvorbis --enable-libx264 --enable-libxvid --enable-bzlib --enable-zlib --enable-nonfree --enable-version3 --enable-libvpx --disable-devices --disable-decoder=aac
+  libavutil      52. 48.101 / 52. 48.101
+  libavcodec     55. 39.101 / 55. 39.101
+  libavformat    55. 19.104 / 55. 19.104
+  libavdevice    55.  5.100 / 55.  5.100
+  libavfilter     3. 90.100 /  3. 90.100
+  libswscale      2.  5.101 /  2.  5.101
+  libswresample   0. 17.104 /  0. 17.104
+  libpostproc    52.  3.100 / 52.  3.100
+Input #0, mov,mp4,m4a,3gp,3g2,mj2, from 'bigbucksbunny_trailer_720p.mov':
+  Metadata:
+    major_brand     : qt  
+    minor_version   : 537199360
+    compatible_brands: qt  
+    creation_time   : 2008-03-18 12:45:48
+  Duration: 00:00:33.00, start: 0.000000, bitrate: 4318 kb/s
+    Stream #0:0(eng): Video: h264 (Main) (avc1 / 0x31637661), yuv420p(tv, bt709), 1280x720, 3945 kb/s, 25 fps, 25 tbr, 600 tbn, 1200 tbc (default)
+    Metadata:
+      creation_time   : 2008-03-18 12:45:48
+      handler_name    : Apple Alias Data Handler
+    Stream #0:1(eng): Audio: aac (mp4a / 0x6134706D), 48000 Hz, 5.1(side), 428 kb/s (default)
+    Metadata:
+      creation_time   : 2008-03-18 12:45:48
+      handler_name    : Apple Alias Data Handler
+Unsupported codec with id 86018 for input stream 1
