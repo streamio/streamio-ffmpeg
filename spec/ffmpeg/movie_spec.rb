@@ -144,7 +144,7 @@ module FFMPEG
       context "given an impossible DAR" do
         before(:all) do
           fake_output = StringIO.new(File.read("#{fixture_path}/outputs/file_with_weird_dar.txt"))
-          Open3.stub(:popen3).and_yield(nil,nil,fake_output)
+          Open3.stub(:popen3).and_yield(nil,fake_output,nil)
           @movie = Movie.new(__FILE__)
         end
 
@@ -186,7 +186,7 @@ module FFMPEG
       context "given an impossible SAR" do
         before(:all) do
           fake_output = StringIO.new(File.read("#{fixture_path}/outputs/file_with_weird_sar.txt"))
-          Open3.stub(:popen3).and_yield(nil,nil,fake_output)
+          Open3.stub(:popen3).and_yield(nil,fake_output,nil)
           @movie = Movie.new(__FILE__)
         end
 
@@ -202,7 +202,7 @@ module FFMPEG
       context "given a file with ISO-8859-1 characters in output" do
         it "should not crash" do
           fake_output = StringIO.new(File.read("#{fixture_path}/outputs/file_with_iso-8859-1.txt"))
-          Open3.stub(:popen3).and_yield(nil, nil, fake_output)
+          Open3.stub(:popen3).and_yield(nil, fake_output, nil)
           expect { Movie.new(__FILE__) }.to_not raise_error
         end
       end
@@ -210,7 +210,7 @@ module FFMPEG
       context "given a file with 5.1 audio" do
         before(:all) do
           fake_output = StringIO.new(File.read("#{fixture_path}/outputs/file_with_surround_sound.txt"))
-          Open3.stub(:popen3).and_yield(nil, nil, fake_output)
+          Open3.stub(:popen3).and_yield(nil, fake_output, nil)
           @movie = Movie.new(__FILE__)
         end
 
@@ -222,7 +222,7 @@ module FFMPEG
       context "given a file with no audio" do
         before(:all) do
           fake_output = StringIO.new(File.read("#{fixture_path}/outputs/file_with_no_audio.txt"))
-          Open3.stub(:popen3).and_yield(nil, nil, fake_output)
+          Open3.stub(:popen3).and_yield(nil, fake_output, nil)
           @movie = Movie.new(__FILE__)
         end
 
@@ -233,8 +233,9 @@ module FFMPEG
 
       context "given a file with non supported audio" do
         before(:all) do
-          fake_output = StringIO.new(File.read("#{fixture_path}/outputs/file_with_non_supported_audio.txt"))
-          Open3.stub(:popen3).and_yield(nil, nil, fake_output)
+          fake_stdout = StringIO.new(File.read("#{fixture_path}/outputs/file_with_non_supported_audio_stdout.txt"))
+          fake_stderr = StringIO.new(File.read("#{fixture_path}/outputs/file_with_non_supported_audio_stderr.txt"))
+          Open3.stub(:popen3).and_yield(nil, fake_stdout, fake_stderr)
           @movie = Movie.new(__FILE__)
         end
 
