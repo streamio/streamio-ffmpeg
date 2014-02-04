@@ -114,18 +114,6 @@ module FFMPEG
         end
       end
 
-      context "given a colorspace with parenthesis but no commas such as yuv420p(tv)" do
-        before(:all) do
-          fake_output = StringIO.new(File.read("#{fixture_path}/outputs/file_with_colorspace_with_parenthesis_but_no_comma.txt"))
-          Open3.stub(:popen3).and_yield(nil,nil,fake_output)
-          @movie = Movie.new(__FILE__)
-        end
-
-        it "should have correct video stream" do
-          @movie.colorspace.should == "yuv420p(tv)"
-        end
-      end
-
       context "given an impossible SAR" do
         before(:all) do
           fake_output = StringIO.new(File.read("#{fixture_path}/outputs/file_with_weird_sar.txt"))
@@ -184,27 +172,6 @@ module FFMPEG
 
         it "should not be valid" do
           @movie.should_not be_valid
-        end
-      end
-
-      context "given a file with complex colorspace and decimal fps" do
-        before(:all) do
-          fake_output = StringIO.new(File.read("#{fixture_path}/outputs/file_with_complex_colorspace_and_decimal_fps.txt"))
-          Open3.stub(:popen3).and_yield(nil, nil, fake_output)
-          @movie = Movie.new(__FILE__)
-        end
-
-        it "should know the framerate" do
-          @movie.frame_rate.should == 23.98
-        end
-
-        it "should know the colorspace" do
-          @movie.colorspace.should == "yuv420p(tv, bt709)"
-        end
-
-        it "should know the width and height" do
-          @movie.width.should == 960
-          @movie.height.should == 540
         end
       end
 
