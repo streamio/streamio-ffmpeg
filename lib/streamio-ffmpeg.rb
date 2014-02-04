@@ -35,15 +35,20 @@ module FFMPEG
   #
   # @param [String] path to the ffmpeg binary
   # @return [String] the path you set
+  # @raise Errno::ENOENT if the ffmpeg binary cannot be found
   def self.ffmpeg_binary=(bin)
+    if bin.is_a?(String) && !File.executable?(bin)
+      raise Errno::ENOENT, "the ffmpeg binary, \'#{bin}\', is not executable"
+    end
     @ffmpeg_binary = bin
   end
 
   # Get the path to the ffmpeg binary, defaulting to 'ffmpeg'
   #
   # @return [String] the path to the ffmpeg binary
+  # @raise Errno::ENOENT if the ffmpeg binary cannot be found
   def self.ffmpeg_binary
-    @ffmpeg_binary || 'ffmpeg'
+    @ffmpeg_binary || which('ffmpeg')
   end
 
   # Get the path to the ffprobe binary, defaulting to what is on ENV['PATH']
