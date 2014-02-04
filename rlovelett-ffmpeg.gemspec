@@ -12,6 +12,8 @@ Gem::Specification.new do |s|
   s.homepage    = "http://github.com/RLovelett/rlovelett-ffmpeg"
   s.summary     = "Wraps ffmpeg to read metadata and transcodes videos."
 
+  s.add_dependency('yajl-ruby')
+
   s.add_development_dependency("rspec", "~> 2.14")
   s.add_development_dependency("rake", "~> 10.1")
   s.add_development_dependency("codeclimate-test-reporter", "~> 0.4.7")
