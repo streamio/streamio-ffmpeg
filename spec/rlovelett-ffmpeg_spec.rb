@@ -37,4 +37,32 @@ describe FFMPEG do
       FFMPEG.ffmpeg_binary.should == new_binary
     end
   end
+
+  describe '.ffprobe_binary' do
+
+    after(:each) do
+      FFMPEG.ffprobe_binary = nil
+    end
+
+    it 'should default to finding from path' do
+      allow(FFMPEG).to receive(:which) { '/usr/local/bin/ffprobe' }
+      expect(FFMPEG.ffprobe_binary).to eq FFMPEG.which('ffprobe')
+    end
+
+    it 'should be assignable' do
+      allow(File).to receive(:executable?).with('/new/path/to/ffprobe') { true }
+      FFMPEG.ffprobe_binary = '/new/path/to/ffprobe'
+      expect(FFMPEG.ffprobe_binary).to eq '/new/path/to/ffprobe'
+    end
+
+    it 'should raise exception if it cannot find assigned executable' do
+      expect { FFMPEG.ffprobe_binary = '/new/path/to/ffprobe' }.to raise_error(Errno::ENOENT)
+    end
+
+    it 'should raise exception if it cannot find executable on path' do
+      allow(File).to receive(:executable?) { false }
+      expect { FFMPEG.ffprobe_binary }.to raise_error(Errno::ENOENT)
+    end
+
+  end
 end

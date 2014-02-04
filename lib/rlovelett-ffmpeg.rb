@@ -45,4 +45,41 @@ module FFMPEG
   def self.ffmpeg_binary
     @ffmpeg_binary || 'ffmpeg'
   end
+
+  # Get the path to the ffprobe binary, defaulting to what is on ENV['PATH']
+  #
+  # @return [String] the path to the ffprobe binary
+  # @raise Errno::ENOENT if the ffprobe binary cannot be found
+  def self.ffprobe_binary
+    @ffprobe_binary || which('ffprobe')
+  end
+
+  # Set the path of the ffprobe binary.
+  # Can be useful if you need to specify a path such as /usr/local/bin/ffprobe
+  #
+  # @param [String] path to the ffprobe binary
+  # @return [String] the path you set
+  # @raise Errno::ENOENT if the ffprobe binary cannot be found
+  def self.ffprobe_binary=(bin)
+    if bin.is_a?(String) && !File.executable?(bin)
+      raise Errno::ENOENT, "the ffprobe binary, \'#{bin}\', is not executable"
+    end
+    @ffprobe_binary = bin
+  end
+
+  # Cross-platform way of finding an executable in the $PATH.
+  #
+  #   which('ruby') #=> /usr/bin/ruby
+  # see: http://stackoverflow.com/questions/2108727/which-in-ruby-checking-if-program-exists-in-path-from-ruby
+  def self.which(cmd)
+    exts = ENV['PATHEXT'] ? ENV['PATHEXT'].split(';') : ['']
+    ENV['PATH'].split(File::PATH_SEPARATOR).each do |path|
+      exts.each { |ext|
+        exe = File.join(path, "#{cmd}#{ext}")
+        return exe if File.executable? exe
+      }
+    end
+    raise Errno::ENOENT, "the #{cmd} binary could not be found in #{ENV['PATH']}"
+  end
+
 end
