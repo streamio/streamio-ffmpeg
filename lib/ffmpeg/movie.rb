@@ -1,5 +1,5 @@
 require 'time'
-require 'yajl'
+require 'multi_json'
 
 module FFMPEG
   class Movie
@@ -25,8 +25,7 @@ module FFMPEG
 
       fix_encoding(std_output)
 
-      parser = ::Yajl::Parser.new(symbolize_keys: true)
-      metadata = parser.parse(std_output)
+      metadata = MultiJson.load(std_output, symbolize_keys: true)
 
       if metadata.key?(:error)
 
