@@ -104,6 +104,10 @@ module FFMPEG
       "-threads #{value}"
     end
 
+    def convert_loop(value)
+      "-loop #{value}"
+    end
+    
     def convert_duration(value)
       "-t #{value}"
     end
