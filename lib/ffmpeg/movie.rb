@@ -86,7 +86,7 @@ module FFMPEG
         raise ArgumentError, "Unknown options format '#{options.class}', should be either EncodingOptions, Hash or String."
       end
       
-      command = "#{FFMPEG.ffmpeg_binary} -fimage2 -i #{input_pattern} #{options} #{outputfile}"
+      command = "#{FFMPEG.ffmpeg_binary} -fimage2 -i #{input_pattern} #{parameters} #{outputfile}"
       output = Open3.popen3(command) { |stdin, stdout, stderr| stderr.read }
       
       return output;
