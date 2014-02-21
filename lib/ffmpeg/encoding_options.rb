@@ -112,6 +112,10 @@ module FFMPEG
       "-vpre #{value}"
     end
 
+    def convert_format(value)
+      "-f #{value}"
+    end
+    
     def convert_audio_preset(value)
       "-apre #{value}"
     end
