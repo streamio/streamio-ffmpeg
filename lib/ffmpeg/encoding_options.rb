@@ -128,6 +128,10 @@ module FFMPEG
       "-ss #{value}"
     end
 
+    def convert_filter(value)
+      "-vf \"#{value}\""
+    end
+    
     def convert_screenshot(value)
       value ? "-vframes 1 -f image2" : ""
     end
