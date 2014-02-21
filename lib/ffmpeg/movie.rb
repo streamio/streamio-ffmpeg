@@ -77,16 +77,25 @@ module FFMPEG
       @invalid = true if output.include?("could not find codec parameters")
     end
     
-    def self.create_from_images(outputfile, input_pattern, options = {})
-      if options.is_a?(String) || options.is_a?(EncodingOptions)
-        parameters = options;
-      elsif options.is_a?(Hash)
-        parameters = EncodingOptions.new(options);
+    def self.create_from_images(outputfile, input_pattern, input_options = {}, output_options = {})
+    
+      if input_options.is_a?(String) || input_options.is_a?(EncodingOptions)
+        input_parameters = input_options;
+      elsif input_options.is_a?(Hash)
+        input_parameters = EncodingOptions.new(input_options);
       else
-        raise ArgumentError, "Unknown options format '#{options.class}', should be either EncodingOptions, Hash or String."
+        raise ArgumentError, "Unknown options format '#{input_options.class}', should be either EncodingOptions, Hash or String."
       end
       
-      command = "#{FFMPEG.ffmpeg_binary} -i #{input_pattern} #{parameters} #{outputfile}"
+      if output_options.is_a?(String) || output_options.is_a?(EncodingOptions)
+        output_parameters = output_options;
+      elsif output_options.is_a?(Hash)
+        output_parameters = EncodingOptions.new(output_options);
+      else
+        raise ArgumentError, "Unknown options format '#{output_options.class}', should be either EncodingOptions, Hash or String."
+      end
+      
+      command = "#{FFMPEG.ffmpeg_binary} #{input_parameters} -i #{input_pattern} #{output_parameters} #{outputfile}"
       output = Open3.popen3(command) { |stdin, stdout, stderr| stderr.read }
       
       return output;
