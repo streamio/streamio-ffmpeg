@@ -35,6 +35,10 @@ module FFMPEG
       private_methods.include?(option)
     end
 
+    def convert_pixfmt(value)
+      "-pix_fmt #{value}"
+    end
+    
     def convert_aspect(value)
       "-aspect #{value}"
     end
