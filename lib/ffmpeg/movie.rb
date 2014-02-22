@@ -77,7 +77,7 @@ module FFMPEG
       @invalid = true if output.include?("could not find codec parameters")
     end
     
-    def self.create_from_images(outputfile, input_pattern, input_options = {}, output_options = {})
+    def self.create_from_images(outputfile, input_pattern, input_options = {}, output_options = {}, input_audio = nil)
     
       if input_options.is_a?(String) || input_options.is_a?(EncodingOptions)
         input_parameters = input_options;
@@ -95,7 +95,12 @@ module FFMPEG
         raise ArgumentError, "Unknown options format '#{output_options.class}', should be either EncodingOptions, Hash or String."
       end
       
-      command = "#{FFMPEG.ffmpeg_binary} #{input_parameters} -i #{input_pattern} #{output_parameters} #{outputfile}"
+      audio = "";
+      unless input_audio.nil?
+      	audio = "-i #{input_audio}"
+      end
+      
+      command = "#{FFMPEG.ffmpeg_binary} #{input_parameters} -i #{input_pattern} #{audio} #{output_parameters} #{outputfile}"
       output = Open3.popen3(command) { |stdin, stdout, stderr| stderr.read }
       
       return output;
