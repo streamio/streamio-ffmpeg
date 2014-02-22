@@ -63,6 +63,10 @@ module FFMPEG
     def convert_resolution(value)
       "-s #{value}"
     end
+    
+    def convert_shortest(value)
+      "-shortest"
+    end
 
     def convert_video_bitrate(value)
       "-b:v #{k_format(value)}"
