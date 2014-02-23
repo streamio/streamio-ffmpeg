@@ -100,7 +100,7 @@ module FFMPEG
       	audio = "-i #{input_audio}"
       end
       
-      command = "#{FFMPEG.ffmpeg_binary} #{input_parameters} -i #{input_pattern} #{audio} #{output_parameters} #{outputfile}"
+      command = "#{FFMPEG.ffmpeg_binary} #{input_parameters} #{audio} -i #{input_pattern} #{output_parameters} #{outputfile}"
       output = Open3.popen3(command) { |stdin, stdout, stderr| stderr.read }
       
       return output;
