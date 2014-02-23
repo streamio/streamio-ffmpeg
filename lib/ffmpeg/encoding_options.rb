@@ -144,6 +144,10 @@ module FFMPEG
       "-vf \"#{value}\""
     end
     
+    def convert_afilter(value)
+      "-vf \"#{value}\""
+    end
+    
     def convert_screenshot(value)
       value ? "-vframes 1 -f image2" : ""
     end
