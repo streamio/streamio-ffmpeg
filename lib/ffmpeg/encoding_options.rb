@@ -145,7 +145,7 @@ module FFMPEG
     end
     
     def convert_afilter(value)
-      "-vf \"#{value}\""
+      "-af \"#{value}\""
     end
     
     def convert_screenshot(value)
