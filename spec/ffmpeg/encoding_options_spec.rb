@@ -70,6 +70,10 @@ module FFMPEG
       it "should convert audio channels" do
         EncodingOptions.new(:audio_channels => 2).to_s.should == "-ac 2"
       end
+
+      it "should convert audio profile" do
+        EncodingOptions.new(:audio_profile => 'aac_he').to_s.should == "-profile:a aac_he"
+      end
       
       it "should convert maximum video bitrate" do
         EncodingOptions.new(:video_max_bitrate => 600).to_s.should == "-maxrate 600k"
