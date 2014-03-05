@@ -80,6 +80,10 @@ module FFMPEG
       "-ac #{value}"
     end
 
+    def convert_audio_profile(value)
+      "-profile:a #{value}"
+    end
+
     def convert_video_max_bitrate(value)
       "-maxrate #{k_format(value)}"
     end
