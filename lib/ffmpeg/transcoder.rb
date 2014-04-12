@@ -5,6 +5,8 @@ module FFMPEG
   class Transcoder
     @@timeout = 30
 
+    attr_reader :output
+
     def self.timeout=(time)
       @@timeout = time
     end
