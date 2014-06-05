@@ -45,4 +45,11 @@ module FFMPEG
   def self.ffmpeg_binary
     @ffmpeg_binary || 'ffmpeg'
   end
+
+  # Send ffmpeg output to FFMPEG logger
+  #
+  # @return [Boolean]
+  def self.include_ffmpeg_output
+    @include_ffmpeg_output = true
+  end
 end

@@ -63,6 +63,13 @@ module FFMPEG
           yield(0.0) if block_given?
           next_line = Proc.new do |line|
             fix_encoding(line)
+
+            # Include each ffmpeg output line in
+            # defined FFMPEG logger
+            line.split("\n").each do |l|
+              FFMPEG.logger.info(l)
+            end if FFMPEG.include_ffmpeg_output
+
             @output << line
             if line.include?("time=")
               if line =~ /time=(\d+):(\d+):(\d+.\d+)/ # ffmpeg 0.8 and above style
