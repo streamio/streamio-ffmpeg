@@ -12,6 +12,7 @@ Gem::Specification.new do |s|
   s.homepage    = "http://github.com/torial/streamio-ffmpeg"
   s.summary     = "Reads metadata and transcodes movies."
   s.description = "Simple yet powerful wrapper around ffmpeg to get metadata from movies and do transcoding."
+  s.license     = "MIT"
 
   s.add_development_dependency("rspec", "~> 2.7")
   s.add_development_dependency("rake", "~> 0.9.2")
