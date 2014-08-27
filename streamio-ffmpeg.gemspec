@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
   s.version     = FFMPEG::VERSION
   s.authors     = ["David Backeus", "Brainsome-Developers"]
   s.email       = ["david@streamio.se", nil]
-  s.homepage    = "http://github.com/torial/streamio-ffmpeg"
+  s.homepage    = "https://github.com/brainsome-de/streamio-ffmpeg"
   s.summary     = "Reads metadata and transcodes movies."
   s.description = "Simple yet powerful wrapper around ffmpeg to get metadata from movies and do transcoding."
   s.license     = "MIT"
