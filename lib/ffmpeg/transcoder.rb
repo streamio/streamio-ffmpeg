@@ -13,22 +13,42 @@ module FFMPEG
       @@timeout
     end
 
-    def initialize(movie, output_file, options = EncodingOptions.new, transcoder_options = {})
+    def initialize(movie, output_file,
+                   options = EncodingOptions.new,
+                   input_options = EncodingOptions.new,
+                   transcoder_options = {})
       @movie = movie
       @output_file = output_file
 
-      if options.is_a?(String) || options.is_a?(EncodingOptions)
-        @raw_options = options
-      elsif options.is_a?(Hash)
-        @raw_options = EncodingOptions.new(options)
-      else
-        raise ArgumentError, "Unknown options format '#{options.class}', should be either EncodingOptions, Hash or String."
-      end
+      assign_input_options(input_options)
+      assign_output_options(options)
 
       @transcoder_options = transcoder_options
       @errors = []
 
       apply_transcoder_options
+    end
+
+    def assign_input_options(input_options)
+      if input_options.is_a?(String) || input_options.is_a?(EncodingOptions)
+        @raw_input_options = input_options
+      elsif input_options.is_a?(Hash)
+        @raw_input_options = EncodingOptions.new(input_options)
+      else
+        raise ArgumentError, "Unknown input options format '#{input_options.class}', " \
+                             "should be either EncodingOptions, Hash or String."
+      end
+    end
+
+    def assign_output_options(options)
+      if options.is_a?(String) || options.is_a?(EncodingOptions)
+        @raw_options = options
+      elsif options.is_a?(Hash)
+        @raw_options = EncodingOptions.new(options)
+      else
+        raise ArgumentError, "Unknown options format '#{options.class}', " \
+                             "should be either EncodingOptions, Hash or String."
+      end
     end
 
     def run(&block)
@@ -54,7 +74,8 @@ module FFMPEG
     private
     # frame= 4855 fps= 46 q=31.0 size=   45306kB time=00:02:42.28 bitrate=2287.0kbits/
     def transcode_movie
-      @command = "#{FFMPEG.ffmpeg_binary} -y -i #{Shellwords.escape(@movie.path)} #{@raw_options} #{Shellwords.escape(@output_file)}"
+      @command = "#{FFMPEG.ffmpeg_binary} -y #{@raw_input_options} " \
+                 "-i #{Shellwords.escape(@movie.path)} #{@raw_options} #{Shellwords.escape(@output_file)}"
       FFMPEG.logger.info("Running transcoding...\n#{@command}\n")
       @output = ""
 
