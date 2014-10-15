@@ -164,6 +164,10 @@ module FFMPEG
       "-i #{value}"
     end
 
+    def convert_rotate(value)
+      "-vfilters \"rotate=#{value}\""
+    end
+    
 	def convert_crossfade(values)
     	filter = "";
     	values.each do |value|
