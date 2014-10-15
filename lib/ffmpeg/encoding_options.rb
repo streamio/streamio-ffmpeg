@@ -80,6 +80,10 @@ module FFMPEG
       "-b:a #{k_format(value)}"
     end
 
+    def convert_noaudio(value)
+      "-an"
+    end
+    
     def convert_audio_sample_rate(value)
       "-ar #{value}"
     end
