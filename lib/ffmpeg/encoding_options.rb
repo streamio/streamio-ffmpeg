@@ -165,7 +165,7 @@ module FFMPEG
     end
 
     def convert_rotate(value)
-      "-vf \"rotate=#{value}\""
+      "-vf \"rotate=#{(value*3.14)/180}\" -metadata rotate=#{@rotation+value}"
     end
     
 	def convert_crossfade(values)
