@@ -164,7 +164,7 @@ module FFMPEG
       "-i #{value}"
     end
 
-	def crossfade(values)
+	def convert_crossfade(values)
     	filter = "";
     	values.each do |value|
     		filter << "," unless filter.empty? ;
