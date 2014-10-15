@@ -54,9 +54,14 @@ module FFMPEG
     
     def concat_movie
       input_str = "";
+      duration = 0;
+      
       @input.each do |input|
       	input_str << "-i #{Shellwords.escape(input)} ";
+      	movie = FFMPEG::Movie.new(input);
+      	duration = duration + movie.duration;
       end
+      
       
       @command = "#{FFMPEG.ffmpeg_binary} -y #{input_str} #{@raw_options} #{Shellwords.escape(@output_file)}"
       FFMPEG.logger.info("Running concat`...\n#{@command}\n")
@@ -74,7 +79,7 @@ module FFMPEG
               else # better make sure it wont blow up in case of unexpected output
                 time = 0.0
               end
-              progress = time / @movie.duration
+              progress = time / duration
               yield(progress) if block_given?
             end
           end
@@ -95,7 +100,7 @@ module FFMPEG
     def validate_output_file(&block)
       if encoding_succeeded?
         yield(1.0) if block_given?
-        FFMPEG.logger.info "Transcoding of #{@movie.path} to #{@output_file} succeeded\n"
+        FFMPEG.logger.info "Concat video succeeded\n"
       else
         errors = "Errors: #{@errors.join(", ")}. "
         FFMPEG.logger.error "Failed encoding...\n#{@command}\n\n#{@output}\n#{errors}\n"
