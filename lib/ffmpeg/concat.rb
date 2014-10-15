@@ -58,7 +58,7 @@ module FFMPEG
       	input_str << "-i #{Shellwords.escape(input)} ";
       end
       
-      @command = "#{FFMPEG.ffmpeg_binary} #{input_str} #{@raw_options} #{Shellwords.escape(@output_file)}"
+      @command = "#{FFMPEG.ffmpeg_binary} -y #{input_str} #{@raw_options} #{Shellwords.escape(@output_file)}"
       FFMPEG.logger.info("Running concat`...\n#{@command}\n")
       @output = ""
 
