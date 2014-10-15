@@ -8,6 +8,7 @@ require 'ffmpeg/errors'
 require 'ffmpeg/movie'
 require 'ffmpeg/io_monkey'
 require 'ffmpeg/transcoder'
+require 'ffmpeg/concat'
 require 'ffmpeg/encoding_options'
 
 module FFMPEG
