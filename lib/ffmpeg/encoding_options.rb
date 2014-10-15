@@ -164,6 +164,16 @@ module FFMPEG
       "-i #{value}"
     end
 
+	def crossfade(values)
+    	"-filter_complex=\"\"";
+    	filter = "";
+    	values.each do |value|
+    		unless filter.empty? filter << ","
+    		filter << "[#{value[:idx1]}:v][#{value[:idx0]}:v]blend=all_expr='A*(if(gte(T,#{value[:time]}),1,T/#{value[:time]}))+B*(1-(if(gte(T,#{value[:time]}),1,T/#{value[:time]})))'"
+    	end
+		"-filter_complex=\"#{filter}\"";
+	end
+	
     def convert_watermark_filter(value)
       case value[:position].to_s
       when "LT"
