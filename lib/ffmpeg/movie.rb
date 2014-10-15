@@ -77,6 +77,10 @@ module FFMPEG
       @invalid = true if output.include?("could not find codec parameters")
     end
     
+    def self.create_from_videos(input_files, output_file, options = EncodingOptions.new, concat_options = {}, &block)
+    	Concat.new(input_files,output_file,options,concat_options).run &block;
+    end    
+    
     def self.create_from_images(outputfile, input_pattern, input_options = {}, output_options = {}, input_audio = nil)
     
       if input_options.is_a?(String) || input_options.is_a?(EncodingOptions)
@@ -148,9 +152,9 @@ module FFMPEG
     end
 
     def transcode(output_file, options = EncodingOptions.new, transcoder_options = {}, &block)
-      Transcoder.new(self, output_file, options, transcoder_options).run &block
+      Transcoder.new(self, output_file, options, transcoder_options).run &block;
     end
-
+    
     def screenshot(output_file, options = EncodingOptions.new, transcoder_options = {}, &block)
       Transcoder.new(self, output_file, options.merge(screenshot: true), transcoder_options).run &block
     end
