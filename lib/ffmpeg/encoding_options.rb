@@ -149,7 +149,7 @@ module FFMPEG
     end
     
     def convert_screenshot(value)
-      "-vframes #{value[:frame]}" : ""
+      "-vframes #{value[:frame]}"
     end
 
     def convert_x264_vprofile(value)
