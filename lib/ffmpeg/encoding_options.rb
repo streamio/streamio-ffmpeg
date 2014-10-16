@@ -175,8 +175,9 @@ module FFMPEG
 	def convert_crossfade(values)
     	filter = "";
     	values.each do |value|
-    		filter << "[#{value[:idx0]}:v]fade=t=out:st=#{value[:time_out]}:d=#{value[:duration_out]}:alpha=1,setpts=PTS-STARTPTS[va#{value[:idx0]}];"
-    		filter << "[#{value[:idx1]}:v]fade=t=in:st=#{value[:time_in]}:d=#{value[:duration_in]}:alpha=1,setpts=PTS-STARTPTS[va#{value[:idx1]}];"
+    		filter << ";" unless filter.empty? ;
+    		filter << "[#{value[:idx0]}:0]fade=t=out:st=#{value[:time_out]}:d=#{value[:duration_out]}:alpha=1;"
+    		filter << "[#{value[:idx1]}:1]fade=t=in:st=#{value[:time_in]}:d=#{value[:duration_in]}"
     	end
 		"-filter_complex \"#{filter}\"";
 	end
