@@ -56,7 +56,7 @@ module FFMPEG
       input_str = "";
       duration = 0;
       
-      @input.each do |input|
+      @input.reverse.each do |input|
       	input_str << "-i #{Shellwords.escape(input)} ";
       	movie = FFMPEG::Movie.new(input);
       	duration = duration + movie.duration;
