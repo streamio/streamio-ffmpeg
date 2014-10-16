@@ -178,7 +178,7 @@ module FFMPEG
     		filter << ";" unless filter.empty? ;
     		filter << "[#{value[:idx]}:0]fade=t=in:#{value[:time_in]}:#{value[:duration_in]}, fade=t=out:#{value[:time_out]}:#{value[:duration_out]}"
     	end
-		"-filter_comples \"#{filter}\"";
+		"-filter_complex \"#{filter}\"";
 	end
 	
     def convert_watermark_filter(value)
