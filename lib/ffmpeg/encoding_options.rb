@@ -176,7 +176,7 @@ module FFMPEG
     	filter = "";
     	values.each do |value|
     		filter << ";" unless filter.empty? ;
-    		filter << "[#{value[:idx1]}:0][#{value[:idx0]}:0]blend=all_expr='A*(if(gte(T,#{value[:time]}),1,#{value[:time]}))+B*(1-(if(gte(T,#{value[:time]}),1,#{value[:time]})))'"
+    		filter << "[#{value[:idx1]}:0][#{value[:idx0]}:0]blend=all_expr='A*(if(gte(T,#{value[:time]}),1,T/#{value[:time]}))+B*(1-(if(gte(T,#{value[:time]}),1,T/#{value[:time]})))'"
     	end
 		"-filter_complex \"#{filter}\"";
 	end
