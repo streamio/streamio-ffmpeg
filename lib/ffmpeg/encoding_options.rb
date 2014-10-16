@@ -176,7 +176,7 @@ module FFMPEG
     	filter = "";
     	values.each do |value|
     		filter << ";" unless filter.empty? ;
-    		filter << "[#{value[:idx]}:0]fade=t=in:#{value[:time_in]:#{value[:duration_in]}, fade=t=out:#{value[:time_out]:#{value[:duration_out]}"
+    		filter << "[#{value[:idx]}:0]fade=t=in:#{value[:time_in]}:#{value[:duration_in]}, fade=t=out:#{value[:time_out]}:#{value[:duration_out]}"
     	end
 		"-filter_comples \"#{filter}\"";
 	end
