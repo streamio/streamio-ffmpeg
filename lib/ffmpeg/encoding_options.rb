@@ -176,9 +176,16 @@ module FFMPEG
     	filter = "";
     	values.each do |value|
     		filter << ";" unless filter.empty? ;
-    		filter << "[#{value[:idx]}:0]fade=t=in:st=#{value[:time_in]}:d=#{value[:duration_in]}, fade=t=out:st=#{value[:time_out]}:d=#{value[:duration_out]}"
+    		filter << "[#{value[:idx]}:0]fade=t=in:st=#{value[:time_in]}:d=#{value[:duration_in]}, fade=t=out:st=#{value[:time_out]}:d=#{value[:duration_out]}[O#{value[:idx]}]"
     	end
-		"-filter_complex \"#{filter}\"";
+    	
+    	concat = "";
+    	values.each do |value|
+    		concat << "[O#{value[:idx]}]";
+    	end
+    	concat << "concat=n=#{values.length}";
+    	
+		"-filter_complex \"#{filter};#{concat}\"";
 	end
 	
     def convert_watermark_filter(value)
