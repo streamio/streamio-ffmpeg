@@ -8,7 +8,7 @@ module FFMPEG
     attr_reader :container
 
     def initialize(path)
-      raise Errno::ENOENT, "the file '#{path}' does not exist" unless File.exists?(path)
+      raise Errno::ENOENT, "the file '#{path}' does not exist" unless File.exist?(path)
 
       @path = path
 
