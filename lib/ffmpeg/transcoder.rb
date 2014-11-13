@@ -84,6 +84,7 @@ module FFMPEG
           yield(0.0) if block_given?
           next_line = Proc.new do |line|
             fix_encoding(line)
+            FFMPEG.logger.info line
             @output << line
             if line.include?("time=")
               if line =~ /time=(\d+):(\d+):(\d+.\d+)/ # ffmpeg 0.8 and above style
