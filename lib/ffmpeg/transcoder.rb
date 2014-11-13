@@ -103,8 +103,15 @@ module FFMPEG
           end
 
         rescue Timeout::Error => e
-          FFMPEG.logger.error "Process hung...\n@command\n#{@command}\nOutput\n#{@output}\n"
-          raise Error, "Process hung. Full output: #{@output}"
+          message = "Process hung...\nCommand: #{@command}\nOutput: #{@output}" \
+            "\nMessage: #{e.message}\nBacktrace: #{e.backtrace}"
+          FFMPEG.logger.error message
+          raise StandardError, message
+        rescue => e
+          message = "ERROR Executing FFMPEG...\nCommand: #{@command}\nOutput: #{@output}" \
+            "\nMessage: #{e.message}\nBacktrace: #{e.backtrace}"
+          FFMPEG.logger.error message
+          raise StandardError, message
         end
       end
     end
