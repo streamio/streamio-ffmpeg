@@ -73,7 +73,7 @@ module FFMPEG
 
     private
     # frame= 4855 fps= 46 q=31.0 size=   45306kB time=00:02:42.28 bitrate=2287.0kbits/
-    def transcode_movie
+    def transcode_movie(&block)
       @command = "#{FFMPEG.ffmpeg_binary} -y #{@raw_input_options} " \
                  "-i #{Shellwords.escape(@movie.path)} #{@raw_options} #{Shellwords.escape(@output_file)}"
       FFMPEG.logger.info("Running transcoding...\n#{@command}\n")
@@ -81,21 +81,10 @@ module FFMPEG
 
       Open3.popen3(@command) do |stdin, stdout, stderr, wait_thr|
         begin
+
           yield(0.0) if block_given?
-          next_line = Proc.new do |line|
-            fix_encoding(line)
-            FFMPEG.logger.info line
-            @output << line
-            if line.include?("time=")
-              if line =~ /time=(\d+):(\d+):(\d+.\d+)/ # ffmpeg 0.8 and above style
-                time = ($1.to_i * 3600) + ($2.to_i * 60) + $3.to_f
-              else # better make sure it wont blow up in case of unexpected output
-                time = 0.0
-              end
-              progress = time / @movie.duration
-              yield(progress) if block_given?
-            end
-          end
+
+          next_line = process_next_line(&block)
 
           if @@timeout
             stderr.each_with_timeout(wait_thr.pid, @@timeout, 'size=', &next_line)
@@ -113,6 +102,28 @@ module FFMPEG
             "\nMessage: #{e.message}\nBacktrace: #{e.backtrace}"
           FFMPEG.logger.error message
           raise StandardError, message
+        end
+      end
+    end
+
+    def calculate_progress(line)
+      if line =~ /time=(\d+):(\d+):(\d+.\d+)/ # ffmpeg 0.8 and above style
+        time = ($1.to_i * 3600) + ($2.to_i * 60) + $3.to_f
+      else # better make sure it wont blow up in case of unexpected output
+        time = 0.0
+      end
+      progress = time / @movie.duration
+      yield(progress) if block_given?
+    end
+
+    def process_next_line(&block)
+      Proc.new do |line|
+        fix_encoding(line)
+        @output << line
+        if line.include?("time=")
+          calculate_progress(line, &block)
+        elsif line..start_with?("Error while")
+          raise StandardError, "ERROR in command: #{@command}, \nOutput: #{@output}"
         end
       end
     end
