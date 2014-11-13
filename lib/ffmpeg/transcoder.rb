@@ -122,7 +122,7 @@ module FFMPEG
         @output << line
         if line.include?("time=")
           calculate_progress(line, &block)
-        elsif line..start_with?("Error while")
+        elsif line.include?("Error while")
           raise StandardError, "ERROR in command: #{@command}, \nOutput: #{@output}"
         end
       end
