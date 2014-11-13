@@ -81,17 +81,13 @@ module FFMPEG
 
       Open3.popen3(@command) do |stdin, stdout, stderr, wait_thr|
         begin
-
           yield(0.0) if block_given?
-
           next_line = process_next_line(&block)
-
           if @@timeout
             stderr.each_with_timeout(wait_thr.pid, @@timeout, 'size=', &next_line)
           else
             stderr.each('size=', &next_line)
           end
-
         rescue Timeout::Error => e
           message = "Process hung...\nCommand: #{@command}\nOutput: #{@output}" \
             "\nMessage: #{e.message}\nBacktrace: #{e.backtrace}"
