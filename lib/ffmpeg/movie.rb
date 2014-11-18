@@ -3,6 +3,7 @@ require 'time'
 module FFMPEG
   class Movie
     attr_reader :path, :duration, :time, :bitrate, :rotation, :creation_time
+    attr_reader :displaymatrix, :display_rotation
     attr_reader :video_stream, :video_codec, :video_bitrate, :colorspace, :resolution, :sar, :dar
     attr_reader :audio_stream, :audio_codec, :audio_bitrate, :audio_sample_rate
     attr_reader :container
@@ -41,6 +42,9 @@ module FFMPEG
 
       output[/Audio:\ (.*)/]
       @audio_stream = $1
+      
+      output[/displaymatrix:\ (.*)/]
+      @displaymatrix = $1
 
       if video_stream
         commas_except_in_parenthesis = /(?:\([^()]*\)|[^,])+/ # regexp to handle "yuv420p(tv, bt709)" colorspace etc from http://goo.gl/6oi645
@@ -55,6 +59,10 @@ module FFMPEG
         @audio_codec, audio_sample_rate, @audio_channels, unused, audio_bitrate = audio_stream.split(/\s?,\s?/)
         @audio_bitrate = audio_bitrate =~ %r(\A(\d+) kb/s\Z) ? $1.to_i : nil
         @audio_sample_rate = audio_sample_rate[/\d*/].to_i
+      end
+      
+      if displaymatrix
+        @display_rotation=displaymatrix[/(-|)(\d+.\d+)/]
       end
 
       @invalid = true if @video_stream.to_s.empty? && @audio_stream.to_s.empty?
