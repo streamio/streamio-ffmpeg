@@ -158,12 +158,8 @@ module FFMPEG
       "-qmax #{value}"
     end
 
-    def convert_minrate(value)
-      "-minrate #{value}"
-    end
-
-    def convert_maxrate(value)
-      "-maxrate #{value}"
+    def convert_pass(value)
+      "-pass #{value}"
     end
 
     #---------------------------------
