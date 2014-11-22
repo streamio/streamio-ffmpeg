@@ -162,6 +162,10 @@ module FFMPEG
       "-pass #{value}"
     end
 
+    def convert_passlogfile(value)
+      "-passlogfile #{value}"
+    end
+
     #---------------------------------
 
     def convert_watermark_filter(value)
