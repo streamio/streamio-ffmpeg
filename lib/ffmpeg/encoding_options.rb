@@ -158,6 +158,14 @@ module FFMPEG
       "-qmax #{value}"
     end
 
+    def convert_minrate(value)
+      "-minrate #{value}"
+    end
+
+    def convert_maxrate(value)
+      "-maxrate #{value}"
+    end
+
     #---------------------------------
 
     def convert_watermark_filter(value)
