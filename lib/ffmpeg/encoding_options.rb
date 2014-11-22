@@ -147,7 +147,7 @@ module FFMPEG
     end
 
     def convert_quality(value)
-      "-quality #{value}"
+      "-deadline #{value}"
     end
 
     def convert_qmin(value)
@@ -168,6 +168,10 @@ module FFMPEG
 
     def convert_profile(value)
       "-profile #{value}"
+    end
+
+    def convert_crf(value)
+      "-crf #{value}"
     end
 
     #---------------------------------
