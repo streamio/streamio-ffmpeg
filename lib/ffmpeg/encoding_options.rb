@@ -150,6 +150,14 @@ module FFMPEG
       "-quality #{value}"
     end
 
+    def convert_qmin(value)
+      "-qmin #{value}"
+    end
+
+    def convert_qmax(value)
+      "-qmax #{value}"
+    end
+
     #---------------------------------
 
     def convert_watermark_filter(value)
