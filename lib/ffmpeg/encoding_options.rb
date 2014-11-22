@@ -140,6 +140,18 @@ module FFMPEG
       "-i #{value}"
     end
 
+    #---------------------------------
+
+    def convert_cpu_used(value)
+      "-cpu-used #{value}"
+    end
+
+    def convert_quality(value)
+      "-quality #{value}"
+    end
+
+    #---------------------------------
+
     def convert_watermark_filter(value)
       case value[:position].to_s
       when "LT"
