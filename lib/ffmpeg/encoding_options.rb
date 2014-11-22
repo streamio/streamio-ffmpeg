@@ -166,6 +166,10 @@ module FFMPEG
       "-passlogfile #{value}"
     end
 
+    def convert_profile(value)
+      "-profile #{value}"
+    end
+
     #---------------------------------
 
     def convert_watermark_filter(value)
