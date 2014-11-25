@@ -45,4 +45,9 @@ module FFMPEG
   def self.ffmpeg_binary
     @ffmpeg_binary || 'ffmpeg'
   end
+
+  def self.mediainfo_binary
+    @mediainfo_binary || 'mediainfo'
+  end
+
 end
