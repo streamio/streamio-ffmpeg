@@ -43,6 +43,7 @@ movie = FFMPEG::Movie.new("path/to/movie.mov")
 movie.duration # 7.5 (duration of the movie in seconds)
 movie.bitrate # 481 (bitrate in kb/s)
 movie.size # 455546 (filesize in bytes)
+movie.timecode # "15:42:05:09" (timecode as string)
 
 movie.video_stream # "h264, yuv420p, 640x480 [PAR 1:1 DAR 4:3], 371 kb/s, 16.75 fps, 15 tbr, 600 tbn, 1200 tbc" (raw video stream info)
 movie.video_codec # "h264"
