@@ -55,7 +55,7 @@ module FFMPEG
     # frame= 4855 fps= 46 q=31.0 size=   45306kB time=00:02:42.28 bitrate=2287.0kbits/
     def transcode_movie
       @command = "nice -n 19 #{FFMPEG.ffmpeg_binary} -y -i #{Shellwords.escape(@movie.path)} #{@raw_options} #{Shellwords.escape(@output_file)}#{' || exit 1' if @transcoder_options.try(:[], :or_exit)}"
-      @command = "#{@command} && #{FFMPEG.qtfaststart_binary} #{Shellwords.escape(@movie.path)}" if @transcoder_options.try(:[], :meta_2_begin)
+      @command = "#{@command} && #{FFMPEG.qtfaststart_binary} #{Shellwords.escape(@output_file)}" if @transcoder_options.try(:[], :meta_2_begin)
       FFMPEG.logger.info("Running transcoding...\n#{@command}\n")
       @output = ""
 
