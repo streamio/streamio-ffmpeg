@@ -16,11 +16,11 @@ module FFMPEG
       end
 
       it "should accept String as options" do
-        expect { Transcoder.new(movie, output_path, "-vcodec libx264") }.not_to raise_error
+        expect { Transcoder.new(movie, output_path, %w(-vcodec libx264)) }.not_to raise_error
       end
 
       it "should not accept anything else as options" do
-        expect { Transcoder.new(movie, output_path, ["array?"]) }.to raise_error(ArgumentError, /Unknown options format/)
+        expect { Transcoder.new(movie, output_path, "string?") }.to raise_error(ArgumentError, /Unknown options format/)
       end
     end
 
@@ -58,7 +58,7 @@ module FFMPEG
           end
 
           it 'should still work with (NTSC target)' do
-            encoded = Transcoder.new(movie, "#{tmp_path}/awesome.mpg",  target: 'ntsc-vcd').run
+            encoded = Transcoder.new(movie, "#{tmp_path}/awesome.mpg", target: 'ntsc-vcd').run
             expect(encoded.resolution).to eq('352x240')
           end
 
@@ -134,7 +134,7 @@ module FFMPEG
         it "should transcode the movie with String options" do
           FileUtils.rm_f "#{tmp_path}/string_optionalized.flv"
 
-          encoded = Transcoder.new(movie, "#{tmp_path}/string_optionalized.flv", "-s 300x200 -ac 2").run
+          encoded = Transcoder.new(movie, "#{tmp_path}/string_optionalized.flv", %w(-s 300x200 -ac 2)).run
           expect(encoded.resolution).to eq("300x200")
           expect(encoded.audio_channels).to eq(2)
         end

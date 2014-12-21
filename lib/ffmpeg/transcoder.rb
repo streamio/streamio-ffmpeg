@@ -1,5 +1,4 @@
 require 'open3'
-require 'shellwords'
 
 module FFMPEG
   class Transcoder
@@ -13,7 +12,7 @@ module FFMPEG
       @movie = movie
       @output_file = output_file
 
-      if options.is_a?(String) || options.is_a?(EncodingOptions)
+      if options.is_a?(Array) || options.is_a?(EncodingOptions)
         @raw_options = options
       elsif options.is_a?(Hash)
         @raw_options = EncodingOptions.new(options)
@@ -54,11 +53,11 @@ module FFMPEG
     private
     # frame= 4855 fps= 46 q=31.0 size=   45306kB time=00:02:42.28 bitrate=2287.0kbits/
     def transcode_movie
-      @command = "#{FFMPEG.ffmpeg_binary} -y -i #{Shellwords.escape(@movie.path)} #{@raw_options} #{Shellwords.escape(@output_file)}"
+      @command = [FFMPEG.ffmpeg_binary, '-y', '-i', @movie.path, *@raw_options.to_a, @output_file]
       FFMPEG.logger.info("Running transcoding...\n#{@command}\n")
       @output = ""
 
-      Open3.popen3(@command) do |_stdin, _stdout, stderr, wait_thr|
+      Open3.popen3(*@command) do |_stdin, _stdout, stderr, wait_thr|
         begin
           yield(0.0) if block_given?
           next_line = Proc.new do |line|
