@@ -5,6 +5,9 @@ require 'stringio'
 
 require 'ffmpeg/version'
 require 'ffmpeg/errors'
+require 'ffmpeg/audio_stream'
+require 'ffmpeg/video_stream'
+require 'ffmpeg/subtitle'
 require 'ffmpeg/movie'
 require 'ffmpeg/io_monkey'
 require 'ffmpeg/transcoder'
@@ -39,10 +42,50 @@ module FFMPEG
     @ffmpeg_binary = bin
   end
 
-  # Get the path to the ffmpeg binary, defaulting to 'ffmpeg'
+  # Get the path to the ffmpeg binary
   #
   # @return [String] the path to the ffmpeg binary
   def self.ffmpeg_binary
-    @ffmpeg_binary || 'ffmpeg'
+    @ffmpeg_binary ||= find_ffmpeg_binary
   end
+
+  # Tries find the ffmpeg binary
+  #
+  # @return [String] the path to the ffmpeg binary
+  def self.find_ffmpeg_binary
+    %w(
+      /usr/bin/avconv
+      /usr/bin/ffmpeg
+      /usr/local/bin/avconv
+      /usr/local/bin/ffmpeg
+    ).each do |path|
+      return path if File.exists?(path)
+    end
+
+    raise "unable to find ffmpeg binary"
+  end
+
+  def self.parse_options(input)
+    return [] if input==""
+
+    scanner = StringScanner.new input
+    options = [""]
+    level   = 0
+    while char = scanner.getch
+      case char
+      when "(" then level += 1
+      when ")" then level -= 1
+      when ","
+        if level==0
+          # start of next option
+          options << ""
+          scanner.pos += 1
+          next
+        end
+      end
+      options.last << char
+    end
+    options
+  end
+
 end

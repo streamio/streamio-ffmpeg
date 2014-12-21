@@ -3,9 +3,18 @@ require 'time'
 module FFMPEG
   class Movie
     attr_reader :path, :duration, :time, :bitrate, :rotation, :creation_time
-    attr_reader :video_stream, :video_codec, :video_bitrate, :colorspace, :resolution, :sar, :dar
-    attr_reader :audio_stream, :audio_codec, :audio_bitrate, :audio_sample_rate
+    attr_reader :audio_streams, :video_streams, :subtitles
     attr_reader :container
+
+
+    LANGUAGE_MAP = {
+      'deu' => 'ger',
+      'und' => nil
+    }
+   
+    def self.language(value)
+      LANGUAGE_MAP.include?(value) ? LANGUAGE_MAP[value] : value
+    end
 
     def initialize(path)
       raise Errno::ENOENT, "the file '#{path}' does not exist" unless File.exists?(path)
@@ -13,8 +22,7 @@ module FFMPEG
       @path = path
 
       # ffmpeg will output to stderr
-      command = "#{FFMPEG.ffmpeg_binary} -i #{Shellwords.escape(path)}"
-      output = Open3.popen3(command) { |stdin, stdout, stderr| stderr.read }
+      output = Open3.popen3(FFMPEG.ffmpeg_binary, '-i', path) { |stdin, stdout, stderr| stderr.read }
 
       fix_encoding(output)
 
@@ -33,31 +41,32 @@ module FFMPEG
       output[/bitrate: (\d*)/]
       @bitrate = $1 ? $1.to_i : nil
 
-      output[/rotate\ {1,}:\ {1,}(\d*)/]
-      @rotation = $1 ? $1.to_i : nil
-
-      output[/Video:\ (.*)/]
-      @video_stream = $1
-
-      output[/Audio:\ (.*)/]
-      @audio_stream = $1
-
-      if video_stream
-        commas_except_in_parenthesis = /(?:\([^()]*\)|[^,])+/ # regexp to handle "yuv420p(tv, bt709)" colorspace etc from http://goo.gl/6oi645
-        @video_codec, @colorspace, resolution, video_bitrate = video_stream.scan(commas_except_in_parenthesis).map(&:strip)
-        @video_bitrate = video_bitrate =~ %r(\A(\d+) kb/s\Z) ? $1.to_i : nil
-        @resolution = resolution.split(" ").first rescue nil # get rid of [PAR 1:1 DAR 16:9]
-        @sar = $1 if video_stream[/SAR (\d+:\d+)/]
-        @dar = $1 if video_stream[/DAR (\d+:\d+)/]
+      if output[/rotate\ {1,}:\ {1,}(\d*)/]
+        @rotation = $1.to_i
+      elsif output[/displaymatrix: rotation of -(\d+)\./]
+        @rotation = $1.to_i
       end
 
-      if audio_stream
-        @audio_codec, audio_sample_rate, @audio_channels, unused, audio_bitrate = audio_stream.split(/\s?,\s?/)
-        @audio_bitrate = audio_bitrate =~ %r(\A(\d+) kb/s\Z) ? $1.to_i : nil
-        @audio_sample_rate = audio_sample_rate[/\d*/].to_i
+      @audio_streams = []
+      @video_streams = []
+      @subtitles     = []
+      
+      # parse streams
+      output.scan(/(\((\w+)\))?: (Audio|Video|Subtitle): (.+)/).each do |stream|
+        language = self.class.language(stream[1])
+        raw      = stream[3]
+        
+        case stream[2]
+          when 'Audio'
+            @audio_streams << AudioStream.new(language, raw)
+          when 'Video'
+            @video_streams << VideoStream.new(language, raw)
+          when 'Subtitle'
+            @subtitles << Subtitle.new(language, raw)
+        end
       end
 
-      @invalid = true if @video_stream.to_s.empty? && @audio_stream.to_s.empty?
+      @invalid = true if @video_streams.empty? && @audio_streams.empty?
       @invalid = true if output.include?("is not supported")
       @invalid = true if output.include?("could not find codec parameters")
     end
@@ -66,37 +75,34 @@ module FFMPEG
       not @invalid
     end
 
-    def width
-      resolution.split("x")[0].to_i rescue nil
+    def uncertain_duration?
+      @uncertain_duration
     end
-
-    def height
-      resolution.split("x")[1].to_i rescue nil
+    
+    def audio_channels
+      audio_streams.map(&:channels).compact
     end
-
-    def calculated_aspect_ratio
-      aspect_from_dar || aspect_from_dimensions
+    
+    # delegate some methods to the first audio_stream
+    %w( codec sample_rate ).each do |method|
+      define_method method do
+        (stream = audio_streams.first) && stream.send(method)
+      end
     end
-
-    def calculated_pixel_aspect_ratio
-      aspect_from_sar || 1
+    
+    # delegate some methods to the first video_stream
+    %w( resolution width height colorspace sar dar calculated_aspect_ratio calculated_pixel_aspect_ratio frame_rate ).each do |method|
+      define_method method do
+        (stream = video_streams.first) && stream.send(method)
+      end
+    end
+    
+    def video_codec
+      video_streams.any? ? video_streams.first.codec : nil
     end
 
     def size
       File.size(@path)
-    end
-
-    def audio_channels
-      return nil unless @audio_channels
-      return @audio_channels[/\d*/].to_i if @audio_channels["channels"]
-      return 1 if @audio_channels["mono"]
-      return 2 if @audio_channels["stereo"]
-      return 6 if @audio_channels["5.1"]
-    end
-
-    def frame_rate
-      return nil unless video_stream
-      video_stream[/(\d*\.?\d*)\s?fps/] ? $1.to_f : nil
     end
 
     def transcode(output_file, options = EncodingOptions.new, transcoder_options = {}, &block)
@@ -108,24 +114,6 @@ module FFMPEG
     end
 
     protected
-    def aspect_from_dar
-      return nil unless dar
-      w, h = dar.split(":")
-      aspect = w.to_f / h.to_f
-      aspect.zero? ? nil : aspect
-    end
-
-    def aspect_from_sar
-      return nil unless sar
-      w, h = sar.split(":")
-      aspect = w.to_f / h.to_f
-      aspect.zero? ? nil : aspect
-    end
-
-    def aspect_from_dimensions
-      aspect = width.to_f / height.to_f
-      aspect.nan? ? nil : aspect
-    end
 
     def fix_encoding(output)
       output[/test/] # Running a regexp on the string throws error if it's not UTF-8
