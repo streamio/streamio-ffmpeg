@@ -27,8 +27,9 @@ describe FFMPEG do
       FFMPEG.ffmpeg_binary = nil
     end
 
-    it "should default to 'ffmpeg'" do
-      FFMPEG.ffmpeg_binary.should == 'ffmpeg'
+    it "should default to 'avconv'" do
+      File.stub(:exists?){ true }
+      FFMPEG.ffmpeg_binary.should == '/usr/bin/avconv'
     end
 
     it "should be assignable" do
