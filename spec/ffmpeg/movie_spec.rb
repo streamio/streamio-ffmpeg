@@ -16,7 +16,9 @@ module FFMPEG
 
         it "should run ffmpeg successfully" do
           @movie.duration.should == 7.56
-          @movie.frame_rate.should == 16.75
+
+          # avconv returns 15.67
+          [16.75, 15.67].should include @movie.frame_rate
         end
       end
 
@@ -158,7 +160,7 @@ module FFMPEG
         end
 
         it "should have 6 audio channels" do
-          @movie.audio_channels.should == 6
+          @movie.audio_channels.should == [6]
         end
       end
 
@@ -169,8 +171,8 @@ module FFMPEG
           @movie = Movie.new(__FILE__)
         end
 
-        it "should have nil audio channels" do
-          @movie.audio_channels.should == nil
+        it "should have no audio channels" do
+          @movie.audio_channels.should == []
         end
       end
 
@@ -232,53 +234,66 @@ module FFMPEG
           @movie.creation_time.should == Time.parse("2010-02-05 16:05:04")
         end
 
-        it "should parse video stream information" do
-          @movie.video_stream.should == "h264 (Main) (avc1 / 0x31637661), yuv420p, 640x480 [SAR 1:1 DAR 4:3], 371 kb/s, 16.75 fps, 600 tbr, 600 tbn, 1200 tbc"
+        context 'first video stream' do
+          before do
+            @stream = @movie.video_streams.first
+          end
+
+          it "should parse video stream information" do
+            @stream.to_s.should == "h264 (Main) (avc1 / 0x31637661), yuv420p, 640x480 [SAR 1:1 DAR 4:3], 371 kb/s, 16.75 fps, 600 tbr, 600 tbn, 1200 tbc"
+          end
+
+          it "should know the video codec" do
+            @stream.codec.should =~ /h264/
+          end
+
+          it "should know the colorspace" do
+            @stream.colorspace.should == "yuv420p"
+          end
+
+          it "should know the resolution" do
+            @stream.resolution.should == "640x480"
+          end
+
+          it "should know the video bitrate" do
+            @stream.bitrate.should == 371
+          end
+
+          it "should know the width and height" do
+            @stream.width.should == 640
+            @stream.height.should == 480
+          end
+
+          it "should know the framerate" do
+            # avconv returns 15.67
+          [16.75, 15.67].should include @stream.frame_rate
+          end
         end
 
-        it "should know the video codec" do
-          @movie.video_codec.should =~ /h264/
-        end
+        context 'first audio stream' do
+          before do
+            @stream = @movie.audio_streams.first
+          end
 
-        it "should know the colorspace" do
-          @movie.colorspace.should == "yuv420p"
-        end
+          it "should parse audio stream information" do
+            @stream.to_s.should == "aac (mp4a / 0x6134706D), 44100 Hz, stereo, fltp, 75 kb/s"
+          end
 
-        it "should know the resolution" do
-          @movie.resolution.should == "640x480"
-        end
+          it "should know the audio codec" do
+            @stream.codec.should =~ /aac/
+          end
 
-        it "should know the video bitrate" do
-          @movie.video_bitrate.should == 371
-        end
+          it "should know the sample rate" do
+            @stream.sample_rate.should == 44100
+          end
 
-        it "should know the width and height" do
-          @movie.width.should == 640
-          @movie.height.should == 480
-        end
+          it "should know the number of audio channels" do
+            @stream.channels.should == 2
+          end
 
-        it "should know the framerate" do
-          @movie.frame_rate.should == 16.75
-        end
-
-        it "should parse audio stream information" do
-          @movie.audio_stream.should == "aac (mp4a / 0x6134706D), 44100 Hz, stereo, fltp, 75 kb/s"
-        end
-
-        it "should know the audio codec" do
-          @movie.audio_codec.should =~ /aac/
-        end
-
-        it "should know the sample rate" do
-          @movie.audio_sample_rate.should == 44100
-        end
-
-        it "should know the number of audio channels" do
-          @movie.audio_channels.should == 2
-        end
-
-        it "should know the audio bitrate" do
-          @movie.audio_bitrate.should == 75
+          it "should know the audio bitrate" do
+            @stream.bitrate.should == 75
+          end
         end
 
         it "should should be valid" do

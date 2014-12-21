@@ -2,6 +2,7 @@
 
 New:
 * Support watermarking (thanks smoothdvd)
+* Support for multiple streams (thanks corny)
 
 Improvements:
 * Allow parenthesis in colorspace (thanks walterdavis for initial code and rociiu for finding a bug with it)

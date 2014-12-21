@@ -5,6 +5,9 @@ require 'stringio'
 
 require 'ffmpeg/version'
 require 'ffmpeg/errors'
+require 'ffmpeg/audio_stream'
+require 'ffmpeg/video_stream'
+require 'ffmpeg/subtitle'
 require 'ffmpeg/movie'
 require 'ffmpeg/io_monkey'
 require 'ffmpeg/transcoder'
@@ -60,6 +63,29 @@ module FFMPEG
     end
 
     raise "unable to find ffmpeg binary"
+  end
+
+  def self.parse_options(input)
+    return [] if input==""
+
+    scanner = StringScanner.new input
+    options = [""]
+    level   = 0
+    while char = scanner.getch
+      case char
+      when "(" then level += 1
+      when ")" then level -= 1
+      when ","
+        if level==0
+          # start of next option
+          options << ""
+          scanner.pos += 1
+          next
+        end
+      end
+      options.last << char
+    end
+    options
   end
 
 end
