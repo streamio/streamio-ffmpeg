@@ -174,6 +174,10 @@ module FFMPEG
       "-crf #{value}"
     end
 
+    def convert_strict(value)
+      "-strict #{value}"
+    end
+
     #---------------------------------
 
     def convert_watermark_filter(value)
