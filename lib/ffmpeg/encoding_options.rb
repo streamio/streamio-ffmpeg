@@ -202,7 +202,11 @@ module FFMPEG
 
     def filter_fix_pixels(value)
       raise 'Movie undeffined' unless @movie.is_a? Movie
-      (@movie.pixel_aspect_raito.to_f == 1.0 && value) ? nil : "scale=ih*#{@movie.display_aspect_raito_x}/#{@movie.display_aspect_raito_y}:ih,setsar=1"
+      if value && (@movie.pixel_aspect_raito.to_f == 1.0 || @movie.display_aspect_raito_y == 0)
+        nil
+      else
+        "scale=ih*#{@movie.display_aspect_raito_x}/#{@movie.display_aspect_raito_y}:ih,setsar=1"
+      end
     end
 
     def filter_height(value)
