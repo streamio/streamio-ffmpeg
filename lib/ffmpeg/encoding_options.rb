@@ -22,7 +22,7 @@ module FFMPEG
     end
 
     def to_input_options
-      self[:input_custom] || ""
+      self[:custom_input] || ""
     end
 
     def width
@@ -163,9 +163,9 @@ module FFMPEG
 
     # Don't include custom input options (which must appear before -i) with
     # the output options (which appear after -i).  By leaving this method
-    # defined as returning an empty string, the `:input_custom` options won't
+    # defined as returning an empty string, the `:custom_input` options won't
     # accidentally get duplicated as output options.
-    def convert_input_custom(value)
+    def convert_custom_input(value)
       ""
     end
 
