@@ -5,26 +5,24 @@ module FFMPEG
     end
 
     def to_s
-      to_params("")
-    end
-
-    def to_params(input_param_string="")
       params = collect do |key, value|
         send("convert_#{key}", value) if value && supports_option?(key)
       end
 
-      # seek times should go before the input option to trigger faster input seeking
       # codecs should go before the presets so that the files will be matched successfully
       # all other parameters go after so that we can override whatever is in the preset
-      seeks = params.select { |p| p =~ /\-ss/ }
       codecs = params.select { |p| p =~ /codec/ }
       presets = params.select { |p| p =~ /\-.pre/ }
-      other = params - seeks - codecs - presets
-      params = seeks + [input_param_string] + codecs + presets + other
+      other = params - codecs - presets
+      params = codecs + presets + other
 
       params_string = params.join(" ")
       params_string << " #{convert_aspect(calculate_aspect)}" if calculate_aspect?
       params_string
+    end
+
+    def to_input_options
+      self[:input_custom] || ""
     end
 
     def width
@@ -161,6 +159,14 @@ module FFMPEG
 
     def convert_custom(value)
       value
+    end
+
+    # Don't include custom input options (which must appear before -i) with
+    # the output options (which appear after -i).  By leaving this method
+    # defined as returning an empty string, the `:input_custom` options won't
+    # accidentally get duplicated as output options.
+    def convert_input_custom(value)
+      ""
     end
 
     def k_format(value)

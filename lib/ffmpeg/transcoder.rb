@@ -54,8 +54,8 @@ module FFMPEG
     private
     # frame= 4855 fps= 46 q=31.0 size=   45306kB time=00:02:42.28 bitrate=2287.0kbits/
     def transcode_movie
-      @command = if @raw_options.respond_to?(:to_params)
-        "#{FFMPEG.ffmpeg_binary} -y #{@raw_options.to_params("-i #{Shellwords.escape(@movie.path)}")} #{Shellwords.escape(@output_file)}"
+      @command = if @raw_options.respond_to?(:to_input_options)
+        "#{FFMPEG.ffmpeg_binary} -y #{@raw_options.to_input_options} -i #{Shellwords.escape(@movie.path)} #{@raw_options} #{Shellwords.escape(@output_file)}"
       else
         "#{FFMPEG.ffmpeg_binary} -y -i #{Shellwords.escape(@movie.path)} #{@raw_options} #{Shellwords.escape(@output_file)}"
       end
