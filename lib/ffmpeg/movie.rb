@@ -28,7 +28,7 @@ module FFMPEG
       @time = $1 ? $1.to_f : 0.0
 
       output[/creation_time {1,}: {1,}(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})/]
-      @creation_time = $1 ? Time.parse("#{$1}") : nil
+      @creation_time = parse_creation_time($1)
 
       output[/bitrate: (\d*)/]
       @bitrate = $1 ? $1.to_i : nil
@@ -53,7 +53,7 @@ module FFMPEG
 
       if audio_stream
         @audio_codec, audio_sample_rate, @audio_channels, unused, audio_bitrate = audio_stream.split(/\s?,\s?/)
-        @audio_bitrate = audio_bitrate =~ %r(\A(\d+) kb/s\Z) ? $1.to_i : nil
+        @audio_bitrate = audio_bitrate =~ %r(\A(\d+) kb/s( \(default\))?\Z) ? $1.to_i : nil
         @audio_sample_rate = audio_sample_rate[/\d*/].to_i
       end
 
@@ -131,6 +131,16 @@ module FFMPEG
       output[/test/] # Running a regexp on the string throws error if it's not UTF-8
     rescue ArgumentError
       output.force_encoding("ISO-8859-1")
+    end
+
+    def parse_creation_time(raw_time)
+      if raw_time
+        begin
+          Time.parse(raw_time)
+        rescue ArgumentError => ae
+          FFMPEG.logger.info("Invalid creation_time #{raw_time}")
+        end
+      end
     end
   end
 end
