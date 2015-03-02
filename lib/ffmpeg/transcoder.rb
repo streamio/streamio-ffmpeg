@@ -54,11 +54,22 @@ module FFMPEG
     private
     # frame= 4855 fps= 46 q=31.0 size=   45306kB time=00:02:42.28 bitrate=2287.0kbits/
     def transcode_movie
-      priority = @transcoder_options.try(:[], :priority) || 0
-      @command = "nice -n #{priority} #{FFMPEG.ffmpeg_binary} -y -i #{Shellwords.escape(@movie.path)} #{@raw_options} #{Shellwords.escape(@output_file)}#{' || exit 1' if @transcoder_options.try(:[], :or_exit)}"
-      @command = "#{@command} && #{FFMPEG.qtfaststart_binary} #{Shellwords.escape(@output_file)}" if @transcoder_options.try(:[], :meta_2_begin)
+      priority      = @transcoder_options.try(:[], :priority) || 0
+
+      if FFMPEG.cp_mode
+        if @output_file == '/dev/null'
+            @command = "cp ./features/data/example.log-0.log #{Shellwords.escape("#{File.dirname(@movie.path)}/hds_preprocessing.log-0.log")}
+                     && cp ./features/data/example.log-0.log.mbtree #{Shellwords.escape("#{File.dirname(@movie.path)}/hds_preprocessing.log-0.log.mbtree")}"
+          else
+            @command = "cp ./features/data/example#{File.extname(@output_file)} #{@output_file}"
+        end
+      else
+        @command = "nice -n #{priority} #{FFMPEG.ffmpeg_binary} -y -i #{Shellwords.escape(@movie.path)} #{@raw_options} #{Shellwords.escape(@output_file)}#{' || exit 1' if @transcoder_options.try(:[], :or_exit)}"
+        @command = "#{@command} && #{FFMPEG.qtfaststart_binary} #{Shellwords.escape(@output_file)}" if @transcoder_options.try(:[], :meta_2_begin)
+      end
+
       FFMPEG.logger.info("Running transcoding...\n#{@command}\n")
-      @output = ""
+      @output = ''
 
       # raise @command
 

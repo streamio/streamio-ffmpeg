@@ -57,6 +57,10 @@ module FFMPEG
     @qtfaststart_binary = bin
   end
 
+  def self.cp_mode=(is_enable)
+    @cp_mode = is_enable
+  end
+
   # Get the path to the ffmpeg binary, defaulting to 'ffmpeg'
   #
   # @return [String] the path to the ffmpeg binary
@@ -76,6 +80,10 @@ module FFMPEG
   # @return [String] the path to the ffmpeg binary
   def self.qtfaststart_binary
     @qtfaststart_binary || 'qtfaststart'
+  end
+
+  def self.cp_mode
+    @cp_mode == 'true' || @cp_mode == true
   end
 
 end
