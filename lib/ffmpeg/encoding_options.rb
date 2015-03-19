@@ -166,8 +166,8 @@ module FFMPEG
       "-passlogfile #{value}"
     end
 
-    def convert_profile(value)
-      "-profile #{value}"
+    def convert_video_profile(value)
+      "-profile:v #{value}"
     end
 
     def convert_crf(value)
