@@ -77,6 +77,7 @@ module FFMPEG
     # frame= 4855 fps= 46 q=31.0 size=   45306kB time=00:02:42.28 bitrate=2287.0kbits/
     def transcode_movie(&block)
       @command = "#{FFMPEG.ffmpeg_binary} -y #{@raw_input_options} " \
+                 "-err_detect explode -xerror " \
                  "-i #{Shellwords.escape(@movie.path)} #{@raw_options}"
       @command << Shellwords.escape(@output_file) if @output_file
 
