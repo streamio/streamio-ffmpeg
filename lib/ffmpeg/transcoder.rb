@@ -3,7 +3,7 @@ require 'shellwords'
 
 module FFMPEG
   class Transcoder
-    @@timeout = 30
+    @@timeout = 300
 
     def self.timeout=(time)
       @@timeout = time
