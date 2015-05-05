@@ -233,7 +233,7 @@ module FFMPEG
         end
 
         it "should parse video stream information" do
-          @movie.video_stream.should == "h264 (Main) (avc1 / 0x31637661), yuv420p, 640x480 [SAR 1:1 DAR 4:3], 371 kb/s, 16.75 fps, 600 tbr, 600 tbn, 1200 tbc"
+          @movie.video_stream.should == "h264 (Main) (avc1 / 0x31637661), yuv420p(tv, bt709), 640x480 [SAR 1:1 DAR 4:3], 371 kb/s, 16.75 fps, 600 tbr, 600 tbn, 1200 tbc (default)"
         end
 
         it "should know the video codec" do
@@ -241,7 +241,7 @@ module FFMPEG
         end
 
         it "should know the colorspace" do
-          @movie.colorspace.should == "yuv420p"
+          @movie.colorspace.should == "yuv420p(tv, bt709)"
         end
 
         it "should know the resolution" do
@@ -262,7 +262,7 @@ module FFMPEG
         end
 
         it "should parse audio stream information" do
-          @movie.audio_stream.should == "aac (mp4a / 0x6134706D), 44100 Hz, stereo, fltp, 75 kb/s"
+          @movie.audio_stream.should == "aac (LC) (mp4a / 0x6134706D), 44100 Hz, stereo, fltp, 75 kb/s (default)"
         end
 
         it "should know the audio codec" do

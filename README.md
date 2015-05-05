@@ -1,16 +1,18 @@
-Streamio FFMPEG
+RLovelett FFMPEG
 ===============
 
+[![Build Status](https://travis-ci.org/RLovelett/rlovelett-ffmpeg.svg)](https://travis-ci.org/RLovelett/rlovelett-ffmpeg)
+[![Code Climate](https://codeclimate.com/github/RLovelett/rlovelett-ffmpeg/badges/gpa.svg)](https://codeclimate.com/github/RLovelett/rlovelett-ffmpeg)
+[![Test Coverage](https://codeclimate.com/github/RLovelett/rlovelett-ffmpeg/badges/coverage.svg)](https://codeclimate.com/github/RLovelett/rlovelett-ffmpeg/coverage)
+
+***Forked from [Streamio's](https://github.com/streamio/streamio-ffmpeg) implementation. The upstream repository appears to have stagnated.***
+
 Simple yet powerful wrapper around the ffmpeg command for reading metadata and transcoding movies.
-
-All work on this project is sponsored by the online video platform [Streamio](http://streamio.com).
-
-[![Streamio](http://d253c4ja9jigvu.cloudfront.net/assets/small-logo.png)](http://streamio.com)
 
 Installation
 ------------
 
-    (sudo) gem install streamio-ffmpeg
+    (sudo) gem install rlovelett-ffmpeg
 
 Compatibility
 -------------
@@ -32,7 +34,7 @@ Usage
 
 ``` ruby
 require 'rubygems'
-require 'streamio-ffmpeg'
+require 'rlovelett-ffmpeg'
 ```
 
 ### Reading Metadata
@@ -161,7 +163,7 @@ movie.screenshot("screenshot.png", { seek_time: 2, resolution: '200x120' }, pres
 Specify the path to ffmpeg
 --------------------------
 
-By default, streamio assumes that the ffmpeg binary is available in the execution path and named ffmpeg and so will run commands that look something like "ffmpeg -i /path/to/input.file ...". Use the FFMPEG.ffmpeg_binary setter to specify the full path to the binary if necessary:
+By default, the gem assumes that the ffmpeg binary is available in the execution path and named ffmpeg and so will run commands that look something like "ffmpeg -i /path/to/input.file ...". Use the FFMPEG.ffmpeg_binary setter to specify the full path to the binary if necessary:
 
 ``` ruby
 FFMPEG.ffmpeg_binary = '/usr/local/bin/ffmpeg'
@@ -173,7 +175,7 @@ This will cause the same command to run as "/usr/local/bin/ffmpeg -i /path/to/in
 Automatically kill hung processes
 ---------------------------------
 
-By default, streamio will wait for 30 seconds between IO feedback from the FFMPEG process. After which an error is logged and the process killed.
+By default, the gem will wait for 30 seconds between IO feedback from the FFMPEG process. After which an error is logged and the process killed.
 It is possible to modify this behaviour by setting a new default:
 
 ``` ruby
@@ -203,4 +205,4 @@ movie.transcode("movie.mp4", options, transcoder_options) # returns nil
 Copyright
 ---------
 
-Copyright (c) Streamio AB. See LICENSE for details.
+Copyright (c) Streamio AB and Ryan Lovelett. See LICENSE for details.
