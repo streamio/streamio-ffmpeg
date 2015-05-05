@@ -161,7 +161,7 @@ movie.screenshot("screenshot.png", { seek_time: 2, resolution: '200x120' }, pres
 Specify the path to ffmpeg
 --------------------------
 
-By default, streamio assumes that the ffmpeg binary is available in the execution path and named ffmpeg and so will run commands that look something like "ffmpeg -i /path/to/input.file ...". Use the FFMPEG.ffmpeg_binary setter to specify the full path to the binary if necessary:
+By default, the gem assumes that the ffmpeg binary is available in the execution path and named ffmpeg and so will run commands that look something like "ffmpeg -i /path/to/input.file ...". Use the FFMPEG.ffmpeg_binary setter to specify the full path to the binary if necessary:
 
 ``` ruby
 FFMPEG.ffmpeg_binary = '/usr/local/bin/ffmpeg'
@@ -173,7 +173,7 @@ This will cause the same command to run as "/usr/local/bin/ffmpeg -i /path/to/in
 Automatically kill hung processes
 ---------------------------------
 
-By default, streamio will wait for 30 seconds between IO feedback from the FFMPEG process. After which an error is logged and the process killed.
+By default, the gem will wait for 30 seconds between IO feedback from the FFMPEG process. After which an error is logged and the process killed.
 It is possible to modify this behaviour by setting a new default:
 
 ``` ruby
