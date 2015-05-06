@@ -1,18 +1,65 @@
-FFmpeg version 0.6.1, Copyright (c) 2000-2010 the FFmpeg developers
-  built on Nov 18 2010 13:51:50 with gcc 4.2.1 (Apple Inc. build 5664)
-  configuration: --disable-debug --prefix=/usr/local/Cellar/ffmpeg/0.6.1 --enable-shared --enable-pthreads --enable-nonfree --enable-gpl --disable-indev=jack --enable-libx264 --enable-libfaac --enable-libfaad --enable-libmp3lame --enable-libtheora --enable-libvorbis --enable-libvpx --enable-libxvid
-  libavutil     50.15. 1 / 50.15. 1
-  libavcodec    52.72. 2 / 52.72. 2
-  libavformat   52.64. 2 / 52.64. 2
-  libavdevice   52. 2. 0 / 52. 2. 0
-  libswscale     0.11. 0 /  0.11. 0
-
-Seems stream 0 codec frame rate differs from container frame rate: 2500.00 (2500/1) -> 25.00 (25/1)
-Input #0, mov,mp4,m4a,3gp,3g2,mj2, from 'broken.mov':
-  Metadata:
-    major_brand     : qt  
-    minor_version   : 537199360
-    compatible_brands: qt  
-  Duration: 00:00:23.12, start: 0.000000, bitrate: 28033 kb/s
-    Stream #0.0(eng): Video: Apple ProRes 422, 410x620, 28029 kb/s, 25 fps, 25 tbr, 2500 tbn, 2500 tbc
-At least one output file must be specified
+{
+    "streams": [
+        {
+            "index": 0,
+            "codec_name": "h264",
+            "codec_long_name": "H.264 / AVC / MPEG-4 AVC / MPEG-4 part 10",
+            "profile": "Main",
+            "codec_type": "video",
+            "codec_time_base": "1/38400",
+            "codec_tag_string": "avc1",
+            "codec_tag": "0x31637661",
+            "width": 640,
+            "height": 480,
+            "has_b_frames": 1,
+            "sample_aspect_ratio": "1:1",
+            "display_aspect_ratio": "4:3",
+            "pix_fmt": "yuv420p",
+            "level": 30,
+            "r_frame_rate": "15/1",
+            "avg_frame_rate": "3075/182",
+            "time_base": "1/19200",
+            "start_pts": 0,
+            "start_time": "0.000000",
+            "duration_ts": 139776,
+            "duration": "7.280000",
+            "bit_rate": "374500",
+            "nb_frames": "123",
+            "disposition": {
+                "default": 1,
+                "dub": 0,
+                "original": 0,
+                "comment": 0,
+                "lyrics": 0,
+                "karaoke": 0,
+                "forced": 0,
+                "hearing_impaired": 0,
+                "visual_impaired": 0,
+                "clean_effects": 0,
+                "attached_pic": 0
+            },
+            "tags": {
+                "language": "eng",
+                "handler_name": "DataHandler"
+            }
+        }
+    ],
+    "format": {
+        "filename": "spec/fixtures/movies/no_audio.mov",
+        "nb_streams": 1,
+        "nb_programs": 0,
+        "format_name": "mov,mp4,m4a,3gp,3g2,mj2",
+        "format_long_name": "QuickTime / MOV",
+        "start_time": "0.000000",
+        "duration": "7.280000",
+        "size": "343446",
+        "bit_rate": "377413",
+        "probe_score": 100,
+        "tags": {
+            "major_brand": "qt  ",
+            "minor_version": "512",
+            "compatible_brands": "qt  ",
+            "encoder": "Lavf55.19.104"
+        }
+    }
+}

@@ -1,0 +1,8 @@
+before_install: wget http://johnvansickle.com/ffmpeg/releases/ffmpeg-release-64bit-static.tar.xz -O - | sudo tar -xJ --strip-components=1 -C /usr/local/bin/
+rvm:
+  - 1.9.3
+  - 2.0.0
+  - 2.1
+  - 2.2
+  - ruby-head
+
