@@ -17,10 +17,12 @@ module FFMPEG
       @movie = movie
       @output_file = output_file
 
-      if options.is_a?(String) || options.is_a?(EncodingOptions)
+      if options.is_a?(String)
+        @raw_options = "-i #{Shellwords.escape(@movie.path)} " + options
+      elsif options.is_a?(EncodingOptions)
         @raw_options = options
       elsif options.is_a?(Hash)
-        @raw_options = EncodingOptions.new(options)
+        @raw_options = EncodingOptions.new(options.merge(:input => @movie.path))
       else
         raise ArgumentError, "Unknown options format '#{options.class}', should be either EncodingOptions, Hash or String."
       end
