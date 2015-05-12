@@ -18,6 +18,8 @@ module FFMPEG
       other   = params - codecs - presets - source - seek
       params  = seek + source + codecs + presets + other
 
+      # throw params.join(' ')
+
       params_string = params.join(" ")
       params_string << " #{convert_aspect(calculate_aspect)}" if calculate_aspect?
       params_string
