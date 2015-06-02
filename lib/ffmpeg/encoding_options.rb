@@ -213,6 +213,10 @@ module FFMPEG
       value ? "scale=#{value}*iw/ih:#{value}" : ''
     end
 
+    def filter_fps(value)
+      value ? "fps=#{value}" : ''
+    end
+
 
     def convert_custom(value)
       value

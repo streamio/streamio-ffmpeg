@@ -26,3 +26,5 @@ pkg
 script/*
 tmp/*
 Gemfile.lock
+
+tags
