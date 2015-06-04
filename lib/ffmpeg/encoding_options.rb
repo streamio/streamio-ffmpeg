@@ -1,6 +1,7 @@
 module FFMPEG
   class EncodingOptions < Hash
-    def initialize(options = {})
+    def initialize(options = {}, movie = nil)
+      @movie = movie
       merge!(options)
     end
 
@@ -13,6 +14,7 @@ module FFMPEG
       # all other parameters go after so that we can override whatever is in the preset
       codecs = params.select { |p| p =~ /codec/ }
       presets = params.select { |p| p =~ /\-.pre/ }
+
       other = params - codecs - presets
       params = codecs + presets + other
 
@@ -31,8 +33,13 @@ module FFMPEG
 
     private
     def supports_option?(option)
-      option = RUBY_VERSION < "1.9" ? "convert_#{option}" : "convert_#{option}".to_sym
+      option = RUBY_VERSION < '1.9' ? "convert_#{option}" : "convert_#{option}".to_sym
       private_methods.include?(option)
+    end
+
+    def supports_filter_option?(filter_option)
+      filter_option = RUBY_VERSION < '1.9' ? "filter_#{filter_option}" : "filter_#{filter_option}".to_sym
+      private_methods.include?(filter_option)
     end
 
     def convert_aspect(value)
@@ -140,6 +147,34 @@ module FFMPEG
       "-i #{value}"
     end
 
+    def convert_disable_audio(value)
+      value ? '-an' : ''
+    end
+
+    def convert_format(value)
+      "-f #{value}"
+    end
+
+    def convert_keyframe_interval_minimal(value)
+      "-keyint_min #{value}"
+    end
+
+    def convert_pass(value)
+      "-pass #{value}"
+    end
+
+    def convert_pass_log_file(value)
+      "-passlogfile #{value}"
+    end
+
+    def convert_audio_sync(value)
+      "-async #{value}"
+    end
+
+    def convert_strict(value)
+      "-strict #{value}"
+    end
+
     def convert_watermark_filter(value)
       case value[:position].to_s
       when "LT"
@@ -152,6 +187,36 @@ module FFMPEG
         "-filter_complex 'scale=#{self[:resolution]},overlay=x=main_w-overlay_w-#{value[:padding_x]}:y=main_h-overlay_h-#{value[:padding_y]}'"
       end  
     end
+
+    def convert_filters(vf_options)
+      params = vf_options.collect do |key, value|
+        send("filter_#{key}", value) if value && supports_filter_option?(key)
+      end
+
+      "-vf '#{params.compact.join(',')}'"
+    end
+
+    def filter_height_divisible(value)
+      value ? 'scale=trunc(iw/2)*2:trunc(ih/2)*2' : ''
+    end
+
+    def filter_fix_pixels(value)
+      raise 'Movie undeffined' unless @movie.is_a? Movie
+      if value && (@movie.pixel_aspect_raito.to_f == 1.0 || @movie.display_aspect_raito_y == 0)
+        nil
+      else
+        "scale=ih*#{@movie.display_aspect_raito_x}/#{@movie.display_aspect_raito_y}:ih,setsar=1"
+      end
+    end
+
+    def filter_height(value)
+      value ? "scale=#{value}*iw/ih:#{value}" : ''
+    end
+
+    def filter_fps(value)
+      value ? "fps=#{value}" : ''
+    end
+
 
     def convert_custom(value)
       value

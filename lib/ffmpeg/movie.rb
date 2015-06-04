@@ -6,6 +6,7 @@ module FFMPEG
     attr_reader :video_stream, :video_codec, :video_bitrate, :colorspace, :resolution, :sar, :dar
     attr_reader :audio_stream, :audio_codec, :audio_bitrate, :audio_sample_rate
     attr_reader :container
+    attr_reader :display_aspect_raito, :pixel_aspect_raito
 
     def initialize(path)
       raise Errno::ENOENT, "the file '#{path}' does not exist" unless File.exists?(path)
@@ -15,6 +16,12 @@ module FFMPEG
       # ffmpeg will output to stderr
       command = "#{FFMPEG.ffmpeg_binary} -i #{Shellwords.escape(path)}"
       output = Open3.popen3(command) { |stdin, stdout, stderr| stderr.read }
+
+      mediainfo_command = "#{FFMPEG.mediainfo_binary} --Inform=\"Video;%DisplayAspectRatio/String% %PixelAspectRatio%\" #{Shellwords.escape(path)}"
+      mediainfo_output  = Open3.popen3(mediainfo_command) { |stdin, stdout, stderr| stdout.read }
+
+      @display_aspect_raito, @pixel_aspect_raito = mediainfo_output.split(' ')
+
 
       fix_encoding(output)
 
@@ -58,8 +65,8 @@ module FFMPEG
       end
 
       @invalid = true if @video_stream.to_s.empty? && @audio_stream.to_s.empty?
-      @invalid = true if output.include?("is not supported")
-      @invalid = true if output.include?("could not find codec parameters")
+      @invalid = true if output.include?('is not supported')
+      @invalid = true if output.include?('could not find codec parameters')
     end
 
     def valid?
@@ -67,11 +74,20 @@ module FFMPEG
     end
 
     def width
-      resolution.split("x")[0].to_i rescue nil
+      resolution.split('x')[0].to_i rescue nil
     end
 
     def height
-      resolution.split("x")[1].to_i rescue nil
+      resolution.split('x')[1].to_i rescue nil
+    end
+
+
+    def display_aspect_raito_x
+      display_aspect_raito.split(':')[0].to_i rescue nil
+    end
+
+    def display_aspect_raito_y
+      display_aspect_raito.split(":")[1].to_i rescue nil
     end
 
     def calculated_aspect_ratio
@@ -88,10 +104,10 @@ module FFMPEG
 
     def audio_channels
       return nil unless @audio_channels
-      return @audio_channels[/\d*/].to_i if @audio_channels["channels"]
-      return 1 if @audio_channels["mono"]
-      return 2 if @audio_channels["stereo"]
-      return 6 if @audio_channels["5.1"]
+      return @audio_channels[/\d*/].to_i if @audio_channels['channels']
+      return 1 if @audio_channels['mono']
+      return 2 if @audio_channels['stereo']
+      return 6 if @audio_channels['5.1']
     end
 
     def frame_rate
@@ -110,14 +126,14 @@ module FFMPEG
     protected
     def aspect_from_dar
       return nil unless dar
-      w, h = dar.split(":")
+      w, h = dar.split(':')
       aspect = w.to_f / h.to_f
       aspect.zero? ? nil : aspect
     end
 
     def aspect_from_sar
       return nil unless sar
-      w, h = sar.split(":")
+      w, h = sar.split(':')
       aspect = w.to_f / h.to_f
       aspect.zero? ? nil : aspect
     end
@@ -130,7 +146,7 @@ module FFMPEG
     def fix_encoding(output)
       output[/test/] # Running a regexp on the string throws error if it's not UTF-8
     rescue ArgumentError
-      output.force_encoding("ISO-8859-1")
+      output.force_encoding('ISO-8859-1')
     end
   end
 end

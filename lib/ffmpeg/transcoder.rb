@@ -3,7 +3,7 @@ require 'shellwords'
 
 module FFMPEG
   class Transcoder
-    @@timeout = 30
+    @@timeout = 300
 
     def self.timeout=(time)
       @@timeout = time
@@ -20,7 +20,7 @@ module FFMPEG
       if options.is_a?(String) || options.is_a?(EncodingOptions)
         @raw_options = options
       elsif options.is_a?(Hash)
-        @raw_options = EncodingOptions.new(options)
+        @raw_options = EncodingOptions.new(options, movie)
       else
         raise ArgumentError, "Unknown options format '#{options.class}', should be either EncodingOptions, Hash or String."
       end
@@ -54,9 +54,24 @@ module FFMPEG
     private
     # frame= 4855 fps= 46 q=31.0 size=   45306kB time=00:02:42.28 bitrate=2287.0kbits/
     def transcode_movie
-      @command = "#{FFMPEG.ffmpeg_binary} -y -i #{Shellwords.escape(@movie.path)} #{@raw_options} #{Shellwords.escape(@output_file)}"
+      priority      = @transcoder_options.try(:[], :priority) || 0
+
+      if FFMPEG.cp_mode
+        if @output_file == '/dev/null'
+            @command = "cp ./features/data/example.log-0.log #{Shellwords.escape("#{File.dirname(@movie.path)}/hds_preprocessing.log-0.log")}
+                     && cp ./features/data/example.log-0.log.mbtree #{Shellwords.escape("#{File.dirname(@movie.path)}/hds_preprocessing.log-0.log.mbtree")}"
+          else
+            @command = "cp ./features/data/example#{File.extname(@output_file)} #{@output_file}"
+        end
+      else
+        @command = "nice -n #{priority} #{FFMPEG.ffmpeg_binary} -y -i #{Shellwords.escape(@movie.path)} #{@raw_options} #{Shellwords.escape(@output_file)}#{' || exit 1' if @transcoder_options.try(:[], :or_exit)}"
+        @command = "#{@command} && #{FFMPEG.qtfaststart_binary} #{Shellwords.escape(@output_file)}" if @transcoder_options.try(:[], :meta_2_begin)
+      end
+
       FFMPEG.logger.info("Running transcoding...\n#{@command}\n")
-      @output = ""
+      @output = ''
+
+      # raise @command
 
       Open3.popen3(@command) do |stdin, stdout, stderr, wait_thr|
         begin
@@ -100,21 +115,24 @@ module FFMPEG
     end
 
     def apply_transcoder_options
+
        # if true runs #validate_output_file
       @transcoder_options[:validate] = @transcoder_options.fetch(:validate) { true }
 
       return if @movie.calculated_aspect_ratio.nil?
       case @transcoder_options[:preserve_aspect_ratio].to_s
-      when "width"
+      when ['width', 'video']
         new_height = @raw_options.width / @movie.calculated_aspect_ratio
         new_height = new_height.ceil.even? ? new_height.ceil : new_height.floor
         new_height += 1 if new_height.odd? # needed if new_height ended up with no decimals in the first place
         @raw_options[:resolution] = "#{@raw_options.width}x#{new_height}"
-      when "height"
+      when ['height', 'video']
         new_width = @raw_options.height * @movie.calculated_aspect_ratio
         new_width = new_width.ceil.even? ? new_width.ceil : new_width.floor
         new_width += 1 if new_width.odd?
         @raw_options[:resolution] = "#{new_width}x#{@raw_options.height}"
+      when ['height', 'screenshot']
+      when ['width', 'screenshot']
       end
     end
 
