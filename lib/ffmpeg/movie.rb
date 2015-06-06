@@ -49,6 +49,7 @@ module FFMPEG
                          end
 
         @bitrate = metadata[:format][:bit_rate].to_i
+        @size = metadata[:format][:size].to_i
 
         unless video_streams.empty?
           # TODO: Handle multiple video codecs (is that possible?)
@@ -114,7 +115,11 @@ module FFMPEG
     end
 
     def size
-      File.size(@path)
+      if @size
+        @size
+      else
+        File.size(@path)
+      end 
     end
 
     def audio_channel_layout
