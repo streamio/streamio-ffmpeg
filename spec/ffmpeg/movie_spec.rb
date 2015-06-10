@@ -44,6 +44,11 @@ module FFMPEG
         it "should have nil frame_rate" do
           @movie.frame_rate.should be_nil
         end
+
+        it "should know the file size" do
+          File.should_receive(:size).with(__FILE__).and_return(1)
+          @movie.size.should == 1
+        end
       end
 
       context "given an empty flv file (could not find codec parameters)" do
