@@ -29,6 +29,12 @@ module FFMPEG
       self[:resolution].split("x").last.to_i rescue nil
     end
 
+    def reverse_resolution
+      return "Resolution not found" if height.nil? || width.nil? 
+      @reverse_resolution = height.to_s + "x" + width.to_s
+      self[:resolution] = @reverse_resolution
+    end
+
     private
     def supports_option?(option)
       option = RUBY_VERSION < "1.9" ? "convert_#{option}" : "convert_#{option}".to_sym
@@ -176,6 +182,10 @@ module FFMPEG
 
     def convert_strict(value)
       "-strict #{value}"
+    end
+
+    def convert_transpose(value)
+      "-vf transpose=#{value}"
     end
 
     #---------------------------------
