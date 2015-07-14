@@ -29,6 +29,7 @@ module FFMPEG
       @errors = []
 
       apply_transcoder_options
+      apply_transpose
     end
 
     def run(&block)
@@ -116,6 +117,9 @@ module FFMPEG
         new_width += 1 if new_width.odd?
         @raw_options[:resolution] = "#{new_width}x#{@raw_options.height}"
       end
+    end
+
+    def apply_transpose
       case @raw_options[:transpose].to_i
       when 1, 3
         @raw_options.reverse_resolution
