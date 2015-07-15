@@ -22,17 +22,17 @@ module FFMPEG
     end
 
     def width
-      self[:resolution].split("x").first.to_i rescue nil
+      self["resolution"].split("x").first.to_i rescue nil
     end
 
     def height
-      self[:resolution].split("x").last.to_i rescue nil
+      self["resolution"].split("x").last.to_i rescue nil
     end
 
     def reverse_resolution
       return "Resolution not found" if height.nil? || width.nil? 
       @reverse_resolution = height.to_s + "x" + width.to_s
-      self[:resolution] = @reverse_resolution
+      self["resolution"] = @reverse_resolution
     end
 
     private
