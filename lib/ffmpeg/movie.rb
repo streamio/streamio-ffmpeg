@@ -136,6 +136,14 @@ module FFMPEG
                                end
     end
 
+    def vertical?
+      width && height && (height > width)
+    end
+
+    def horizontal?
+      width && height && (width > height)
+    end
+
     def transcode(output_file, options = EncodingOptions.new, transcoder_options = {}, &block)
       Transcoder.new(self, output_file, options, transcoder_options).run &block
     end
