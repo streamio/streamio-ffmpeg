@@ -50,12 +50,12 @@ module FFMPEG
           @movie.size.should == 1
         end
 
-        it 'should not be vertical' do
-          @movie.vertical?.should_not be_true
+        it 'should not be portrait' do
+          @movie.portrait?.should_not be_true
         end
 
-        it 'should not be horizontal' do
-          @movie.horizontal?.should_not be_true
+        it 'should not be landscape' do
+          @movie.landscape?.should_not be_true
         end
       end
 
@@ -68,12 +68,12 @@ module FFMPEG
           @movie.should_not be_valid
         end
 
-        it 'should not be vertical' do
-          @movie.vertical?.should_not be_true
+        it 'should not be portrait' do
+          @movie.portrait?.should_not be_true
         end
 
-        it 'should not be horizontal' do
-          @movie.horizontal?.should_not be_true
+        it 'should not be landscape' do
+          @movie.landscape?.should_not be_true
         end
       end
 
@@ -90,12 +90,12 @@ module FFMPEG
           @movie.calculated_aspect_ratio.should be_nil
         end
 
-        it 'should not be vertical' do
-          @movie.vertical?.should_not be_true
+        it 'should not be portrait' do
+          @movie.portrait?.should_not be_true
         end
 
-        it 'should not be horizontal' do
-          @movie.horizontal?.should_not be_true
+        it 'should not be landscape' do
+          @movie.landscape?.should_not be_true
         end
       end
 
@@ -301,12 +301,12 @@ module FFMPEG
         @movie = Movie.new("#{fixture_path}/movies/awesome_widescreen.mov")
       end
 
-      it 'should not be vertical' do
-        @movie.vertical?.should_not be_true
+      it 'should not be portrait' do
+        @movie.portrait?.should_not be_true
       end
 
-      it 'should be horizontal' do
-        @movie.horizontal?.should be_true
+      it 'should be landscape' do
+        @movie.landscape?.should be_true
       end
     end
 
@@ -315,12 +315,12 @@ module FFMPEG
         @movie = Movie.new("#{fixture_path}/movies/sideways movie.mov")
       end
 
-      it 'should not be horizontal' do
-        @movie.vertical?.should_not be_true
+      it 'should not be landscape' do
+        @movie.portrait?.should_not be_true
       end
 
-      it 'should be vertical' do
-        @movie.horizontal?.should be_true
+      it 'should be portrait' do
+        @movie.landscape?.should be_true
       end
     end
 

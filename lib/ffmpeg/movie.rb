@@ -136,11 +136,11 @@ module FFMPEG
                                end
     end
 
-    def vertical?
+    def portrait?
       width && height && (height > width)
     end
 
-    def horizontal?
+    def landscape?
       width && height && (width > height)
     end
 
