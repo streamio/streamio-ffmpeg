@@ -49,6 +49,14 @@ module FFMPEG
           File.should_receive(:size).with(__FILE__).and_return(1)
           @movie.size.should == 1
         end
+
+        it 'should not be portrait' do
+          @movie.portrait?.should_not be_true
+        end
+
+        it 'should not be landscape' do
+          @movie.landscape?.should_not be_true
+        end
       end
 
       context "given an empty flv file (could not find codec parameters)" do
@@ -58,6 +66,14 @@ module FFMPEG
 
         it "should not be valid" do
           @movie.should_not be_valid
+        end
+
+        it 'should not be portrait' do
+          @movie.portrait?.should_not be_true
+        end
+
+        it 'should not be landscape' do
+          @movie.landscape?.should_not be_true
         end
       end
 
@@ -72,6 +88,14 @@ module FFMPEG
 
         it "should have nil calculated_aspect_ratio" do
           @movie.calculated_aspect_ratio.should be_nil
+        end
+
+        it 'should not be portrait' do
+          @movie.portrait?.should_not be_true
+        end
+
+        it 'should not be landscape' do
+          @movie.landscape?.should_not be_true
         end
       end
 
@@ -269,6 +293,34 @@ module FFMPEG
         it "should know the container" do
           @movie.container.should == "mov,mp4,m4a,3gp,3g2,mj2"
         end
+      end
+    end
+
+    context 'given an awesome_widescreen file' do
+      before(:all) do
+        @movie = Movie.new("#{fixture_path}/movies/awesome_widescreen.mov")
+      end
+
+      it 'should not be portrait' do
+        @movie.portrait?.should_not be_true
+      end
+
+      it 'should be landscape' do
+        @movie.landscape?.should be_true
+      end
+    end
+
+    context 'given an sideways movie file' do
+      before(:all) do
+        @movie = Movie.new("#{fixture_path}/movies/sideways movie.mov")
+      end
+
+      it 'should not be landscape' do
+        @movie.portrait?.should_not be_true
+      end
+
+      it 'should be portrait' do
+        @movie.landscape?.should be_true
       end
     end
 
