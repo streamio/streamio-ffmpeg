@@ -268,10 +268,10 @@ module FFMPEG
 
       end
 
-      context "given a file with improperly formatted creation_time" do
+      context 'given a file with improperly formatted creation_time' do
         let(:movie) { Movie.new("#{fixture_path}/sounds/bad_metadata_creation_time.wav") }
 
-        it "should set creation_time to nil" do
+        it 'should set creation_time to nil' do
           expect(movie.creation_time).to be_nil
         end
       end
@@ -290,6 +290,14 @@ module FFMPEG
 
       context "given an awesome movie file" do
         let(:movie) { Movie.new("#{fixture_path}/movies/awesome movie.mov") }
+
+        it 'exposes the format tags' do
+          expect(movie.format_tags.keys).to include(:major_brand, :minor_version, :compatible_brands, :creation_time)
+        end
+
+        it 'exposes the metadata' do
+          expect(movie.metadata.keys).to include(:streams, :format)
+        end
 
         it "should remember the movie path" do
           expect(movie.path).to eq("#{fixture_path}/movies/awesome movie.mov")
