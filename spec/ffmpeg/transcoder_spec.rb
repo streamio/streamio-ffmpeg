@@ -74,7 +74,7 @@ module FFMPEG
           transcoder.encoded.should be_valid
           progress_updates.should include(0.0, 1.0)
           progress_updates.length.should >= 3
-          File.exists?("#{tmp_path}/awesome.flv").should be_true
+          File.exists?("#{tmp_path}/awesome.flv").should be_truthy
         end
 
         it "should transcode the movie with EncodingOptions" do
@@ -153,7 +153,7 @@ module FFMPEG
           expect { Transcoder.new(movie, "#{tmp_path}/output with 'quote.flv").run }.not_to raise_error
         end
 
-        pending "should not crash on ISO-8859-1 characters (dont know how to spec this)"
+        xit "should not crash on ISO-8859-1 characters (dont know how to spec this)"
 
         it "should fail when given an invalid movie" do
           FFMPEG.logger.should_receive(:error)
@@ -197,7 +197,7 @@ module FFMPEG
 
           it "should not fail when the timeout is exceeded" do
             transcoder = Transcoder.new(movie, "#{tmp_path}/timeout.mp4")
-            expect { transcoder.run }.not_to raise_error(FFMPEG::Error, /Process hung/)
+            expect { transcoder.run }.not_to raise_error
           end
 
           after do
