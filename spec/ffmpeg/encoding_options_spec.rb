@@ -116,6 +116,10 @@ module FFMPEG
         EncodingOptions.new(screenshot: true, vframes: 123).to_s.should == '-vframes 123 -f image2 '
       end
 
+      it 'should specify screenshot parameters when using video quality -v:q' do
+        EncodingOptions.new(screenshot: true, vframes: 123, quality: 3).to_s.should == '-vframes 123 -q:v 3 -f image2  '
+      end
+
       it "should put the parameters in order of codecs, presets, others" do
         opts = Hash.new
         opts[:frame_rate] = 25

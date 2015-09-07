@@ -126,7 +126,8 @@ module FFMPEG
     end
 
     def convert_screenshot(value)
-      value ? "-vframes #{self[:vframes] || 1} -f image2" : ""
+      quality = " -q:v #{self[:quality]}" if self[:quality].to_i > 0
+      value ? "-vframes #{self[:vframes] || 1}#{quality} -f image2" : ""
     end
 
     def convert_x264_vprofile(value)
