@@ -199,9 +199,9 @@ module FFMPEG
             FFMPEG.ffmpeg_binary = "#{fixture_path}/bin/ffmpeg-audio-only"
           end
 
-          it "should not fail when the timeout is exceeded" do
+          it 'should fail when the timeout is exceeded' do
             transcoder = Transcoder.new(movie, "#{tmp_path}/timeout.mp4")
-            expect { transcoder.run }.not_to raise_error
+            expect { transcoder.run }.to raise_error
           end
 
           after do
