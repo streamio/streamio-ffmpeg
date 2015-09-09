@@ -57,9 +57,9 @@ module FFMPEG
             Transcoder.timeout = false
           end
 
-          it "should still work" do
-            encoded = Transcoder.new(movie, "#{tmp_path}/awesome.mp4").run
-            encoded.resolution.should == "640x480"
+          it 'should still work with (NTSC target)' do
+            encoded = Transcoder.new(movie, "#{tmp_path}/awesome.mpg",  target: 'ntsc-vcd').run
+            encoded.resolution.should == '352x240'
           end
 
           after { Transcoder.timeout = @original_timeout }
