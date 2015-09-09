@@ -153,7 +153,11 @@ module FFMPEG
           expect { Transcoder.new(movie, "#{tmp_path}/output with 'quote.flv").run }.not_to raise_error
         end
 
-        xit "should not crash on ISO-8859-1 characters (dont know how to spec this)"
+        it 'should not crash on ISO-8859-1 characters' do
+          FileUtils.rm_f "#{tmp_path}/saløndethé.flv"
+
+          expect { Transcoder.new(movie, "#{tmp_path}/saløndethé.flv").run }.not_to raise_error
+        end
 
         it "should fail when given an invalid movie" do
           FFMPEG.logger.should_receive(:error)
