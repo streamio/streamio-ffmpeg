@@ -130,8 +130,16 @@ module FFMPEG
     end
 
     def convert_screenshot(value)
-      quality = " -q:v #{self[:quality]}" if self[:quality].to_i > 0
-      value ? "-vframes #{self[:vframes] || 1}#{quality} -f image2" : ""
+      vframes = '-vframes 1 ' unless self[:vframes]
+      value ? "#{vframes}-f image2" : ""
+    end
+
+    def convert_quality(value)
+      "-q:v #{value}"
+    end
+
+    def convert_vframes(value)
+      "-vframes #{value}"
     end
 
     def convert_x264_vprofile(value)

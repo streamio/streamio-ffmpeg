@@ -117,11 +117,11 @@ module FFMPEG
       end
 
       it 'should specify screenshot parameters when using -vframes' do
-        EncodingOptions.new(screenshot: true, vframes: 123).to_s.should == '-vframes 123 -f image2 '
+        EncodingOptions.new(screenshot: true, vframes: 123).to_s.should == '-f image2 -vframes 123'
       end
 
       it 'should specify screenshot parameters when using video quality -v:q' do
-        EncodingOptions.new(screenshot: true, vframes: 123, quality: 3).to_s.should == '-vframes 123 -q:v 3 -f image2  '
+        EncodingOptions.new(screenshot: true, vframes: 123, quality: 3).to_s.should == '-f image2 -vframes 123 -q:v 3'
       end
 
       it "should put the parameters in order of codecs, presets, others" do
