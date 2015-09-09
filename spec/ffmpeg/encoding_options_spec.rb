@@ -88,6 +88,10 @@ module FFMPEG
         EncodingOptions.new(duration: 30).to_s.should == "-t 30"
       end
 
+      it "should convert target" do
+        EncodingOptions.new(target: 'ntsc-vcd').to_s.should == "-target ntsc-vcd"
+      end
+
       it "should convert keyframe interval" do
         EncodingOptions.new(keyframe_interval: 60).to_s.should == "-g 60"
       end
