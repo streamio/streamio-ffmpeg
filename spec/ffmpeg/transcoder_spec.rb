@@ -88,7 +88,7 @@ module FFMPEG
           encoded.video_codec.should =~ /h264/
           encoded.resolution.should == "320x240"
           encoded.frame_rate.should == 10.0
-          encoded.audio_bitrate.should be_within(2).of(32)
+          encoded.audio_bitrate.should be_within(2000).of(32000)
           encoded.audio_codec.should =~ /mp3/
           encoded.audio_sample_rate.should == 22050
           encoded.audio_channels.should == 1
