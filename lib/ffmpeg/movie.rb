@@ -4,10 +4,10 @@ module FFMPEG
   class Movie
     attr_reader :path, :time, :bitrate, :rotation, :creation_time
     attr_reader :video_stream, :video_codec, :video_bitrate, :colorspace, :resolution, :sar, :dar
-    attr_reader :audio_stream, :audio_codec, :audio_bitrate, :audio_sample_rate
+    attr_reader :audio_stream, :audio_codec, :audio_bitrate, :audio_sample_rate, :audio_track_id
     attr_reader :container
 
-    attr_accessor :duration
+    attr_accessor :duration, :audio_language
 
     def initialize(path)
       raise Errno::ENOENT, "the file '#{path}' does not exist" unless File.exists?(path)
@@ -54,6 +54,9 @@ module FFMPEG
       end
 
       if audio_stream
+        output[/Stream #.:(.)\((.+)\): Audio/]
+        @audio_track_id = $1.to_i
+        @audio_language = $2
         @audio_codec, audio_sample_rate, @audio_channels, unused, audio_bitrate = audio_stream.split(/\s?,\s?/)
         @audio_bitrate = audio_bitrate =~ %r(\A(\d+) kb/s) ? $1.to_i : nil
         @audio_sample_rate = audio_sample_rate[/\d*/].to_i
@@ -91,9 +94,10 @@ module FFMPEG
     def audio_channels
       return nil unless @audio_channels
       return @audio_channels[/\d*/].to_i if @audio_channels["channels"]
-      return 1 if @audio_channels["mono"]
-      return 2 if @audio_channels["stereo"]
-      return 6 if @audio_channels["5.1"]
+      return 1 if @audio_channels['mono']
+      return 2 if @audio_channels['stereo']
+      return 6 if @audio_channels['5.1']
+      return 8 if @audio_channels['7.1']
     end
 
     def frame_rate
@@ -102,14 +106,20 @@ module FFMPEG
     end
 
     def transcode(output_file,
-                  options = EncodingOptions.new,
-                  input_options = EncodingOptions.new,
-                  transcoder_options = {}, &block)
+      options = EncodingOptions.new,
+      input_options = EncodingOptions.new,
+      transcoder_options = {}, &block)
       Transcoder.new(self, output_file, options, input_options, transcoder_options).run &block
     end
 
     def screenshot(output_file, options = EncodingOptions.new, transcoder_options = {}, &block)
       Transcoder.new(self, output_file, options.merge(screenshot: true), transcoder_options).run &block
+    end
+
+    def audio_language=(lang_code, output_file = @path)
+      command = "#{FFMPEG.ffmpeg_binary} -y -i #{Shellwords.escape(@path)} -acodec copy -metadata:s:a:#{@audio_track_id} language=#{lang_code} #{ @path + '_tmp.mp4'}"
+      Open3.popen3(command) { |stdin, stdout, stderr| stderr.read }
+      FileUtils.mv("#{ @path + '_tmp.mp4' }",  output_file, force: true)
     end
 
     protected
