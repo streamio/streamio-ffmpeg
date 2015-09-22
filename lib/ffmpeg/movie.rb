@@ -117,7 +117,7 @@ module FFMPEG
     end
 
     def audio_language=(lang_code, output_file = @path)
-      command = "#{FFMPEG.ffmpeg_binary} -y -i #{Shellwords.escape(@path)} -acodec copy -metadata:s:a:#{@audio_track_id} language=#{lang_code} #{ @path + '_tmp.mp4'}"
+      command = "#{FFMPEG.ffmpeg_binary} -y -i #{Shellwords.escape(@path)} -codec copy -metadata:s:a:#{@audio_track_id} language=#{lang_code} #{ @path + '_tmp.mp4'}"
       Open3.popen3(command) { |stdin, stdout, stderr| stderr.read }
       FileUtils.mv("#{ @path + '_tmp.mp4' }",  output_file, force: true)
     end
