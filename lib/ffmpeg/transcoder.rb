@@ -99,10 +99,11 @@ module FFMPEG
           FFMPEG.logger.error message
           raise StandardError, message
         rescue => e
-          message = "ERROR Executing FFMPEG...\nCommand: #{@command}\nOutput: #{@output}" \
-            "\nMessage: #{e.message}\nBacktrace: #{e.backtrace}"
-          FFMPEG.logger.error message
-          raise StandardError, message
+          raise_ffmpeg_exception(e.message, e.backtrace)
+        ensure
+          unless wait_thr.value.success?
+            raise_ffmpeg_exception(nil, nil)
+          end
         end
       end
     end
@@ -163,6 +164,16 @@ module FFMPEG
       output[/test/]
     rescue ArgumentError
       output.force_encoding("ISO-8859-1")
+    end
+
+    def raise_ffmpeg_exception(message, backtrace)
+      m = "ERROR Executing FFMPEG..." \
+        "\nCommand: #{@command}" \
+        "\nOutput: #{@output}"
+      m << "\nMessage: #{message}" if message
+      m << "\nBacktrace: #{backtrace}" if backtrace
+      FFMPEG.logger.error m
+      raise StandardError, m
     end
   end
 end
