@@ -13,22 +13,43 @@ module FFMPEG
       @@timeout
     end
 
-    def initialize(movie, output_file, options = EncodingOptions.new, transcoder_options = {})
+    def initialize(movie,
+                   output_file,
+                   options = EncodingOptions.new,
+                   input_options = EncodingOptions.new,
+                   transcoder_options = {})
       @movie = movie
       @output_file = output_file
 
-      if options.is_a?(String) || options.is_a?(EncodingOptions)
-        @raw_options = options
-      elsif options.is_a?(Hash)
-        @raw_options = EncodingOptions.new(options)
-      else
-        raise ArgumentError, "Unknown options format '#{options.class}', should be either EncodingOptions, Hash or String."
-      end
+      assign_input_options(input_options)
+      assign_output_options(options)
 
       @transcoder_options = transcoder_options
       @errors = []
 
       apply_transcoder_options
+    end
+
+    def assign_input_options(input_options)
+      if input_options.is_a?(String) || input_options.is_a?(EncodingOptions)
+        @raw_input_options = input_options
+      elsif input_options.is_a?(Hash)
+        @raw_input_options = EncodingOptions.new(input_options)
+      else
+        raise ArgumentError, "Unknown input options format '#{input_options.class}', " \
+                             "should be either EncodingOptions, Hash or String."
+      end
+    end
+
+    def assign_output_options(options)
+      if options.is_a?(String) || options.is_a?(EncodingOptions)
+        @raw_options = options
+      elsif options.is_a?(Hash)
+        @raw_options = EncodingOptions.new(options)
+      else
+        raise ArgumentError, "Unknown options format '#{options.class}', " \
+                             "should be either EncodingOptions, Hash or String."
+      end
     end
 
     def run(&block)
@@ -51,39 +72,60 @@ module FFMPEG
       @encoded ||= Movie.new(@output_file)
     end
 
+
     private
     # frame= 4855 fps= 46 q=31.0 size=   45306kB time=00:02:42.28 bitrate=2287.0kbits/
-    def transcode_movie
-      @command = "#{FFMPEG.ffmpeg_binary} -y -i #{Shellwords.escape(@movie.path)} #{@raw_options} #{Shellwords.escape(@output_file)}"
+    def transcode_movie(&block)
+      @command = "#{FFMPEG.ffmpeg_binary} -y #{@raw_input_options} " \
+                 "-err_detect explode -xerror " \
+                 "-i #{Shellwords.escape(@movie.path)} #{@raw_options}"
+      @command << Shellwords.escape(@output_file) if @output_file
+
       FFMPEG.logger.info("Running transcoding...\n#{@command}\n")
       @output = ""
 
       Open3.popen3(@command) do |stdin, stdout, stderr, wait_thr|
         begin
           yield(0.0) if block_given?
-          next_line = Proc.new do |line|
-            fix_encoding(line)
-            @output << line
-            if line.include?("time=")
-              if line =~ /time=(\d+):(\d+):(\d+.\d+)/ # ffmpeg 0.8 and above style
-                time = ($1.to_i * 3600) + ($2.to_i * 60) + $3.to_f
-              else # better make sure it wont blow up in case of unexpected output
-                time = 0.0
-              end
-              progress = time / @movie.duration
-              yield(progress) if block_given?
-            end
-          end
-
+          next_line = process_next_line(&block)
           if @@timeout
             stderr.each_with_timeout(wait_thr.pid, @@timeout, 'size=', &next_line)
           else
             stderr.each('size=', &next_line)
           end
-
         rescue Timeout::Error => e
-          FFMPEG.logger.error "Process hung...\n@command\n#{@command}\nOutput\n#{@output}\n"
-          raise Error, "Process hung. Full output: #{@output}"
+          message = "Process hung...\nCommand: #{@command}\nOutput: #{@output}" \
+            "\nMessage: #{e.message}\nBacktrace: #{e.backtrace}"
+          FFMPEG.logger.error message
+          raise StandardError, message
+        rescue => e
+          raise_ffmpeg_exception(e.message, e.backtrace)
+        ensure
+          unless wait_thr.value.success?
+            raise_ffmpeg_exception(nil, nil)
+          end
+        end
+      end
+    end
+
+    def calculate_progress(line)
+      if line =~ /time=(\d+):(\d+):(\d+.\d+)/ # ffmpeg 0.8 and above style
+        time = ($1.to_i * 3600) + ($2.to_i * 60) + $3.to_f
+      else # better make sure it wont blow up in case of unexpected output
+        time = 0.0
+      end
+      progress = time / @movie.duration
+      yield(progress) if block_given?
+    end
+
+    def process_next_line(&block)
+      Proc.new do |line|
+        fix_encoding(line)
+        @output << line
+        if line.include?("time=")
+          calculate_progress(line, &block)
+        elsif line.include?("Error while")
+          raise StandardError, "ERROR in command: #{@command}, \nOutput: #{@output}"
         end
       end
     end
@@ -122,6 +164,16 @@ module FFMPEG
       output[/test/]
     rescue ArgumentError
       output.force_encoding("ISO-8859-1")
+    end
+
+    def raise_ffmpeg_exception(message, backtrace)
+      m = "ERROR Executing FFMPEG..." \
+        "\nCommand: #{@command}" \
+        "\nOutput: #{@output}"
+      m << "\nMessage: #{message}" if message
+      m << "\nBacktrace: #{backtrace}" if backtrace
+      FFMPEG.logger.error m
+      raise StandardError, m
     end
   end
 end
