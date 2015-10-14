@@ -109,7 +109,7 @@ Aspect ratio is added to encoding options automatically if none is specified.
 options = { resolution: "320x180" } # Will add -aspect 1.77777777777778 to ffmpeg
 ```
 
-Preserve aspect ratio on width or height by using the preserve_aspect_ratio transcoder option.
+Preserve aspect ratio by using the preserve_aspect_ratio transcoder option.
 
 ``` ruby
 widescreen_movie = FFMPEG::Movie.new("path/to/widescreen_movie.mov")
@@ -121,6 +121,10 @@ widescreen_movie.transcode("movie.mp4", options, transcoder_options) # Output re
 
 transcoder_options = { preserve_aspect_ratio: :height }
 widescreen_movie.transcode("movie.mp4", options, transcoder_options) # Output resolution will be 426x240
+
+options = { resolution: "240x320" } # portrait
+transcoder_options = { preserve_aspect_ratio: :fit }
+widescreen_movie.transcode("movie.mp4", options, transcoder_options) # Output resolution will be 240x180
 ```
 
 For constant bitrate encoding use video_min_bitrate and video_max_bitrate with buffer_size.

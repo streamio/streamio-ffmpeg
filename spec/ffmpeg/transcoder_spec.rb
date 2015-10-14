@@ -129,6 +129,60 @@ module FFMPEG
             encoded = Transcoder.new(@movie, "#{tmp_path}/preserved_aspect.mp4", @options, special_options).run
             encoded.resolution.should == "320x260" # 320 / 1.234 should at first be rounded to 259
           end
+
+          context "fit" do
+            before :each do
+              @special_options = {preserve_aspect_ratio: :fit}
+            end
+
+            it "should preserve width when input is landscape and options resolution is portrait" do
+              movie = Movie.new("#{fixture_path}/movies/awesome_widescreen.mov")
+              options = {resolution: "360x640"}
+
+              encoded = Transcoder.new(movie, "#{tmp_path}/preserved_aspect.mp4", options, @special_options).run
+              encoded.resolution.should == "360x202"
+            end
+
+            it "should preserve height when input is portrait and options resolution is landscape" do
+              movie = Movie.new("#{fixture_path}/movies/sideways movie.mov")
+              options = {resolution: "640x360"}
+
+              encoded = Transcoder.new(movie, "#{tmp_path}/preserved_aspect.mp4", options, @special_options).run
+              encoded.resolution.should == "270x360"
+            end
+
+            it "should preserve height when input is portrait and options resolution is a shorter portrait" do
+              movie = Movie.new("#{fixture_path}/movies/sideways movie.mov")
+              options = {resolution: "480x600"}
+
+              encoded = Transcoder.new(movie, "#{tmp_path}/preserved_aspect.mp4", options, @special_options).run
+              encoded.resolution.should == "450x600"
+            end
+
+            it "should preserve width when input is portrait and options resolution is a taller portrait" do
+              movie = Movie.new("#{fixture_path}/movies/sideways movie.mov")
+              options = {resolution: "360x640"}
+
+              encoded = Transcoder.new(movie, "#{tmp_path}/preserved_aspect.mp4", options, @special_options).run
+              encoded.resolution.should == "360x480"
+            end
+
+            it "should preserve width when input is landscape and options resolution is narrower landscape" do
+              movie = Movie.new("#{fixture_path}/movies/awesome_widescreen.mov")
+              options = {resolution: "640x480"}
+
+              encoded = Transcoder.new(movie, "#{tmp_path}/preserved_aspect.mp4", options, @special_options).run
+              encoded.resolution.should == "640x360"
+            end
+
+            it "should preserve height when input is landscape and options resolution is wider landscape" do
+              movie = Movie.new("#{fixture_path}/movies/awesome_widescreen.mov")
+              options = {resolution: "1280x360"}
+
+              encoded = Transcoder.new(movie, "#{tmp_path}/preserved_aspect.mp4", options, @special_options).run
+              encoded.resolution.should == "640x360"
+            end
+          end
         end
 
         it "should transcode the movie with String options" do

@@ -106,16 +106,40 @@ module FFMPEG
       return if @movie.calculated_aspect_ratio.nil?
       case @transcoder_options[:preserve_aspect_ratio].to_s
       when "width"
-        new_height = @raw_options.width / @movie.calculated_aspect_ratio
-        new_height = new_height.ceil.even? ? new_height.ceil : new_height.floor
-        new_height += 1 if new_height.odd? # needed if new_height ended up with no decimals in the first place
-        @raw_options[:resolution] = "#{@raw_options.width}x#{new_height}"
+        preserve_width(@movie.calculated_aspect_ratio)
       when "height"
-        new_width = @raw_options.height * @movie.calculated_aspect_ratio
-        new_width = new_width.ceil.even? ? new_width.ceil : new_width.floor
-        new_width += 1 if new_width.odd?
-        @raw_options[:resolution] = "#{new_width}x#{@raw_options.height}"
+        preserve_height(@movie.calculated_aspect_ratio)
+      when "fit"
+        # need to take rotation into account to compare aspect ratios correctly
+        input_aspect_ratio = if @movie.rotation && (@movie.rotation / 90).odd?
+                               @movie.height.to_f / @movie.width.to_f
+                             else
+                               @movie.width.to_f / @movie.height.to_f
+                             end
+        options_aspect_ratio = @raw_options.width.to_f / @raw_options.height.to_f
+        
+        if options_aspect_ratio > input_aspect_ratio
+          preserve_height(input_aspect_ratio)
+        else
+          preserve_width(input_aspect_ratio)
+        end
       end
+    end
+
+    def preserve_height(input_aspect_ratio)
+      new_width = fix_dimension(@raw_options.height * input_aspect_ratio)
+      @raw_options[:resolution] = "#{new_width}x#{@raw_options.height}"
+    end
+
+    def preserve_width(input_aspect_ratio)
+      new_height = fix_dimension(@raw_options.width / input_aspect_ratio)
+      @raw_options[:resolution] = "#{@raw_options.width}x#{new_height}"
+    end
+
+    def fix_dimension(n)
+      n = n.ceil.even? ? n.ceil : n.floor
+      n += 1 if n.odd? # needed if n ended up with no decimals in the first place
+      return n
     end
 
     def fix_encoding(output)
