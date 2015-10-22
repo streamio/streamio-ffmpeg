@@ -17,10 +17,12 @@ module FFMPEG
       @movie = movie
       @output_file = output_file
 
-      if options.is_a?(String) || options.is_a?(EncodingOptions)
-        @raw_options = options
+      if options.is_a?(String)
+        @raw_options = "-i #{Shellwords.escape(@movie.path)} " + options
+      elsif options.is_a?(EncodingOptions)
+        @raw_options = options.merge(:input => @movie.path) unless options.include? :input
       elsif options.is_a?(Hash)
-        @raw_options = EncodingOptions.new(options)
+        @raw_options = EncodingOptions.new(options.merge(:input => @movie.path))
       else
         raise ArgumentError, "Unknown options format '#{options.class}', should be either EncodingOptions, Hash or String."
       end
@@ -54,7 +56,7 @@ module FFMPEG
     private
     # frame= 4855 fps= 46 q=31.0 size=   45306kB time=00:02:42.28 bitrate=2287.0kbits/
     def transcode_movie
-      @command = "#{FFMPEG.ffmpeg_binary} -y -i #{Shellwords.escape(@movie.path)} #{@raw_options} #{Shellwords.escape(@output_file)}"
+      @command = "#{FFMPEG.ffmpeg_binary} -y #{@raw_options} #{Shellwords.escape(@output_file)}"
       FFMPEG.logger.info("Running transcoding...\n#{@command}\n")
       @output = ""
 
@@ -117,7 +119,7 @@ module FFMPEG
                                @movie.width.to_f / @movie.height.to_f
                              end
         options_aspect_ratio = @raw_options.width.to_f / @raw_options.height.to_f
-        
+
         if options_aspect_ratio > input_aspect_ratio
           preserve_height(input_aspect_ratio)
         else

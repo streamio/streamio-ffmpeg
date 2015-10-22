@@ -3,6 +3,12 @@ require 'spec_helper.rb'
 module FFMPEG
   describe EncodingOptions do
     describe "ffmpeg arguments conversion" do
+
+      it "should order input and seek_time correctly" do
+        command = EncodingOptions.new(:input => 'my_movie.mp4', :seek_time => 2500).to_s
+        command.should == '-ss 2500 -i my_movie.mp4'
+      end
+
       it "should convert video codec" do
         EncodingOptions.new(video_codec: "libx264").to_s.should == "-vcodec libx264"
       end
