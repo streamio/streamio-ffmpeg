@@ -35,7 +35,7 @@ module FFMPEG
 
       output[/rotate\ {1,}:\ {1,}(\d*)/]
       @rotation = $1 ? $1.to_i : nil
-
+	
       output[/Video:\ (.*)/]
       @video_stream = $1
 
@@ -53,7 +53,7 @@ module FFMPEG
 
       if audio_stream
         @audio_codec, audio_sample_rate, @audio_channels, unused, audio_bitrate = audio_stream.split(/\s?,\s?/)
-        @audio_bitrate = audio_bitrate =~ %r(\A(\d+) kb/s\Z) ? $1.to_i : nil
+        @audio_bitrate = audio_bitrate =~ %r(\A(\d+) kb/s(.*)\Z) ? $1.to_i : nil
         @audio_sample_rate = audio_sample_rate[/\d*/].to_i
       end
 
@@ -67,11 +67,11 @@ module FFMPEG
     end
 
     def width
-      resolution.split("x")[0].to_i rescue nil
+      resolution.split("x")[(@rotation==nil) || (@rotation==180)? 0:1].to_i rescue nil
     end
 
     def height
-      resolution.split("x")[1].to_i rescue nil
+      resolution.split("x")[(@rotation==nil) || (@rotation==180)? 1:0].to_i rescue nil
     end
 
     def calculated_aspect_ratio

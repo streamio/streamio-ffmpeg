@@ -58,7 +58,7 @@ module FFMPEG
           end
 
           it "should still work" do
-            encoded = Transcoder.new(movie, "#{tmp_path}/awesome.mpg").run
+            encoded = Transcoder.new(movie, "#{tmp_path}/awesome.mp4").run
             encoded.resolution.should == "640x480"
           end
 

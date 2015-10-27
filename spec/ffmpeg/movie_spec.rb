@@ -56,6 +56,63 @@ module FFMPEG
         end
       end
 
+      context "given an ios mobile video filmed without rotation" do
+        before(:all) do
+          @movie = Movie.new("#{fixture_path}/movies/ios_rotate0.mov")
+        end
+
+        it "should have correct rotation detected" do
+          @movie.rotation.should == nil
+        end
+        it "should have untouched width and height" do
+          @movie.width.should == 1920
+          @movie.height.should == 1080
+        end
+      end
+
+      context "given an ios mobile video filmed with rotation=90" do
+        before(:all) do
+          @movie = Movie.new("#{fixture_path}/movies/ios_rotate90.mov")
+        end
+
+        it "should have correct rotation detected" do
+          @movie.rotation.should == 90
+        end
+		
+        it "should have switched width and height" do
+          @movie.width.should == 1080
+          @movie.height.should == 1920
+        end
+      end
+
+      context "given an ios mobile video filmed with rotation=180" do
+        before(:all) do
+          @movie = Movie.new("#{fixture_path}/movies/ios_rotate180.mov")
+        end
+
+        it "should have correct rotation detected" do
+          @movie.rotation.should == 180
+        end
+        it "should have untouched width and height" do
+          @movie.width.should == 1920
+          @movie.height.should == 1080
+        end
+      end
+
+      context "given an ios mobile video filmed with rotation=270" do
+        before(:all) do
+          @movie = Movie.new("#{fixture_path}/movies/ios_rotate270.mov")
+        end
+
+        it "should have correct rotation detected" do
+          @movie.rotation.should == 270
+        end
+        it "should have switched width and height" do
+          @movie.width.should == 1080
+          @movie.height.should == 1920
+        end
+      end
+
       context "given a broken mp4 file" do
         before(:all) do
           @movie = Movie.new("#{fixture_path}/movies/broken.mp4")
@@ -185,7 +242,7 @@ module FFMPEG
           @movie.should_not be_valid
         end
       end
-
+	  
       context "given a file with complex colorspace and decimal fps" do
         before(:all) do
           fake_output = StringIO.new(File.read("#{fixture_path}/outputs/file_with_complex_colorspace_and_decimal_fps.txt"))
@@ -233,7 +290,7 @@ module FFMPEG
         end
 
         it "should parse video stream information" do
-          @movie.video_stream.should == "h264 (Main) (avc1 / 0x31637661), yuv420p, 640x480 [SAR 1:1 DAR 4:3], 371 kb/s, 16.75 fps, 600 tbr, 600 tbn, 1200 tbc"
+          @movie.video_stream.should == "h264 (Main) (avc1 / 0x31637661), yuv420p(tv, bt709), 640x480 [SAR 1:1 DAR 4:3], 371 kb/s, 16.75 fps, 600 tbr, 600 tbn, 1200 tbc (default)"
         end
 
         it "should know the video codec" do
@@ -241,7 +298,7 @@ module FFMPEG
         end
 
         it "should know the colorspace" do
-          @movie.colorspace.should == "yuv420p"
+          @movie.colorspace.should == "yuv420p(tv, bt709)"
         end
 
         it "should know the resolution" do
@@ -262,7 +319,7 @@ module FFMPEG
         end
 
         it "should parse audio stream information" do
-          @movie.audio_stream.should == "aac (mp4a / 0x6134706D), 44100 Hz, stereo, fltp, 75 kb/s"
+          @movie.audio_stream.should == "aac (LC) (mp4a / 0x6134706D), 44100 Hz, stereo, fltp, 75 kb/s (default)"
         end
 
         it "should know the audio codec" do
