@@ -2,9 +2,11 @@
 
 New:
 * Support watermarking (thanks smoothdvd)
+* Bumped target ffmpeg version to 2.8
 
 Improvements:
 * Allow parenthesis in colorspace (thanks walterdavis for initial code and rociiu for finding a bug with it)
+* Width and height now switched if video is filmed in portrait mode
 
 == 1.0.0 2013-07-08
 
