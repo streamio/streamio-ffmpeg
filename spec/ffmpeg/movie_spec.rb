@@ -78,7 +78,7 @@ module FFMPEG
         it "should have correct rotation detected" do
           @movie.rotation.should == 90
         end
-		
+
         it "should have switched width and height" do
           @movie.width.should == 1080
           @movie.height.should == 1920
@@ -242,7 +242,7 @@ module FFMPEG
           @movie.should_not be_valid
         end
       end
-	  
+
       context "given a file with complex colorspace and decimal fps" do
         before(:all) do
           fake_output = StringIO.new(File.read("#{fixture_path}/outputs/file_with_complex_colorspace_and_decimal_fps.txt"))
