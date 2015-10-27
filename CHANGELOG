@@ -6,7 +6,7 @@ New:
 
 Improvements:
 * Allow parenthesis in colorspace (thanks walterdavis for initial code and rociiu for finding a bug with it)
-* Width and height now switched if video is filmed in portrait mode
+* Width and height now switched if video is filmed in portrait mode. ffmpeg 2.7 or later now automatically rotates output
 
 == 1.0.0 2013-07-08
 
