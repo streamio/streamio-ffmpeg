@@ -114,6 +114,10 @@ module FFMPEG
         EncodingOptions.new(seek_time: 1).to_s.should == "-ss 1"
       end
 
+      it 'should specify screenshot parameters when using -vframes' do
+        EncodingOptions.new(screenshot: true, vframes: 123).to_s.should == '-vframes 123 -f image2 '
+      end
+
       it "should specify screenshot parameters" do
         EncodingOptions.new(screenshot: true).to_s.should == "-vframes 1 -f image2"
       end
