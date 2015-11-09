@@ -13,8 +13,9 @@ module FFMPEG
       # all other parameters go after so that we can override whatever is in the preset
       codecs = params.select { |p| p =~ /codec/ }
       presets = params.select { |p| p =~ /\-.pre/ }
-      other = params - codecs - presets
-      params = codecs + presets + other
+      watermarkoptions = params.select { |p| p =~ /i / || p=~ /filter_complex/ }  
+      other = params - codecs - presets - watermarkoptions
+      params = watermarkoptions + codecs + presets + other
 
       params_string = params.join(" ")
       params_string << " #{convert_aspect(calculate_aspect)}" if calculate_aspect?
