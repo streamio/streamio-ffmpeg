@@ -6,6 +6,9 @@ module FFMPEG
     attr_reader :video_stream, :video_codec, :video_bitrate, :colorspace, :resolution, :sar, :dar
     attr_reader :audio_stream, :audio_codec, :audio_bitrate, :audio_sample_rate
     attr_reader :container
+    
+    # Attr for using volume adjusting, reading the current volume levels:
+    attr_reader :mean_volume, :max_volume
 
     def initialize(path)
       raise Errno::ENOENT, "the file '#{path}' does not exist" unless File.exists?(path)
@@ -13,8 +16,14 @@ module FFMPEG
       @path = path
 
       # ffmpeg will output to stderr
-      command = "#{FFMPEG.ffmpeg_binary} -i #{Shellwords.escape(path)}"
-      output = Open3.popen3(command) { |stdin, stdout, stderr| stderr.read }
+      begin
+        command = "#{FFMPEG.ffmpeg_binary} -i #{Shellwords.escape(path)} -af volumedetect -f null /dev/null"
+        output = Open3.popen3(command) { |stdin, stdout, stderr| stderr.read }
+      rescue
+        command = "#{FFMPEG.ffmpeg_binary} -i #{Shellwords.escape(path)}"
+        output = Open3.popen3(command) { |stdin, stdout, stderr| stderr.read }
+      end
+      
 
       fix_encoding(output)
 
@@ -41,6 +50,13 @@ module FFMPEG
 
       output[/Audio:\ (.*)/]
       @audio_stream = $1
+      
+      output[/mean_volume:\ (.*)/]
+      @mean_volume = $1
+
+      output[/max_volume:\ (.*)/]
+      @max_volume = $1
+      
 
       if video_stream
         commas_except_in_parenthesis = /(?:\([^()]*\)|[^,])+/ # regexp to handle "yuv420p(tv, bt709)" colorspace etc from http://goo.gl/6oi645
