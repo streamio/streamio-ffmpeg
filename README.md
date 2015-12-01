@@ -128,6 +128,15 @@ options = {video_min_bitrate: 600, video_max_bitrate: 600, buffer_size: 2000}
 movie.transcode("movie.flv", options)
 ```
 
+Transcode to multiple output files within the same call to ffmpeg
+
+```ruby
+options = { resolution: "320x240" }
+movie.enqueue_transcoding("#{tmp_path}/awesome.flv", options)
+movie.enqueue_transcoding("#{tmp_path}/durationalized.mp4", options)
+flv_movie, mp4_movie = movie.transcode_queue
+```
+
 Add watermark image on the video.
 
 For example, you want to add a watermark on the video at right top corner with 10px padding.
