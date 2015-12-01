@@ -3,14 +3,10 @@ require 'shellwords'
 
 module FFMPEG
   class Transcoder
-    @@timeout = 30
+    @timeout = 30
 
-    def self.timeout=(time)
-      @@timeout = time
-    end
-
-    def self.timeout
-      @@timeout
+    class << self
+      attr_accessor :timeout
     end
 
     def initialize(movie, output_file, options = EncodingOptions.new, transcoder_options = {})
@@ -51,6 +47,10 @@ module FFMPEG
       @encoded ||= Movie.new(@output_file)
     end
 
+    def timeout
+      self.class.timeout
+    end
+
     private
     # frame= 4855 fps= 46 q=31.0 size=   45306kB time=00:02:42.28 bitrate=2287.0kbits/
     def transcode_movie
@@ -75,8 +75,8 @@ module FFMPEG
             end
           end
 
-          if @@timeout
-            stderr.each_with_timeout(wait_thr.pid, @@timeout, 'size=', &next_line)
+          if timeout
+            stderr.each_with_timeout(wait_thr.pid, timeout, 'size=', &next_line)
           else
             stderr.each('size=', &next_line)
           end
