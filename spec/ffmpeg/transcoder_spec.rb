@@ -169,6 +169,29 @@ module FFMPEG
           encoded.duration.should <= 2.2
         end
 
+        it "should encode with multiple output at once" do
+          transcoder = Transcoder.new(movie, "#{tmp_path}/durationalized.mp4", duration: 2)
+          transcoder.append("#{tmp_path}/output.flv")
+
+          encoded1 = encoded2 = nil
+          expect { encoded1, encoded2 = transcoder.run }.not_to raise_error
+
+          encoded1.duration.should >= 1.8
+          encoded1.duration.should <= 2.2
+        end
+
+        it "should keep only latest enqueued transcoding for a given output path" do
+          transcoder = Transcoder.new(movie, "#{tmp_path}/durationalized.mp4", duration: 4)
+          transcoder.append("#{tmp_path}/durationalized.mp4", duration: 2)
+
+          encoded = nil
+          expect { encoded = transcoder.run }.not_to raise_error
+          encoded.class.should == FFMPEG::Movie
+          encoded.duration.should >= 1.8
+          encoded.duration.should <= 2.2
+        end
+
+
         context "with screenshot option" do
           it "should transcode to original movies resolution by default" do
             encoded = Transcoder.new(movie, "#{tmp_path}/image.jpg", screenshot: true).run

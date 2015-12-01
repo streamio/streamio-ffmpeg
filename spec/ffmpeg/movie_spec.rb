@@ -393,5 +393,17 @@ module FFMPEG
         movie.screenshot("#{tmp_path}/awesome.jpg", {seek_time: 2, dimensions: "640x480"}, preserve_aspect_ratio: :width)
       end
     end
+
+    describe "transcode to multiple output" do
+      it "should be able to enqueue multiple multiple transcoding outputs" do
+        movie = Movie.new("#{fixture_path}/movies/awesome movie.mov")
+        movie.enqueue_transcoding("#{tmp_path}/awesome.flv", duration: 2)
+        movie.enqueue_transcoding("#{tmp_path}/durationalized.mp4", duration: 2)
+        o1, o2 = movie.transcode_queue
+        o1.should be_valid
+        o2.should be_valid
+      end
+    end
+
   end
 end

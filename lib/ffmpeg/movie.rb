@@ -35,7 +35,7 @@ module FFMPEG
 
       output[/rotate\ {1,}:\ {1,}(\d*)/]
       @rotation = $1 ? $1.to_i : nil
-	
+
       output[/Video:\ (.*)/]
       @video_stream = $1
 
@@ -60,6 +60,8 @@ module FFMPEG
       @invalid = true if @video_stream.to_s.empty? && @audio_stream.to_s.empty?
       @invalid = true if output.include?("is not supported")
       @invalid = true if output.include?("could not find codec parameters")
+
+      @transcoder = nil
     end
 
     def valid?
@@ -101,6 +103,19 @@ module FFMPEG
 
     def transcode(output_file, options = EncodingOptions.new, transcoder_options = {}, &block)
       Transcoder.new(self, output_file, options, transcoder_options).run &block
+    end
+
+    def enqueue_transcoding(output_file, options = EncodingOptions.new, transcoder_options = {})
+      if @transcoder.nil?
+        @transcoder = Transcoder.new(self, output_file, options, transcoder_options)
+      else
+        @transcoder.append(output_file, options, transcoder_options)
+      end
+    end
+
+    def transcode_queue(&block)
+      return unless @transcoder
+      @transcoder.run &block
     end
 
     def screenshot(output_file, options = EncodingOptions.new, transcoder_options = {}, &block)
