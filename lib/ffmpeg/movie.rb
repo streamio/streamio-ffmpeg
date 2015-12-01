@@ -113,9 +113,9 @@ module FFMPEG
       end
     end
 
-    def transcode_queue
+    def transcode_queue(&block)
       return unless @transcoder
-      @transcoder.run
+      @transcoder.run &block
     end
 
     def screenshot(output_file, options = EncodingOptions.new, transcoder_options = {}, &block)
