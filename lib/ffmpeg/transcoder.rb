@@ -34,6 +34,9 @@ module FFMPEG
     def run(&block)
       transcode_movie(&block)
       if @transcoder_options[:validate]
+        if @output_file =~ /%[0-9]*d/
+          @output_file = Dir.glob(@output_file.gsub(/%[0-9]*d/, "*"))
+        end
         validate_output_file(&block)
         return encoded
       else
@@ -42,13 +45,22 @@ module FFMPEG
     end
 
     def encoding_succeeded?
-      @errors << "no output file created" and return false unless File.exists?(@output_file)
-      @errors << "encoded file is invalid" and return false unless encoded.valid?
+      if @output_file.is_a?(Array)
+        @errors << "no output file created" and return false unless !@output_file.empty?
+        @errors << "encoded file is invalid" and return false unless !encoded.map{|e| e.valid?}.include?(false)
+      else
+        @errors << "no output file created" and return false unless File.exists?(@output_file)
+        @errors << "encoded file is invalid" and return false unless encoded.valid?
+      end
       true
     end
 
     def encoded
-      @encoded ||= Movie.new(@output_file)
+      if @output_file.is_a?(Array)
+        @encoded ||= @output_file.map!{|file| Movie.new(file)}
+      else
+        @encoded ||= Movie.new(@output_file)
+      end
     end
 
     private
