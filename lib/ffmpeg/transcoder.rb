@@ -42,7 +42,7 @@ module FFMPEG
     end
 
     def encoding_succeeded?
-      @errors << "no output file created" and return false unless File.exists?(@output_file)
+      @errors << "no output file created" and return false unless File.exist?(@output_file)
       @errors << "encoded file is invalid" and return false unless encoded.valid?
       true
     end
@@ -58,7 +58,7 @@ module FFMPEG
       FFMPEG.logger.info("Running transcoding...\n#{@command}\n")
       @output = ""
 
-      Open3.popen3(@command) do |stdin, stdout, stderr, wait_thr|
+      Open3.popen3(@command) do |_stdin, _stdout, stderr, wait_thr|
         begin
           yield(0.0) if block_given?
           next_line = Proc.new do |line|
