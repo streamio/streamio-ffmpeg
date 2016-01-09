@@ -17,7 +17,7 @@ module FFMPEG
       output = Open3.popen3(command) { |_stdin, _stdout, stderr| stderr.read }
 
       fix_encoding(output)
-
+      
       output[/Input \#\d+\,\s*(\S+),\s*from/]
       @container = $1
 
@@ -42,6 +42,22 @@ module FFMPEG
       output[/Audio:\ (.*)/]
       @audio_stream = $1
 
+	  #ffmpeg input metadata information
+      @metadata = Hash.new
+      output[/Metadata:(.*)Duration:/m]
+	  metadata_str = $1
+	  unless metadata_str.nil?
+		  metadata_arr = metadata_str.split(/\n/);
+		  metadata_arr.each do |line|
+			  unless line.nil? or line.empty?
+				  value = line.split(":");
+				  unless value.length < 2
+					  @metadata[value[0].strip] = value[1].strip;
+				  end
+			  end
+		  end
+	  end
+	  
       if video_stream
         commas_except_in_parenthesis = /(?:\([^()]*\)|[^,])+/ # regexp to handle "yuv420p(tv, bt709)" colorspace etc from http://goo.gl/6oi645
         @video_codec, @colorspace, resolution, video_bitrate = video_stream.scan(commas_except_in_parenthesis).map(&:strip)
@@ -61,11 +77,48 @@ module FFMPEG
       @invalid = true if output.include?("is not supported")
       @invalid = true if output.include?("could not find codec parameters")
     end
+    
+    def self.create_from_videos(input_files, output_file, options = EncodingOptions.new, concat_options = {}, &block)
+    	Concat.new(input_files,output_file,options,concat_options).run &block;
+    end    
+    
+    def self.create_from_images(outputfile, input_pattern, input_options = {}, output_options = {}, input_audio = nil)
+    
+      if input_options.is_a?(String) || input_options.is_a?(EncodingOptions)
+        input_parameters = input_options;
+      elsif input_options.is_a?(Hash)
+        input_parameters = EncodingOptions.new(input_options);
+      else
+        raise ArgumentError, "Unknown options format '#{input_options.class}', should be either EncodingOptions, Hash or String."
+      end
+      
+      if output_options.is_a?(String) || output_options.is_a?(EncodingOptions)
+        output_parameters = output_options;
+      elsif output_options.is_a?(Hash)
+        output_parameters = EncodingOptions.new(output_options);
+      else
+        raise ArgumentError, "Unknown options format '#{output_options.class}', should be either EncodingOptions, Hash or String."
+      end
+      
+      audio = "";
+      unless input_audio.nil?
+      	audio = "-i #{input_audio}"
+      end
+      
+      command = "#{FFMPEG.ffmpeg_binary} #{input_parameters} #{audio} -i #{input_pattern} #{output_parameters} #{outputfile}"
+      output = Open3.popen3(command) { |stdin, stdout, stderr| stderr.read }
+      
+      return output;
+    end
 
     def valid?
       not @invalid
     end
 
+    def metadata
+      @metadata
+    end
+    
     def width
       resolution.split("x")[(@rotation==nil) || (@rotation==180)? 0:1].to_i rescue nil
     end
@@ -100,13 +153,13 @@ module FFMPEG
     end
 
     def transcode(output_file, options = EncodingOptions.new, transcoder_options = {}, &block)
-      Transcoder.new(self, output_file, options, transcoder_options).run &block
+      	Transcoder.new(self, output_file, options, transcoder_options).run &block;
     end
-
-    def screenshot(output_file, options = EncodingOptions.new, transcoder_options = {}, &block)
-      Transcoder.new(self, output_file, options.merge(screenshot: true), transcoder_options).run &block
+    
+    def screenshot(output_file, time, options = EncodingOptions.new, transcoder_options = {}, &block)
+      	Transcoder.new(self, output_file, options.merge(screenshot: {:time => time}), transcoder_options).run &block
     end
-
+    
     protected
     def aspect_from_dar
       return nil unless dar

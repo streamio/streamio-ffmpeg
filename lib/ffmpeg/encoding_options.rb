@@ -36,6 +36,10 @@ module FFMPEG
       private_methods.include?(option)
     end
 
+    def convert_pixfmt(value)
+      "-pix_fmt #{value}"
+    end
+    
     def convert_aspect(value)
       "-aspect #{value}"
     end
@@ -60,6 +64,10 @@ module FFMPEG
     def convert_resolution(value)
       "-s #{value}"
     end
+    
+    def convert_shortest(value)
+      "-shortest"
+    end
 
     def convert_video_bitrate(value)
       "-b:v #{k_format(value)}"
@@ -73,6 +81,10 @@ module FFMPEG
       "-b:a #{k_format(value)}"
     end
 
+    def convert_noaudio(value)
+      "-an"
+    end
+    
     def convert_audio_sample_rate(value)
       "-ar #{value}"
     end
@@ -101,6 +113,10 @@ module FFMPEG
       "-threads #{value}"
     end
 
+    def convert_loop(value)
+      "-loop #{value}"
+    end
+    
     def convert_duration(value)
       "-t #{value}"
     end
@@ -109,6 +125,10 @@ module FFMPEG
       "-vpre #{value}"
     end
 
+    def convert_format(value)
+      "-f #{value}"
+    end
+    
     def convert_audio_preset(value)
       "-apre #{value}"
     end
@@ -125,8 +145,16 @@ module FFMPEG
       "-ss #{value}"
     end
 
+    def convert_filter(value)
+      "-vf \"#{value}\""
+    end
+    
+    def convert_afilter(value)
+      "-af \"#{value}\""
+    end
+    
     def convert_screenshot(value)
-      value ? "-vframes 1 -f image2" : ""
+      "-vframes 1 -f image2 -ss #{value[:time]}"
     end
 
     def convert_x264_vprofile(value)
@@ -141,6 +169,26 @@ module FFMPEG
       "-i #{value}"
     end
 
+    def convert_rotate(value)
+      "-vf \"rotate=#{(value[:rotate]*3.14)/180}\" -metadata:s:v:0 rotate=#{(value[:metadata])}"
+    end
+    
+	def convert_crossfade(values)
+    	filter = "";
+    	values.each do |value|
+    		filter << ";" unless filter.empty? ;
+    		filter << "[#{value[:idx]}:0]fade=t=in:st=#{value[:time_in]}:d=#{value[:duration_in]}, fade=t=out:st=#{value[:time_out]}:d=#{value[:duration_out]}[O#{value[:idx]}]"
+    	end
+    	
+    	concat = "";
+    	values.each do |value|
+    		concat << "[O#{value[:idx]}]";
+    	end
+    	concat << "concat=n=#{values.length}";
+    	
+		"-filter_complex \"#{filter};#{concat}\"";
+	end
+	
     def convert_watermark_filter(value)
       case value[:position].to_s
       when "LT"
