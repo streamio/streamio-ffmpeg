@@ -2,7 +2,7 @@ require 'time'
 
 module FFMPEG
   class Movie
-    attr_reader :path, :duration, :time, :bitrate, :rotation, :creation_time
+    attr_reader :path, :duration, :time, :bitrate, :rotation, :creation_time, :date
     attr_reader :video_stream, :video_codec, :video_bitrate, :colorspace, :resolution, :sar, :dar
     attr_reader :audio_stream, :audio_codec, :audio_bitrate, :audio_sample_rate
     attr_reader :container
@@ -29,6 +29,9 @@ module FFMPEG
 
       output[/creation_time {1,}: {1,}(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})/]
       @creation_time = $1 ? Time.parse("#{$1}") : nil
+
+      output[/date {1,}: {1,}(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2})/]
+      @date = $1 ? Time.parse("#{$1}") : nil
 
       output[/bitrate: (\d*)/]
       @bitrate = $1 ? $1.to_i : nil
