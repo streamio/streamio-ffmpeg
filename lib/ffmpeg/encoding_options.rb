@@ -101,6 +101,10 @@ module FFMPEG
       "-threads #{value}"
     end
 
+    def convert_target(value)
+      "-target #{value}"
+    end
+
     def convert_duration(value)
       "-t #{value}"
     end
@@ -126,7 +130,16 @@ module FFMPEG
     end
 
     def convert_screenshot(value)
-      value ? "-vframes 1 -f image2" : ""
+      vframes = '-vframes 1 ' unless self[:vframes]
+      value ? "#{vframes}-f image2" : ""
+    end
+
+    def convert_quality(value)
+      "-q:v #{value}"
+    end
+
+    def convert_vframes(value)
+      "-vframes #{value}"
     end
 
     def convert_x264_vprofile(value)
