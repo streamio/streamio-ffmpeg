@@ -99,6 +99,14 @@ module FFMPEG
       not @invalid
     end
 
+    def width
+      rotation.nil? || rotation == 180 ? @width : @height;
+    end
+
+    def height
+      rotation.nil? || rotation == 180 ? @height : @width;
+    end
+
     def resolution
       unless width.nil? or height.nil?
         "#{width}x#{height}"
