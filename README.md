@@ -23,7 +23,9 @@ Will not work in jruby until they fix: http://goo.gl/Z4UcX (should work in the u
 
 ### ffmpeg
 
-The current gem is tested against ffmpeg 1.2.1. So no guarantees with earlier (or much later) versions. Output and input standards have inconveniently changed rather a lot between versions of ffmpeg. My goal is to keep this library in sync with new versions of ffmpeg as they come along.
+The current gem is tested against ffmpeg 2.8.4. So no guarantees with earlier (or much later) 
+versions. Output and input standards have inconveniently changed rather a lot between versions 
+of ffmpeg. My goal is to keep this library in sync with new versions of ffmpeg as they come along.
 
 Usage
 -----
