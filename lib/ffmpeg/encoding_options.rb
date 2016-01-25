@@ -13,7 +13,7 @@ module FFMPEG
 
       # codecs should go before the presets so that the files will be matched successfully
       # all other parameters go after so that we can override whatever is in the preset
-      input   = params.select { |p| p =~ /\-i/ }
+      input   = params.select { |p| p =~ /^\-i / }
       seek    = params.select {|p| p =~ /\-ss/ }
       codecs  = params.select { |p| p =~ /codec/ }
       presets = params.select { |p| p =~ /\-.pre/ }
@@ -154,7 +154,7 @@ module FFMPEG
         "-filter_complex 'scale=#{self[:resolution]},overlay=x=#{value[:padding_x]}:y=main_h-overlay_h-#{value[:padding_y]}'"
       when "RB"
         "-filter_complex 'scale=#{self[:resolution]},overlay=x=main_w-overlay_w-#{value[:padding_x]}:y=main_h-overlay_h-#{value[:padding_y]}'"
-      end  
+      end
     end
 
     def convert_custom(value)

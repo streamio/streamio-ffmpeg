@@ -132,6 +132,11 @@ module FFMPEG
         converted.should == "-vcodec libx264 -vpre normal -r 25"
       end
 
+      it "correctly identifies the input parameter" do
+        converted = EncodingOptions.new({ input: 'somefile.mp4', custom: '-pass 1 passlogfile bla-i-bla' }).to_s
+        converted.should == "-i somefile.mp4 -pass 1 passlogfile bla-i-bla"
+      end
+
       it "should convert a lot of them simultaneously" do
         converted = EncodingOptions.new(video_codec: "libx264", audio_codec: "aac", video_bitrate: "1000k").to_s
         converted.should match(/-acodec aac/)
