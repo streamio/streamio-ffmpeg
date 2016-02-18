@@ -9,6 +9,18 @@ module FFMPEG
         end
       end
 
+      context "given a non existing url" do
+        it "should not be valid" do
+          @movie = Movie.new("#{fixture_url_path}/movies/i_dont_exist")
+          expect(@movie.valid?).to eq(false)
+        end
+
+        it "should contain error response 404" do
+          @movie = Movie.new("#{fixture_url_path}/movies/i_dont_exist")
+          expect(@movie.error).to eq("Server returned 404 Not Found")
+        end
+      end
+
       context "given a file containing a single quotation mark in the filename" do
         before(:all) do
           @movie = Movie.new("#{fixture_path}/movies/awesome'movie.mov")
@@ -17,6 +29,18 @@ module FFMPEG
         it "should run ffmpeg successfully" do
           expect(@movie.duration).to be_within(0.01).of(7.56)
           expect(@movie.frame_rate).to be_within(0.01).of(16.75)
+        end
+      end
+
+      context "given a valid file provided through an url" do
+        before(:all) do
+          @movie = Movie.new("#{fixture_url_path}/movies/awesome%20movie.mov?raw=true")
+        end
+
+        it "should run ffmpeg successfully" do
+          expect(@movie.duration).to be_within(0.01).of(7.56)
+          expect(@movie.frame_rate).to be_within(0.01).of(16.75)
+          expect(@movie.error).to be(nil)
         end
       end
 

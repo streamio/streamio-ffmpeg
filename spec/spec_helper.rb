@@ -17,6 +17,10 @@ def fixture_path
   @fixture_path ||= File.join(File.dirname(__FILE__), 'fixtures')
 end
 
+def fixture_url_path
+  "http://github.com/mattcook/rlovelett-ffmpeg/blob/master/spec/fixtures"
+end
+
 def tmp_path
   @tmp_path ||= File.join(File.dirname(__FILE__), "..", "tmp")
 end
