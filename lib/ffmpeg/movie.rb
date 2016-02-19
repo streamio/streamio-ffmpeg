@@ -7,9 +7,12 @@ module FFMPEG
     attr_reader :video_stream, :video_codec, :video_bitrate, :colorspace, :width, :height, :sar, :dar, :frame_rate
     attr_reader :audio_stream, :audio_codec, :audio_bitrate, :audio_sample_rate, :audio_channels
     attr_reader :container
+    attr_reader :error
 
     def initialize(path)
-      raise Errno::ENOENT, "the file '#{path}' does not exist" unless File.exists?(path)
+      unless File.exists?(path) || path =~ URI::regexp(["http", "https"])
+        raise Errno::ENOENT, "the file '#{path}' does not exist"
+      end
 
       @path = path
 
@@ -28,11 +31,9 @@ module FFMPEG
       metadata = MultiJson.load(std_output, symbolize_keys: true)
 
       if metadata.key?(:error)
-
+        @error = metadata[:error][:string]
         @duration = 0
-
       else
-
         video_streams = metadata[:streams].select { |stream| stream.key?(:codec_type) and stream[:codec_type] === 'video' }
         audio_streams = metadata[:streams].select { |stream| stream.key?(:codec_type) and stream[:codec_type] === 'audio' }
 
@@ -119,7 +120,7 @@ module FFMPEG
         @size
       else
         File.size(@path)
-      end 
+      end
     end
 
     def audio_channel_layout
