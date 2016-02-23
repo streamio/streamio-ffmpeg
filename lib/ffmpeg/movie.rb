@@ -114,7 +114,7 @@ module FFMPEG
     end
 
     def calculated_aspect_ratio
-      aspect_from_dar || aspect_from_dimensions
+      aspect_from_dimensions
     end
 
     def calculated_pixel_aspect_ratio
