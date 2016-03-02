@@ -75,7 +75,7 @@ module FFMPEG
     end
 
     def calculated_aspect_ratio
-      aspect_from_dimensions
+      aspect_from_dar || aspect_from_dimensions
     end
 
     def calculated_pixel_aspect_ratio
@@ -110,15 +110,15 @@ module FFMPEG
     protected
     def aspect_from_dar
       return nil unless dar
-      w, h = dar.split(":")
-      aspect = w.to_f / h.to_f
+      w, h = dar.split(":")   
+      aspect = (@rotation==nil) || (@rotation==180)? (w.to_f / h.to_f):(h.to_f / w.to_f)
       aspect.zero? ? nil : aspect
     end
 
     def aspect_from_sar
       return nil unless sar
       w, h = sar.split(":")
-      aspect = w.to_f / h.to_f
+      aspect = (@rotation==nil) || (@rotation==180)? (w.to_f / h.to_f):(h.to_f / w.to_f)
       aspect.zero? ? nil : aspect
     end
 
