@@ -34,6 +34,7 @@ module FFMPEG
       end
 
       fix_encoding(std_output)
+      fix_encoding(std_error)
 
       begin
         metadata = MultiJson.load(std_output, symbolize_keys: true)
