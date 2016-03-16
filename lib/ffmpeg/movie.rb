@@ -8,6 +8,8 @@ module FFMPEG
     attr_reader :audio_stream, :audio_codec, :audio_bitrate, :audio_sample_rate, :audio_channels
     attr_reader :container
 
+    UNSUPPORTED_CODEC_PATTERN = /^Unsupported codec with id (\d+) for input stream (\d+)$/
+
     def initialize(path)
       raise Errno::ENOENT, "the file '#{path}' does not exist" unless File.exist?(path)
 
@@ -32,6 +34,7 @@ module FFMPEG
         @duration = 0
 
       else
+        unsupported_stream_ids = unsupported_streams(std_error)
 
         video_streams = metadata[:streams].select { |stream| stream.key?(:codec_type) and stream[:codec_type] === 'video' }
         audio_streams = metadata[:streams].select { |stream| stream.key?(:codec_type) and stream[:codec_type] === 'audio' }
@@ -53,6 +56,8 @@ module FFMPEG
         unless video_streams.empty?
           # TODO: Handle multiple video codecs (is that possible?)
           video_stream = video_streams.first
+          @invalid = true if unsupported_stream_ids.include?(video_stream[:index])
+
           @video_codec = video_stream[:codec_name]
           @colorspace = video_stream[:pix_fmt]
           @width = video_stream[:width]
@@ -79,6 +84,8 @@ module FFMPEG
         unless audio_streams.empty?
           # TODO: Handle multiple audio codecs
           audio_stream = audio_streams.first
+          @invalid = true if unsupported_stream_ids.include?(audio_stream[:index])
+
           @audio_channels = audio_stream[:channels].to_i
           @audio_codec = audio_stream[:codec_name]
           @audio_sample_rate = audio_stream[:sample_rate].to_i
@@ -90,9 +97,17 @@ module FFMPEG
       end
 
       @invalid = true if metadata.key?(:error)
-      @invalid = true if std_error.include?("Unsupported codec")
       @invalid = true if std_error.include?("is not supported")
       @invalid = true if std_error.include?("could not find codec parameters")
+    end
+
+    def unsupported_streams(std_error)
+      [].tap do |stream_indices|
+        std_error.each_line do |line|
+          match = line.match(UNSUPPORTED_CODEC_PATTERN)
+          stream_indices << match[2].to_i if match
+        end
+      end
     end
 
     def valid?

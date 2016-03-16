@@ -27,9 +27,7 @@ module FFMPEG
       end
 
       context "given a non movie file" do
-        let(:movie) do
-          movie = Movie.new(__FILE__)
-        end
+        let(:movie) { Movie.new(__FILE__) }
 
         it "should not be valid" do
           movie.should_not be_valid
@@ -106,6 +104,14 @@ module FFMPEG
         it "should have switched width and height" do
           movie.width.should == 1080
           movie.height.should == 1920
+        end
+      end
+
+      context "given an ios9 mov file (with superfluous data streams)" do
+        let(:movie) { Movie.new("#{fixture_path}/movies/ios9.mov") }
+
+        it "should be valid" do
+          movie.should be_valid
         end
       end
 
