@@ -43,7 +43,11 @@ module FFMPEG
         @time = metadata[:format][:start_time].to_f
 
         @creation_time = if metadata[:format].key?(:tags) and metadata[:format][:tags].key?(:creation_time)
-                           Time.parse(metadata[:format][:tags][:creation_time])
+                           begin
+                             Time.parse(metadata[:format][:tags][:creation_time])
+                           rescue ArgumentError
+                             nil
+                           end
                          else
                            nil
                          end

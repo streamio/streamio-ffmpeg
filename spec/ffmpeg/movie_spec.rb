@@ -202,6 +202,14 @@ module FFMPEG
 
       end
 
+      context "given a file with improperly formatted creation_time" do
+        let(:movie) { Movie.new("#{fixture_path}/sounds/bad_metadata_creation_time.wav") }
+
+        it "should set creation_time to nil" do
+          movie.creation_time.should be_nil
+        end
+      end
+
       context "given a weird storage/pixel aspect ratio file" do
         let(:movie) { Movie.new("#{fixture_path}/movies/weird_aspect.small.mpg") }
 
