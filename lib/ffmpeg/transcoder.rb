@@ -114,9 +114,9 @@ module FFMPEG
       when "fit"
         # need to take rotation into account to compare aspect ratios correctly
         input_aspect_ratio = if @movie.rotation && (@movie.rotation / 90).odd?
-                               @movie.height.to_f / @movie.width.to_f
+                               1 / @movie.calculated_aspect_ratio
                              else
-                               @movie.width.to_f / @movie.height.to_f
+                               @movie.calculated_aspect_ratio
                              end
         options_aspect_ratio = @raw_options.width.to_f / @raw_options.height.to_f
 
