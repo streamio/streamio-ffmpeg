@@ -1,0 +1,104 @@
+{
+    "streams": [
+        {
+            "index": 0,
+            "codec_name": "h264",
+            "codec_long_name": "H.264 / AVC / MPEG-4 AVC / MPEG-4 part 10",
+            "profile": "Main",
+            "codec_type": "video",
+            "codec_time_base": "1/1200",
+            "codec_tag_string": "avc1",
+            "codec_tag": "0x31637661",
+            "width": 1280,
+            "height": 720,
+            "has_b_frames": 0,
+            "sample_aspect_ratio": "0:1",
+            "display_aspect_ratio": "0:1",
+            "pix_fmt": "yuv420p",
+            "level": 31,
+            "r_frame_rate": "25/1",
+            "avg_frame_rate": "25/1",
+            "time_base": "1/600",
+            "start_pts": 0,
+            "start_time": "0.000000",
+            "duration_ts": 19488,
+            "duration": "32.480000",
+            "bit_rate": "3945184",
+            "nb_frames": "812",
+            "disposition": {
+                "default": 1,
+                "dub": 0,
+                "original": 0,
+                "comment": 0,
+                "lyrics": 0,
+                "karaoke": 0,
+                "forced": 0,
+                "hearing_impaired": 0,
+                "visual_impaired": 0,
+                "clean_effects": 0,
+                "attached_pic": 0
+            },
+            "tags": {
+                "creation_time": "2008-03-18 12:45:48",
+                "language": "eng",
+                "handler_name": "Apple Alias Data Handler"
+            }
+        },
+        {
+            "index": 1,
+            "codec_type": "audio",
+            "codec_time_base": "0/1",
+            "codec_tag_string": "mp4a",
+            "codec_tag": "0x6134706d",
+            "sample_rate": "48000",
+            "channels": 6,
+            "channel_layout": "5.1(side)",
+            "bits_per_sample": 0,
+            "r_frame_rate": "0/0",
+            "avg_frame_rate": "0/0",
+            "time_base": "1/48000",
+            "start_pts": 0,
+            "start_time": "0.000000",
+            "duration_ts": 1584128,
+            "duration": "33.002667",
+            "bit_rate": "428605",
+            "nb_frames": "1547",
+            "disposition": {
+                "default": 1,
+                "dub": 0,
+                "original": 0,
+                "comment": 0,
+                "lyrics": 0,
+                "karaoke": 0,
+                "forced": 0,
+                "hearing_impaired": 0,
+                "visual_impaired": 0,
+                "clean_effects": 0,
+                "attached_pic": 0
+            },
+            "tags": {
+                "creation_time": "2008-03-18 12:45:48",
+                "language": "eng",
+                "handler_name": "Apple Alias Data Handler"
+            }
+        }
+    ],
+    "format": {
+        "filename": "bigbucksbunny_trailer_720p.mov",
+        "nb_streams": 2,
+        "nb_programs": 0,
+        "format_name": "mov,mp4,m4a,3gp,3g2,mj2",
+        "format_long_name": "QuickTime / MOV",
+        "start_time": "0.000000",
+        "duration": "32.995000",
+        "size": "17810888",
+        "bit_rate": "4318445",
+        "probe_score": 100,
+        "tags": {
+            "major_brand": "qt  ",
+            "minor_version": "537199360",
+            "compatible_brands": "qt  ",
+            "creation_time": "2008-03-18 12:45:48"
+        }
+    }
+}
