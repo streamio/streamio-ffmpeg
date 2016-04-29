@@ -1,19 +1,107 @@
-FFmpeg version 0.6.1, Copyright (c) 2000-2010 the FFmpeg developers
-  built on Nov 18 2010 13:51:50 with gcc 4.2.1 (Apple Inc. build 5664)
-  configuration: --disable-debug --prefix=/usr/local/Cellar/ffmpeg/0.6.1 --enable-shared --enable-pthreads --enable-nonfree --enable-gpl --disable-indev=jack --enable-libx264 --enable-libfaac --enable-libfaad --enable-libmp3lame --enable-libtheora --enable-libvorbis --enable-libvpx --enable-libxvid
-  libavutil     50.15. 1 / 50.15. 1
-  libavcodec    52.72. 2 / 52.72. 2
-  libavformat   52.64. 2 / 52.64. 2
-  libavdevice   52. 2. 0 / 52. 2. 0
-  libswscale     0.11. 0 /  0.11. 0
-
-Seems stream 0 codec frame rate differs from container frame rate: 1200.00 (1200/1) -> 25.00 (25/1)
-Input #0, mov,mp4,m4a,3gp,3g2,mj2, from 'bigbucksbunny_trailer_720p.mov':
-  Metadata:
-    major_brand     : qt  
-    minor_version   : 537199360
-    compatible_brands: qt  
-  Duration: 00:00:33.00, start: 0.000000, bitrate: 4317 kb/s
-    Stream #0.0(eng): Video: h264, yuv420p, 1280x720, 3945 kb/s, 25 fps, 25 tbr, 600 tbn, 1200 tbc
-    Stream #0.1(eng): Audio: aac, 48000 Hz, 5.1, s16, 428 kb/s
-At least one output file must be specified
+{
+    "streams": [
+        {
+            "index": 0,
+            "codec_name": "h264",
+            "codec_long_name": "H.264 / AVC / MPEG-4 AVC / MPEG-4 part 10",
+            "profile": "Main",
+            "codec_type": "video",
+            "codec_time_base": "1/1200",
+            "codec_tag_string": "avc1",
+            "codec_tag": "0x31637661",
+            "width": 1280,
+            "height": 720,
+            "has_b_frames": 0,
+            "sample_aspect_ratio": "0:1",
+            "display_aspect_ratio": "0:1",
+            "pix_fmt": "yuv420p",
+            "level": 31,
+            "r_frame_rate": "25/1",
+            "avg_frame_rate": "25/1",
+            "time_base": "1/600",
+            "start_pts": 0,
+            "start_time": "0.000000",
+            "duration_ts": 19488,
+            "duration": "32.480000",
+            "bit_rate": "3945184",
+            "nb_frames": "812",
+            "disposition": {
+                "default": 1,
+                "dub": 0,
+                "original": 0,
+                "comment": 0,
+                "lyrics": 0,
+                "karaoke": 0,
+                "forced": 0,
+                "hearing_impaired": 0,
+                "visual_impaired": 0,
+                "clean_effects": 0,
+                "attached_pic": 0
+            },
+            "tags": {
+                "creation_time": "2008-03-18 12:45:48",
+                "language": "eng",
+                "handler_name": "Apple Alias Data Handler"
+            }
+        },
+        {
+            "index": 1,
+            "codec_name": "aac",
+            "codec_long_name": "AAC (Advanced Audio Coding)",
+            "codec_type": "audio",
+            "codec_time_base": "1/48000",
+            "codec_tag_string": "mp4a",
+            "codec_tag": "0x6134706d",
+            "sample_fmt": "fltp",
+            "sample_rate": "48000",
+            "channels": 6,
+            "channel_layout": "5.1",
+            "bits_per_sample": 0,
+            "r_frame_rate": "0/0",
+            "avg_frame_rate": "0/0",
+            "time_base": "1/48000",
+            "start_pts": 0,
+            "start_time": "0.000000",
+            "duration_ts": 1584128,
+            "duration": "33.002667",
+            "bit_rate": "428605",
+            "nb_frames": "1547",
+            "disposition": {
+                "default": 1,
+                "dub": 0,
+                "original": 0,
+                "comment": 0,
+                "lyrics": 0,
+                "karaoke": 0,
+                "forced": 0,
+                "hearing_impaired": 0,
+                "visual_impaired": 0,
+                "clean_effects": 0,
+                "attached_pic": 0
+            },
+            "tags": {
+                "creation_time": "2008-03-18 12:45:48",
+                "language": "eng",
+                "handler_name": "Apple Alias Data Handler"
+            }
+        }
+    ],
+    "format": {
+        "filename": "spec/fixtures/movies/bigbucksbunny_trailer_720p.mov",
+        "nb_streams": 2,
+        "nb_programs": 0,
+        "format_name": "mov,mp4,m4a,3gp,3g2,mj2",
+        "format_long_name": "QuickTime / MOV",
+        "start_time": "0.000000",
+        "duration": "32.995000",
+        "size": "17810888",
+        "bit_rate": "4318445",
+        "probe_score": 100,
+        "tags": {
+            "major_brand": "qt  ",
+            "minor_version": "537199360",
+            "compatible_brands": "qt  ",
+            "creation_time": "2008-03-18 12:45:48"
+        }
+    }
+}

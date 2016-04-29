@@ -1,10 +1,18 @@
 == Master
 
+Current with 2.0.0
+
+== 2.0.0 2016-01-14
+
 New:
 * Support watermarking (thanks smoothdvd)
+* Bumped target ffmpeg version to 2.8
 
 Improvements:
 * Allow parenthesis in colorspace (thanks walterdavis for initial code and rociiu for finding a bug with it)
+* Width and height now switched if video is filmed in portrait mode. ffmpeg 2.7 or later now automatically rotates output
+* Movie metadata now provided with ffprobe (#114). Thanks to Ryan Lovelett for the contributions!
+* Ability to create multiple screenshots at consistent intervals in one pass (#113)
 
 == 1.0.0 2013-07-08
 

@@ -57,9 +57,9 @@ module FFMPEG
             Transcoder.timeout = false
           end
 
-          it "should still work" do
-            encoded = Transcoder.new(movie, "#{tmp_path}/awesome.mpg").run
-            encoded.resolution.should == "640x480"
+          it 'should still work with (NTSC target)' do
+            encoded = Transcoder.new(movie, "#{tmp_path}/awesome.mpg",  target: 'ntsc-vcd').run
+            encoded.resolution.should == '352x240'
           end
 
           after { Transcoder.timeout = @original_timeout }
@@ -74,22 +74,22 @@ module FFMPEG
           transcoder.encoded.should be_valid
           progress_updates.should include(0.0, 1.0)
           progress_updates.length.should >= 3
-          File.exists?("#{tmp_path}/awesome.flv").should be_true
+          File.exists?("#{tmp_path}/awesome.flv").should be_truthy
         end
 
         it "should transcode the movie with EncodingOptions" do
           FileUtils.rm_f "#{tmp_path}/optionalized.mp4"
 
           options = {video_codec: "libx264", frame_rate: 10, resolution: "320x240", video_bitrate: 300,
-                     audio_codec: "libfaac", audio_bitrate: 32, audio_sample_rate: 22050, audio_channels: 1}
+                     audio_codec: "libmp3lame", audio_bitrate: 32, audio_sample_rate: 22050, audio_channels: 1}
 
           encoded = Transcoder.new(movie, "#{tmp_path}/optionalized.mp4", options).run
-          encoded.video_bitrate.should be_within(90).of(300)
+          encoded.video_bitrate.should be_within(90000).of(300000)
           encoded.video_codec.should =~ /h264/
           encoded.resolution.should == "320x240"
           encoded.frame_rate.should == 10.0
-          encoded.audio_bitrate.should be_within(2).of(32)
-          encoded.audio_codec.should =~ /aac/
+          encoded.audio_bitrate.should be_within(2000).of(32000)
+          encoded.audio_codec.should =~ /mp3/
           encoded.audio_sample_rate.should == 22050
           encoded.audio_channels.should == 1
         end
@@ -153,7 +153,11 @@ module FFMPEG
           expect { Transcoder.new(movie, "#{tmp_path}/output with 'quote.flv").run }.not_to raise_error
         end
 
-        pending "should not crash on ISO-8859-1 characters (dont know how to spec this)"
+        it 'should not crash on ISO-8859-1 characters' do
+          FileUtils.rm_f "#{tmp_path}/saløndethé.flv"
+
+          expect { Transcoder.new(movie, "#{tmp_path}/saløndethé.flv").run }.not_to raise_error
+        end
 
         it "should fail when given an invalid movie" do
           FFMPEG.logger.should_receive(:error)
@@ -195,9 +199,9 @@ module FFMPEG
             FFMPEG.ffmpeg_binary = "#{fixture_path}/bin/ffmpeg-audio-only"
           end
 
-          it "should not fail when the timeout is exceeded" do
+          it 'should fail when the timeout is exceeded' do
             transcoder = Transcoder.new(movie, "#{tmp_path}/timeout.mp4")
-            expect { transcoder.run }.not_to raise_error(FFMPEG::Error, /Process hung/)
+            expect { transcoder.run }.to raise_error
           end
 
           after do

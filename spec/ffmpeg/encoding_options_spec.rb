@@ -88,6 +88,10 @@ module FFMPEG
         EncodingOptions.new(duration: 30).to_s.should == "-t 30"
       end
 
+      it "should convert target" do
+        EncodingOptions.new(target: 'ntsc-vcd').to_s.should == "-target ntsc-vcd"
+      end
+
       it "should convert keyframe interval" do
         EncodingOptions.new(keyframe_interval: 60).to_s.should == "-g 60"
       end
@@ -108,8 +112,16 @@ module FFMPEG
         EncodingOptions.new(seek_time: 1).to_s.should == "-ss 1"
       end
 
-      it "should specify screenshot parameters" do
+      it "should specify default screenshot parameters" do
         EncodingOptions.new(screenshot: true).to_s.should == "-vframes 1 -f image2"
+      end
+
+      it 'should specify screenshot parameters when using -vframes' do
+        EncodingOptions.new(screenshot: true, vframes: 123).to_s.should == '-f image2 -vframes 123'
+      end
+
+      it 'should specify screenshot parameters when using video quality -v:q' do
+        EncodingOptions.new(screenshot: true, vframes: 123, quality: 3).to_s.should == '-f image2 -vframes 123 -q:v 3'
       end
 
       it "should put the parameters in order of codecs, presets, others" do
