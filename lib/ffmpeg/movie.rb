@@ -4,7 +4,7 @@ require 'multi_json'
 module FFMPEG
   class Movie
     attr_reader :path, :duration, :time, :bitrate, :rotation, :creation_time
-    attr_reader :video_stream, :video_codec, :video_bitrate, :colorspace, :width, :height, :sar, :dar, :frame_rate
+    attr_reader :video_stream, :video_codec, :video_bitrate, :colorspace, :width, :height, :sar, :dar, :frame_rate, :has_b_frames
     attr_reader :audio_stream, :audio_codec, :audio_bitrate, :audio_sample_rate, :audio_channels
     attr_reader :container
     attr_reader :error
@@ -62,6 +62,7 @@ module FFMPEG
           @video_bitrate = video_stream[:bit_rate].to_i
           @sar = video_stream[:sample_aspect_ratio]
           @dar = video_stream[:display_aspect_ratio]
+          @has_b_frames = video_stream[:has_b_frames].to_i
 
           @frame_rate = unless video_stream[:avg_frame_rate] == '0/0'
                           Rational(video_stream[:avg_frame_rate])
