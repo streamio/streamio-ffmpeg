@@ -27,7 +27,7 @@ module FFMPEG
     describe "transcoding" do
       context 'with default transcoder_options' do
         before do
-          FFMPEG.logger.should_receive(:info).at_least(:once)
+          expect(FFMPEG.logger).to receive(:info).at_least(:once)
         end
 
         context "when ffmpeg freezes" do
@@ -40,7 +40,7 @@ module FFMPEG
           end
 
           it "should fail when the timeout is exceeded" do
-            FFMPEG.logger.should_receive(:error)
+            expect(FFMPEG.logger).to receive(:error)
             transcoder = Transcoder.new(movie, "#{tmp_path}/timeout.mp4")
             expect { transcoder.run }.to raise_error(FFMPEG::Error, /Process hung/)
           end
@@ -59,7 +59,7 @@ module FFMPEG
 
           it 'should still work with (NTSC target)' do
             encoded = Transcoder.new(movie, "#{tmp_path}/awesome.mpg",  target: 'ntsc-vcd').run
-            encoded.resolution.should == '352x240'
+            expect(encoded.resolution).to eq('352x240')
           end
 
           after { Transcoder.timeout = @original_timeout }
@@ -71,10 +71,10 @@ module FFMPEG
           transcoder = Transcoder.new(movie, "#{tmp_path}/awesome.flv")
           progress_updates = []
           transcoder.run { |progress| progress_updates << progress }
-          transcoder.encoded.should be_valid
-          progress_updates.should include(0.0, 1.0)
-          progress_updates.length.should >= 3
-          File.exists?("#{tmp_path}/awesome.flv").should be_truthy
+          expect(transcoder.encoded).to be_valid
+          expect(progress_updates).to include(0.0, 1.0)
+          expect(progress_updates.length).to be >= 3
+          expect(File.exists?("#{tmp_path}/awesome.flv")).to be_truthy
         end
 
         it "should transcode the movie with EncodingOptions" do
@@ -84,14 +84,14 @@ module FFMPEG
                      audio_codec: "libmp3lame", audio_bitrate: 32, audio_sample_rate: 22050, audio_channels: 1}
 
           encoded = Transcoder.new(movie, "#{tmp_path}/optionalized.mp4", options).run
-          encoded.video_bitrate.should be_within(90000).of(300000)
-          encoded.video_codec.should =~ /h264/
-          encoded.resolution.should == "320x240"
-          encoded.frame_rate.should == 10.0
-          encoded.audio_bitrate.should be_within(2000).of(32000)
-          encoded.audio_codec.should =~ /mp3/
-          encoded.audio_sample_rate.should == 22050
-          encoded.audio_channels.should == 1
+          expect(encoded.video_bitrate).to be_within(90000).of(300000)
+          expect(encoded.video_codec).to match(/h264/)
+          expect(encoded.resolution).to eq("320x240")
+          expect(encoded.frame_rate).to eq(10.0)
+          expect(encoded.audio_bitrate).to be_within(2000).of(32000)
+          expect(encoded.audio_codec).to match(/mp3/)
+          expect(encoded.audio_sample_rate).to eq(22050)
+          expect(encoded.audio_channels).to eq(1)
         end
 
         context "with aspect ratio preservation" do
@@ -104,30 +104,30 @@ module FFMPEG
             special_options = {preserve_aspect_ratio: :width}
 
             encoded = Transcoder.new(@movie, "#{tmp_path}/preserved_aspect.mp4", @options, special_options).run
-            encoded.resolution.should == "320x180"
+            expect(encoded.resolution).to eq("320x180")
           end
 
           it "should work on height" do
             special_options = {preserve_aspect_ratio: :height}
 
             encoded = Transcoder.new(@movie, "#{tmp_path}/preserved_aspect.mp4", @options, special_options).run
-            encoded.resolution.should == "426x240"
+            expect(encoded.resolution).to eq("426x240")
           end
 
           it "should not be used if original resolution is undeterminable" do
-            @movie.should_receive(:calculated_aspect_ratio).and_return(nil)
+            expect(@movie).to receive(:calculated_aspect_ratio).and_return(nil)
             special_options = {preserve_aspect_ratio: :height}
 
             encoded = Transcoder.new(@movie, "#{tmp_path}/preserved_aspect.mp4", @options, special_options).run
-            encoded.resolution.should == "320x240"
+            expect(encoded.resolution).to eq("320x240")
           end
 
           it "should round to resolutions divisible by 2" do
-            @movie.should_receive(:calculated_aspect_ratio).at_least(:once).and_return(1.234)
+            expect(@movie).to receive(:calculated_aspect_ratio).at_least(:once).and_return(1.234)
             special_options = {preserve_aspect_ratio: :width}
 
             encoded = Transcoder.new(@movie, "#{tmp_path}/preserved_aspect.mp4", @options, special_options).run
-            encoded.resolution.should == "320x260" # 320 / 1.234 should at first be rounded to 259
+            expect(encoded.resolution).to eq("320x260") # 320 / 1.234 should at first be rounded to 259
           end
         end
 
@@ -135,8 +135,8 @@ module FFMPEG
           FileUtils.rm_f "#{tmp_path}/string_optionalized.flv"
 
           encoded = Transcoder.new(movie, "#{tmp_path}/string_optionalized.flv", "-s 300x200 -ac 2").run
-          encoded.resolution.should == "300x200"
-          encoded.audio_channels.should == 2
+          expect(encoded.resolution).to eq("300x200")
+          expect(encoded.audio_channels).to eq(2)
         end
 
         it "should transcode the movie which name include single quotation mark" do
@@ -160,7 +160,7 @@ module FFMPEG
         end
 
         it "should fail when given an invalid movie" do
-          FFMPEG.logger.should_receive(:error)
+          expect(FFMPEG.logger).to receive(:error)
           movie = Movie.new(__FILE__)
           transcoder = Transcoder.new(movie, "#{tmp_path}/fail.flv")
           expect { transcoder.run }.to raise_error(FFMPEG::Error, /no output file created/)
@@ -169,24 +169,24 @@ module FFMPEG
         it "should encode to the specified duration if given" do
           encoded = Transcoder.new(movie, "#{tmp_path}/durationalized.mp4", duration: 2).run
 
-          encoded.duration.should >= 1.8
-          encoded.duration.should <= 2.2
+          expect(encoded.duration).to be >= 1.8
+          expect(encoded.duration).to be <= 2.2
         end
 
         context "with screenshot option" do
           it "should transcode to original movies resolution by default" do
             encoded = Transcoder.new(movie, "#{tmp_path}/image.jpg", screenshot: true).run
-            encoded.resolution.should == "640x480"
+            expect(encoded.resolution).to eq("640x480")
           end
 
           it "should transcode absolute resolution if specified" do
             encoded = Transcoder.new(movie, "#{tmp_path}/image.bmp", screenshot: true, seek_time: 3, resolution: '400x200').run
-            encoded.resolution.should == "400x200"
+            expect(encoded.resolution).to eq("400x200")
           end
 
           it "should be able to preserve aspect ratio" do
             encoded = Transcoder.new(movie, "#{tmp_path}/image.png", {screenshot: true, seek_time: 4, resolution: '320x500'}, preserve_aspect_ratio: :width).run
-            encoded.resolution.should == "320x240"
+            expect(encoded.resolution).to eq("320x240")
           end
         end
 
@@ -215,19 +215,19 @@ module FFMPEG
     context "with :validate => false set as transcoding_options" do
       let(:transcoder) { Transcoder.new(movie, "tmp.mp4", {},{:validate => false}) }
 
-      before { transcoder.stub(:transcode_movie) }
+      before { allow(transcoder).to receive(:transcode_movie) }
       after { FileUtils.rm_f "#{tmp_path}/tmp.mp4" }
 
       it "should not validate the movie output" do
-        transcoder.should_not_receive(:validate_output_file)
-        transcoder.stub(:encoded)
+        expect(transcoder).to_not receive(:validate_output_file)
+        allow(transcoder).to receive(:encoded)
         transcoder.run
       end
 
       it "should not return Movie object" do
-        transcoder.stub(:validate_output_file)
-        transcoder.should_not_receive(:encoded)
-        transcoder.run.should == nil
+        allow(transcoder).to receive(:validate_output_file)
+        expect(transcoder).to_not receive(:encoded)
+        expect(transcoder.run).to eq(nil)
       end
     end
   end
