@@ -1,4 +1,5 @@
 require 'spec_helper.rb'
+require 'webrick'
 
 module FFMPEG
   describe Movie do
@@ -24,6 +25,36 @@ module FFMPEG
           expect(movie.duration).to be_within(0.01).of(7.56)
           expect(movie.frame_rate).to be_within(0.01).of(16.75)
         end
+      end
+
+      context "given an URL" do
+        context "that is correct" do
+          before(:context) { start_web_server }
+          after(:context) { stop_web_server }
+
+          let(:movie) { Movie.new("http://127.0.0.1:8000/awesome%20movie.mov") }
+
+          it "should be valid" do
+            expect(movie).to be_valid
+          end
+
+          it "should know the file size" do
+            expect(movie.size).to eq(455546)
+          end
+
+          it "should remember the movie URL" do
+            expect(movie.path).to eq("http://127.0.0.1:8000/awesome%20movie.mov")
+          end
+
+          it "should be marked as remote" do
+            expect(movie.remote?).to be_truthy
+          end
+        end
+        context "that is incorrect" do
+          it "should raise an exception" do
+            expect { Movie.new("http://127.0.0.1:8000/awesome%20movie.mov") }.to raise_error(Errno::ENOENT)
+          end
+        end          
       end
 
       context "given a non movie file" do
@@ -227,6 +258,10 @@ module FFMPEG
 
         it "should remember the movie path" do
           expect(movie.path).to eq("#{fixture_path}/movies/awesome movie.mov")
+        end
+
+        it "should be marked as local" do
+          expect(movie.local?).to be_truthy
         end
 
         it "should parse duration to number of seconds" do

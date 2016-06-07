@@ -1,5 +1,6 @@
 require 'time'
 require 'multi_json'
+require 'uri'
 
 module FFMPEG
   class Movie
@@ -9,7 +10,14 @@ module FFMPEG
     attr_reader :container
 
     def initialize(path)
-      raise Errno::ENOENT, "the file '#{path}' does not exist" unless File.exist?(path)
+      @path = path
+
+      if remote?
+        @head = head
+        raise Errno::ENOENT, "the URL '#{path}' does not exist" if @head.nil? || @head.code.to_i != 200
+      else
+        raise Errno::ENOENT, "the file '#{path}' does not exist" unless File.exist?(path)
+      end
 
       @path = path
 
@@ -103,6 +111,14 @@ module FFMPEG
       not @invalid
     end
 
+    def remote?
+      @path =~ URI::regexp
+    end
+
+    def local?
+      not remote?
+    end
+
     def width
       rotation.nil? || rotation == 180 ? @width : @height;
     end
@@ -126,7 +142,11 @@ module FFMPEG
     end
 
     def size
-      File.size(@path)
+      if local?
+        File.size(@path)
+      else
+        @head.content_length
+      end
     end
 
     def audio_channel_layout
@@ -175,6 +195,17 @@ module FFMPEG
       output[/test/] # Running a regexp on the string throws error if it's not UTF-8
     rescue ArgumentError
       output.force_encoding("ISO-8859-1")
+    end
+
+    def head
+      url = URI(@path)
+      return unless url.path
+
+      http = Net::HTTP.new(url.host, url.port)
+      http.use_ssl = url.port == 443
+      http.request_head(url.path)
+    rescue SocketError, Errno::ECONNREFUSED
+      nil
     end
   end
 end

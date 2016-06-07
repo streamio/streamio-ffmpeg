@@ -173,6 +173,17 @@ module FFMPEG
           expect(encoded.duration).to be <= 2.2
         end
 
+        context "with remote URL as input" do
+          before(:context) { start_web_server }
+          after(:context) { stop_web_server }
+
+          it "should transcode correctly" do
+            movie = Movie.new("http://127.0.0.1:8000/awesome%20movie.mov")
+
+            expect { Transcoder.new(movie, "#{tmp_path}/output.flv").run }.not_to raise_error
+          end
+        end
+
         context "with screenshot option" do
           it "should transcode to original movies resolution by default" do
             encoded = Transcoder.new(movie, "#{tmp_path}/image.jpg", screenshot: true).run
