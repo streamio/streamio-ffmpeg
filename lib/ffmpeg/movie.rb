@@ -102,9 +102,15 @@ module FFMPEG
       end
 
       @invalid = true if metadata.key?(:error)
-      @invalid = true if std_error.include?("Unsupported codec")
+      @invalid = true if std_error.include?("Unsupported codec for output stream")
       @invalid = true if std_error.include?("is not supported")
       @invalid = true if std_error.include?("could not find codec parameters")
+
+      unsupported_codecs = std_error.scan(/Unsupported codec with .* for input stream (.*)/).flatten
+      unsupported_codecs.each do |codec|
+        stream = metadata[:streams].find { |stream| stream[:index].to_s == codec }
+        @invalid = true if !stream.nil? && %w(video audio).include?(stream[:codec_type])
+      end
     end
 
     def valid?
