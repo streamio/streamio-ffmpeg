@@ -152,6 +152,14 @@ module FFMPEG
         end
       end
 
+      context "given a file with data streams" do
+        let(:movie) { Movie.new("#{fixture_path}/movies/file_with_data_streams.mp4") }
+
+        it "should be valid" do
+          expect(movie).to be_valid
+        end
+      end
+
       context "given a weird aspect ratio file" do
         let(:movie) { Movie.new("#{fixture_path}/movies/weird_aspect.small.mpg") }
 
