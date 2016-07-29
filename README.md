@@ -154,18 +154,18 @@ The screenshot method has the very same API as transcode so the same options wil
 movie.screenshot("screenshot.bmp", seek_time: 5, resolution: '320x240')
 ```
 
-To generate multiple screenshots in a single pass, specify `vframes`. The following code
-generates up to 20 screenshots every 10 seconds:
+To generate multiple screenshots in a single pass, specify `vframes` and a wildcard filename. Make
+sure to disable output file validation. The following code generates up to 20 screenshots every 10 seconds:
 
 ``` ruby
-movie.screenshot("screenshot.jpg", vframes: 20, frame_rate: '1/6')
+movie.screenshot("screenshot_%d.jpg", {vframes: 20, frame_rate: '1/6'}, validate: false)
 ```
 
 To specify the quality when generating compressed screenshots (.jpg), use `quality` which specifies
 ffmpeg `-v:q` option. Quality is an integer between 1 and 31, where lower is better quality:
 
 ``` ruby
-movie.screenshot("screenshot.jpg", quality: 3)
+movie.screenshot("screenshot_%d.jpg", quality: 3)
 ```
 
 You can preserve aspect ratio the same way as when using transcode.

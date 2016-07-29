@@ -188,6 +188,20 @@ module FFMPEG
             encoded = Transcoder.new(movie, "#{tmp_path}/image.png", {screenshot: true, seek_time: 4, resolution: '320x500'}, preserve_aspect_ratio: :width).run
             encoded.resolution.should == "320x240"
           end
+
+          describe 'for multiple screenshots' do
+            context 'with output file validation' do
+              it 'should fail' do
+                expect { Transcoder.new(movie, "#{tmp_path}/invalid_%d.png", {screenshot: true, seek_time: 4, resolution: '320x500'}, preserve_aspect_ratio: :width).run }.to raise_error
+              end
+            end
+            context 'without output file validation' do
+              it 'should create sequential screenshots' do
+                Transcoder.new(movie, "#{tmp_path}/screenshots_%d.png", {screenshot: true, seek_time: 4, resolution: '320x500', validate: false}, preserve_aspect_ratio: :width, validate: false).run
+                Dir[File.join(tmp_path, 'screenshots_*.png')].count { |file| File.file?(file) }.should eq 2
+              end
+            end
+          end
         end
 
         context "audio only" do
