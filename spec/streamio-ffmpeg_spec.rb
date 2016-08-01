@@ -7,18 +7,18 @@ describe FFMPEG do
     end
     
     it "should be a Logger" do
-      FFMPEG.logger.should be_instance_of(Logger)
+      expect(FFMPEG.logger).to be_instance_of(Logger)
     end
     
     it "should be at info level" do
       FFMPEG.logger = nil # Reset the logger so that we get the default
-      FFMPEG.logger.level.should == Logger::INFO
+      expect(FFMPEG.logger.level).to eq(Logger::INFO)
     end
     
     it "should be assignable" do
       new_logger = Logger.new(STDOUT)
       FFMPEG.logger = new_logger
-      FFMPEG.logger.should == new_logger
+      expect(FFMPEG.logger).to eq(new_logger)
     end
   end
 
