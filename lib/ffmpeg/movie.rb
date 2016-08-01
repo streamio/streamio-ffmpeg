@@ -8,6 +8,8 @@ module FFMPEG
     attr_reader :audio_stream, :audio_codec, :audio_bitrate, :audio_sample_rate, :audio_channels
     attr_reader :container
 
+    UNSUPPORTED_CODEC_PATTERN = /^Unsupported codec with id (\d+) for input stream (\d+)$/
+
     def initialize(path)
       raise Errno::ENOENT, "the file '#{path}' does not exist" unless File.exist?(path)
 
@@ -50,9 +52,9 @@ module FFMPEG
 
         @bitrate = metadata[:format][:bit_rate].to_i
 
-        unless video_streams.empty?
-          # TODO: Handle multiple video codecs (is that possible?)
-          video_stream = video_streams.first
+        # TODO: Handle multiple video codecs (is that possible?)
+        video_stream = video_streams.first
+        unless video_stream.nil?
           @video_codec = video_stream[:codec_name]
           @colorspace = video_stream[:pix_fmt]
           @width = video_stream[:width]
@@ -76,9 +78,9 @@ module FFMPEG
                       end
         end
 
-        unless audio_streams.empty?
-          # TODO: Handle multiple audio codecs
-          audio_stream = audio_streams.first
+        # TODO: Handle multiple audio codecs
+        audio_stream = audio_streams.first
+        unless audio_stream.nil?
           @audio_channels = audio_stream[:channels].to_i
           @audio_codec = audio_stream[:codec_name]
           @audio_sample_rate = audio_stream[:sample_rate].to_i
@@ -89,10 +91,22 @@ module FFMPEG
 
       end
 
+      unsupported_stream_ids = unsupported_streams(std_error)
+      nil_or_unsupported = -> (stream) { stream.nil? || unsupported_stream_ids.include?(stream[:index]) }
+
+      @invalid = true if nil_or_unsupported.(video_stream) && nil_or_unsupported.(audio_stream)
       @invalid = true if metadata.key?(:error)
-      @invalid = true if std_error.include?("Unsupported codec")
       @invalid = true if std_error.include?("is not supported")
       @invalid = true if std_error.include?("could not find codec parameters")
+    end
+
+    def unsupported_streams(std_error)
+      [].tap do |stream_indices|
+        std_error.each_line do |line|
+          match = line.match(UNSUPPORTED_CODEC_PATTERN)
+          stream_indices << match[2].to_i if match
+        end
+      end
     end
 
     def valid?

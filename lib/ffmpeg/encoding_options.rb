@@ -23,11 +23,17 @@ module FFMPEG
     end
 
     def width
-      self[:resolution].split("x").first.to_i rescue nil
+      self["resolution"].split("x").first.to_i rescue nil
     end
 
     def height
-      self[:resolution].split("x").last.to_i rescue nil
+      self["resolution"].split("x").last.to_i rescue nil
+    end
+
+    def reverse_resolution
+      return "Resolution not found" if height.nil? || width.nil? 
+      @reverse_resolution = height.to_s + "x" + width.to_s
+      self["resolution"] = @reverse_resolution
     end
 
     private
@@ -153,6 +159,50 @@ module FFMPEG
     def convert_watermark(value)
       "-i #{value}"
     end
+
+    #---------------------------------
+
+    def convert_cpu_used(value)
+      "-cpu-used #{value}"
+    end
+
+    def convert_quality(value)
+      "-deadline #{value}"
+    end
+
+    def convert_qmin(value)
+      "-qmin #{value}"
+    end
+
+    def convert_qmax(value)
+      "-qmax #{value}"
+    end
+
+    def convert_pass(value)
+      "-pass #{value}"
+    end
+
+    def convert_passlogfile(value)
+      "-passlogfile #{value}"
+    end
+
+    def convert_video_profile(value)
+      "-profile:v #{value}"
+    end
+
+    def convert_crf(value)
+      "-crf #{value}"
+    end
+
+    def convert_strict(value)
+      "-strict #{value}"
+    end
+
+    def convert_transpose(value)
+      "-vf transpose=#{value}"
+    end
+
+    #---------------------------------
 
     def convert_watermark_filter(value)
       case value[:position].to_s
