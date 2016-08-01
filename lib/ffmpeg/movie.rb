@@ -9,7 +9,7 @@ module FFMPEG
     attr_reader :container
 
     def initialize(path)
-      raise Errno::ENOENT, "the file '#{path}' does not exist" unless File.exist?(path)
+      raise Errno::ENOENT, "the file '#{path}' does not exist" unless File.exist?(path)  || /^http/ === path
 
       @path = path
 
@@ -18,10 +18,9 @@ module FFMPEG
       std_output = ''
       std_error = ''
 
-      Open3.popen3(command) do |stdin, stdout, stderr|
-        std_output = stdout.read unless stdout.nil?
-        std_error = stderr.read unless stderr.nil?
-      end
+      # Don't use popen3 as it might hang with large std errors.
+      # capture3 handles it well
+      std_output, std_error, status = Open3.capture3(command)
 
       fix_encoding(std_output)
 
@@ -43,7 +42,12 @@ module FFMPEG
         @time = metadata[:format][:start_time].to_f
 
         @creation_time = if metadata[:format].key?(:tags) and metadata[:format][:tags].key?(:creation_time)
-                           Time.parse(metadata[:format][:tags][:creation_time])
+                           begin
+                             ##Sometimes creation time might be incorrect causing Time to throw an Argument error
+                             Time.parse(metadata[:format][:tags][:creation_time])
+                           rescue
+                             nil
+                           end
                          else
                            nil
                          end
