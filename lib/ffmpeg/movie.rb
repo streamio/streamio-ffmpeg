@@ -1,5 +1,6 @@
 require 'time'
 require 'multi_json'
+require 'uri'
 
 module FFMPEG
   class Movie
@@ -9,7 +10,14 @@ module FFMPEG
     attr_reader :container
 
     def initialize(path)
-      raise Errno::ENOENT, "the file '#{path}' does not exist" unless File.exist?(path)
+      @path = path
+
+      if remote?
+        @head = head
+        raise Errno::ENOENT, "the URL '#{path}' does not exist" if @head.nil? || @head.code.to_i != 200
+      else
+        raise Errno::ENOENT, "the file '#{path}' does not exist" unless File.exist?(path)
+      end
 
       @path = path
 
@@ -94,13 +102,27 @@ module FFMPEG
       end
 
       @invalid = true if metadata.key?(:error)
-      @invalid = true if std_error.include?("Unsupported codec")
+      @invalid = true if std_error.include?("Unsupported codec for output stream")
       @invalid = true if std_error.include?("is not supported")
       @invalid = true if std_error.include?("could not find codec parameters")
+
+      unsupported_codecs = std_error.scan(/Unsupported codec with .* for input stream (.*)/).flatten
+      unsupported_codecs.each do |codec|
+        stream = metadata[:streams].find { |stream| stream[:index].to_s == codec }
+        @invalid = true if !stream.nil? && %w(video audio).include?(stream[:codec_type])
+      end
     end
 
     def valid?
       not @invalid
+    end
+
+    def remote?
+      @path =~ URI::regexp
+    end
+
+    def local?
+      not remote?
     end
 
     def width
@@ -126,7 +148,11 @@ module FFMPEG
     end
 
     def size
-      File.size(@path)
+      if local?
+        File.size(@path)
+      else
+        @head.content_length
+      end
     end
 
     def audio_channel_layout
@@ -175,6 +201,17 @@ module FFMPEG
       output[/test/] # Running a regexp on the string throws error if it's not UTF-8
     rescue ArgumentError
       output.force_encoding("ISO-8859-1")
+    end
+
+    def head
+      url = URI(@path)
+      return unless url.path
+
+      http = Net::HTTP.new(url.host, url.port)
+      http.use_ssl = url.port == 443
+      http.request_head(url.path)
+    rescue SocketError, Errno::ECONNREFUSED
+      nil
     end
   end
 end
