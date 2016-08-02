@@ -203,7 +203,7 @@ module FFMPEG
           describe 'for multiple screenshots' do
             context 'with output file validation' do
               it 'should fail' do
-                expect { Transcoder.new(movie, "#{tmp_path}/invalid_%d.png", {screenshot: true, seek_time: 4, resolution: '320x500'}, preserve_aspect_ratio: :width).run }.to raise_error
+                expect { Transcoder.new(movie, "#{tmp_path}/invalid_%d.png", {screenshot: true, seek_time: 4, resolution: '320x500'}, preserve_aspect_ratio: :width).run }.to raise_error(FFMPEG::Error, /Failed encoding/)
               end
             end
             context 'without output file validation' do
@@ -226,7 +226,7 @@ module FFMPEG
 
           it 'should fail when the timeout is exceeded' do
             transcoder = Transcoder.new(movie, "#{tmp_path}/timeout.mp4")
-            expect { transcoder.run }.to raise_error
+            expect { transcoder.run }.to raise_error(FFMPEG::Error, /Errors: no output file created/)
           end
 
           after do
