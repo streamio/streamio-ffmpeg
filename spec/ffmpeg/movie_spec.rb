@@ -253,7 +253,7 @@ module FFMPEG
         let(:movie) { Movie.new("#{fixture_path}/sounds/bad_metadata_creation_time.wav") }
 
         it "should set creation_time to nil" do
-          movie.creation_time.should be_nil
+          expect(movie.creation_time).to be_nil
         end
       end
 
