@@ -139,6 +139,14 @@ module FFMPEG
           Movie.new(__FILE__)
         end
 
+        context "given a file with bad JSON" do
+          let(:fixture_file) { 'file_with_bad_json.txt' }
+
+          it 'should raise an exception' do
+            expect { movie }.to raise_error RuntimeError, /Could not parse output from FFProbe/
+          end
+        end
+
         context "given an impossible DAR" do
           let(:fixture_file) { 'file_with_weird_dar.txt' }
 
