@@ -256,6 +256,77 @@ module FFMPEG
           expect(transcoder.run).to eq(nil)
         end
       end
+
+      context 'with input' do
+        let(:input_path) { 'path/img_%03d.gif' }
+
+        context 'is a movie' do
+          context 'and no input is specified' do
+            let(:transcoder) { Transcoder.new(movie, 'tmp.mp4') }
+
+            it "should use the movie's path" do
+              expect(transcoder.input).to eq(Shellwords.escape(movie.path))
+            end
+
+            it 'should add the input to the shell command' do
+              expect(transcoder.command).to include(" -i #{transcoder.input}")
+            end
+          end
+
+          context 'and an input is also specified' do
+            let(:transcoder) { Transcoder.new(movie, 'tmp.mp4', {}, input: input_path) }
+
+            it 'should use the provided input' do
+              expect(transcoder.input).to eq(Shellwords.escape(input_path))
+            end
+          end
+        end
+
+        context 'is a path spec' do
+          let(:transcoder) { Transcoder.new(movie, 'tmp.mp4', {}, input: input_path) }
+
+          it "should use the input path" do
+            expect(transcoder.input).to eq(Shellwords.escape(input_path))
+          end
+        end
+      end
+
+      context 'with input_options' do
+        let(:option) { '-framerate 1/5' }
+        let(:transcoder) { Transcoder.new(movie, 'tmp.mp4', {}, input_options: option) }
+
+        it 'should add the input_options before the input' do
+          expect(transcoder.command).to include("#{option} -i #{transcoder.input}")
+        end
+
+        context 'to create a slideshow' do
+          let(:file_spec) { "#{fixture_path}/images/img_%03d.jpeg"}
+          let(:output) { "#{tmp_path}/slideshow.mp4"}
+          let(:transcoder) { Transcoder.new(movie, output, {}, input: file_spec, input_options: option) }
+
+          it 'should add the input_options before the input' do
+            expect(transcoder.command).to include("#{option} -i #{transcoder.input}")
+          end
+
+          it 'should not raise an error' do
+            expect { transcoder.run }.to_not raise_error
+          end
+
+          it 'should produce the slideshow' do
+            encoded = transcoder.run
+            expect(encoded.duration).to eq(25)
+          end
+
+          context 'with source files where file type name does not match the image type' do
+            let(:file_spec) { "#{fixture_path}/images/wrong_type/img_%03d.tiff"}
+            let(:output) { "#{tmp_path}/slideshow_fail.mp4"}
+
+            it 'should raise an error' do
+              expect { transcoder.run }.to raise_error(FFMPEG::Error, /encoded file is invalid/)
+            end
+          end
+        end
+      end
     end
   end
 end

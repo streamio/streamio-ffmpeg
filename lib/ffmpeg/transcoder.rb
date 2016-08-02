@@ -2,14 +2,19 @@ require 'open3'
 
 module FFMPEG
   class Transcoder
-    @timeout = 30
+    attr_reader :command, :input
+
+    @@timeout = 30
 
     class << self
       attr_accessor :timeout
     end
 
-    def initialize(movie, output_file, options = EncodingOptions.new, transcoder_options = {})
-      @movie = movie
+    def initialize(input, output_file, options = EncodingOptions.new, transcoder_options = {})
+      if input.is_a?(FFMPEG::Movie)
+        @movie = input
+        @input = Shellwords.escape(input.path)
+      end
       @output_file = output_file
 
       if options.is_a?(Array) || options.is_a?(EncodingOptions)
@@ -24,6 +29,11 @@ module FFMPEG
       @errors = []
 
       apply_transcoder_options
+
+      @input = Shellwords.escape(@transcoder_options[:input]) unless @transcoder_options[:input].nil?
+
+      input_options = @transcoder_options[:input_options]
+      @command = [FFMPEG.ffmpeg_binary, '-y', *input_options, '-i', @input, *@raw_options.to_a, @output_file]
     end
 
     def run(&block)
@@ -53,11 +63,10 @@ module FFMPEG
     private
     # frame= 4855 fps= 46 q=31.0 size=   45306kB time=00:02:42.28 bitrate=2287.0kbits/
     def transcode_movie
-      @command = [FFMPEG.ffmpeg_binary, '-y', '-i', @movie.path, *@raw_options.to_a, @output_file]
-      FFMPEG.logger.info("Running transcoding...\n#{@command}\n")
+      FFMPEG.logger.info("Running transcoding...\n#{command}\n")
       @output = ""
 
-      Open3.popen3(*@command) do |_stdin, _stdout, stderr, wait_thr|
+      Open3.popen3(command) do |_stdin, _stdout, stderr, wait_thr|
         begin
           yield(0.0) if block_given?
           next_line = Proc.new do |line|
@@ -81,7 +90,7 @@ module FFMPEG
           end
 
         rescue Timeout::Error => e
-          FFMPEG.logger.error "Process hung...\n@command\n#{@command}\nOutput\n#{@output}\n"
+          FFMPEG.logger.error "Process hung...\n@command\n#{command}\nOutput\n#{@output}\n"
           raise Error, "Process hung. Full output: #{@output}"
         end
       end
@@ -90,10 +99,10 @@ module FFMPEG
     def validate_output_file(&block)
       if encoding_succeeded?
         yield(1.0) if block_given?
-        FFMPEG.logger.info "Transcoding of #{@movie.path} to #{@output_file} succeeded\n"
+        FFMPEG.logger.info "Transcoding of #{input} to #{@output_file} succeeded\n"
       else
         errors = "Errors: #{@errors.join(", ")}. "
-        FFMPEG.logger.error "Failed encoding...\n#{@command}\n\n#{@output}\n#{errors}\n"
+        FFMPEG.logger.error "Failed encoding...\n#{command}\n\n#{@output}\n#{errors}\n"
         raise Error, "Failed encoding.#{errors}Full output: #{@output}"
       end
     end
@@ -102,7 +111,7 @@ module FFMPEG
        # if true runs #validate_output_file
       @transcoder_options[:validate] = @transcoder_options.fetch(:validate) { true }
 
-      return if @movie.calculated_aspect_ratio.nil?
+      return if @movie.nil? || @movie.calculated_aspect_ratio.nil?
       case @transcoder_options[:preserve_aspect_ratio].to_s
       when "width"
         new_height = @raw_options.width / @movie.calculated_aspect_ratio
