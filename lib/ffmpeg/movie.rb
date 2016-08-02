@@ -25,7 +25,11 @@ module FFMPEG
 
       fix_encoding(std_output)
 
-      metadata = MultiJson.load(std_output, symbolize_keys: true)
+      begin
+        metadata = MultiJson.load(std_output, symbolize_keys: true)
+      rescue MultiJson::ParseError
+        raise "Could not parse output from FFProbe:\n#{ std_output }"
+      end
 
       if metadata.key?(:error)
 
