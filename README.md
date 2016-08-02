@@ -171,6 +171,8 @@ options = { watermark: "full_path_of_watermark.png", resolution: "640x360", wate
 ```
 
 Position can be "LT" (Left Top Corner), "RT" (Right Top Corner), "LB" (Left Bottom Corner), "RB" (Right Bottom Corner).
+The watermark will not appear unless `watermark_options` specifies the position. `padding_x` and `padding_y` default to
+`10`.
 
 ### Taking Screenshots
 

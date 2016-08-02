@@ -237,6 +237,17 @@ module FFMPEG
       end
     end
 
+    describe 'watermarking' do
+      context 'with default transcoder_options' do
+
+        it 'should transcode the movie with the watermark' do
+          options = { watermark: "#{fixture_path}/images/watermark.png", watermark_filter: { position: 'RB' }  }
+          transcoder = Transcoder.new(movie, "#{tmp_path}/watermarked.mp4", options)
+          expect { transcoder.run }.not_to raise_error
+        end
+      end
+    end
+
     describe 'transcoding_options' do
       context 'with validate: false' do
         let(:transcoder) { Transcoder.new(movie, 'tmp.mp4', {}, validate: false) }

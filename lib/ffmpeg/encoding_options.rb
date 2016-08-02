@@ -173,16 +173,19 @@ module FFMPEG
     end
 
     def convert_watermark_filter(value)
-      case value[:position].to_s
-      when "LT"
-        ["-filter_complex", "scale=#{self[:resolution]},overlay=x=#{value[:padding_x]}:y=#{value[:padding_y]}"]
-      when "RT"
-        ["-filter_complex", "scale=#{self[:resolution]},overlay=x=main_w-overlay_w-#{value[:padding_x]}:y=#{value[:padding_y]}"]
-      when "LB"
-        ["-filter_complex", "scale=#{self[:resolution]},overlay=x=#{value[:padding_x]}:y=main_h-overlay_h-#{value[:padding_y]}"]
-      when "RB"
-        ["-filter_complex", "scale=#{self[:resolution]},overlay=x=main_w-overlay_w-#{value[:padding_x]}:y=main_h-overlay_h-#{value[:padding_y]}"]
-      end  
+      position = value[:position]
+      padding_x = value[:padding_x] || 10
+      padding_y = value[:padding_y] || 10
+      case position.to_s
+        when "LT"
+          ["-filter_complex", "scale=#{self[:resolution]},overlay=x=#{padding_x}:y=#{padding_y}"]
+        when "RT"
+          ["-filter_complex", "scale=#{self[:resolution]},overlay=x=main_w-overlay_w-#{padding_x}:y=#{padding_y}"]
+        when "LB"
+          ["-filter_complex", "scale=#{self[:resolution]},overlay=x=#{padding_x}:y=main_h-overlay_h-#{padding_y}"]
+        when "RB"
+          ["-filter_complex", "scale=#{self[:resolution]},overlay=x=main_w-overlay_w-#{padding_x}:y=main_h-overlay_h-#{padding_y}"]
+      end
     end
 
     def convert_custom(value)
