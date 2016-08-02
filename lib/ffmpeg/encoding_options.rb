@@ -22,6 +22,10 @@ module FFMPEG
       params_string
     end
 
+    def to_input_options
+      self[:custom_input] || ""
+    end
+
     def width
       self[:resolution].split("x").first.to_i rescue nil
     end
@@ -169,6 +173,14 @@ module FFMPEG
 
     def convert_custom(value)
       value
+    end
+
+    # Don't include custom input options (which must appear before -i) with
+    # the output options (which appear after -i).  By leaving this method
+    # defined as returning an empty string, the `:custom_input` options won't
+    # accidentally get duplicated as output options.
+    def convert_custom_input(value)
+      ""
     end
 
     def k_format(value)

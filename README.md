@@ -82,7 +82,7 @@ Give custom command line options with a string.
 movie.transcode("movie.mp4", "-ac aac -vc libx264 -ac 2 ...")
 ```
 
-Use the EncodingOptions parser for humanly readable transcoding options. Below you'll find most of the supported options. Note that the :custom key will be used as is without modification so use it for any tricky business you might need.
+Use the EncodingOptions parser for humanly readable transcoding options. Below you'll find most of the supported options. Note that the :custom and :custom_input keys will be used as is without modification, so use them for any tricky business you might need.  :custom_input appears before the -i (indicating input options), :custom appears after (indicating output options).
 
 ``` ruby
 options = {video_codec: "libx264", frame_rate: 10, resolution: "320x240", video_bitrate: 300, video_bitrate_tolerance: 100,
@@ -90,6 +90,7 @@ options = {video_codec: "libx264", frame_rate: 10, resolution: "320x240", video_
            x264_vprofile: "high", x264_preset: "slow",
            audio_codec: "libfaac", audio_bitrate: 32, audio_sample_rate: 22050, audio_channels: 1,
            threads: 2,
+           custom_input: "-ss 20",
            custom: "-vf crop=60:60:10:10"}
 movie.transcode("movie.mp4", options)
 ```
