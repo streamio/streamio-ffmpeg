@@ -130,6 +130,38 @@ options = {video_min_bitrate: 600, video_max_bitrate: 600, buffer_size: 2000}
 movie.transcode("movie.flv", options)
 ```
 
+### Specifying Input Options
+
+To specify which options apply the input, such as changing the input framerate, use `input_options` value
+in the transcoder_options.
+
+``` ruby
+movie = FFMPEG::Movie.new("path/to/movie.mov")
+
+transcoder_options = { input_options: '-framerate 1/5' }
+movie.transcode("movie.mp4", {}, transcoder_options)
+
+# FFMPEG Command will look like this:
+# ffmpeg -y -framerate 1/5 -i path/to/movie.mov movie.mp4
+```
+
+### Overriding the Input Path
+
+If FFMPEG's input path needs to specify a sequence of files, rather than a path to a single movie, transcoding_options
+`input` can be set. If this option is present, the path of the original movie will not be used.
+
+``` ruby
+movie = FFMPEG::Movie.new("path/to/movie.mov")
+
+transcoder_options = { input: 'img_%03d.png' }
+movie.transcode("movie.mp4", {}, transcoder_options)
+
+# FFMPEG Command will look like this:
+# ffmpeg -y -i img_%03d.png movie.mp4
+```
+
+### Watermarking
+
 Add watermark image on the video.
 
 For example, you want to add a watermark on the video at right top corner with 10px padding.
@@ -172,6 +204,18 @@ You can preserve aspect ratio the same way as when using transcode.
 
 ``` ruby
 movie.screenshot("screenshot.png", { seek_time: 2, resolution: '200x120' }, preserve_aspect_ratio: :width)
+```
+
+### Create a Slideshow from Stills
+Creating a slideshow from stills uses named sequences of files and stiches the result together in a slideshow
+video.
+
+Since there is not movie to transcode, the Transcoder class needs to be used. The input and input_options are
+provided through transcoder options.
+
+``` ruby
+slideshow_transcoder = FFMPEG::Transcoder.new('', 'slideshow.mp4', {resolution: "320x240"}, input: 'img_%03d.jpeg', input_options: '-framerate 1/5')
+slideshow = slideshow_transcoder.run
 ```
 
 Specify the path to ffmpeg
