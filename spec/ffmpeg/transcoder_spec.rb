@@ -209,7 +209,7 @@ module FFMPEG
             context 'without output file validation' do
               it 'should create sequential screenshots' do
                 Transcoder.new(movie, "#{tmp_path}/screenshots_%d.png", {screenshot: true, seek_time: 4, resolution: '320x500', validate: false}, preserve_aspect_ratio: :width, validate: false).run
-                expect(Dir[File.join(tmp_path, 'screenshots_*.png')].count { |file| File.file?(file) }).to eq(2)
+                expect(Dir[File.join(tmp_path, 'screenshots_*.png')].count { |file| File.file?(file) }).to eq(1)
               end
             end
           end

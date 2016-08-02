@@ -32,5 +32,5 @@ def stop_web_server
   @server.shutdown
 end
 
-
+FileUtils.rm_rf(tmp_path)
 FileUtils.mkdir_p tmp_path
