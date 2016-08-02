@@ -142,7 +142,7 @@ module FFMPEG
         let(:movie) { Movie.new("#{fixture_path}/movies/ios9.mov") }
 
         it "should be valid" do
-          movie.should be_valid
+          expect(movie).to be_valid
         end
       end
 
