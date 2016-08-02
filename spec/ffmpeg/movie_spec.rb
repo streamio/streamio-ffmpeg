@@ -249,7 +249,7 @@ module FFMPEG
           end
 
           it "should be valid" do
-            movie.should be_valid
+            expect(movie).to be_valid
           end
         end
 
@@ -257,7 +257,7 @@ module FFMPEG
           let(:fixture_file) { 'file_with_non_supported_audio_and_video_stdout.txt' }
           let(:movie) do
             fake_stderr = StringIO.new(File.read("#{fixture_path}/outputs/file_with_non_supported_audio_and_video_stderr.txt"))
-            Open3.stub(:popen3).and_yield(nil,fake_output,fake_stderr)
+            allow(Open3).to receive(:popen3).and_yield(nil, fake_output, fake_stderr)
             Movie.new(__FILE__)
           end
 
