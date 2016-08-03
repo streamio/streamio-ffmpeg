@@ -124,14 +124,16 @@ module FFMPEG
         expect(EncodingOptions.new(screenshot: true, vframes: 123, quality: 3).to_a).to eq(%w(-f image2 -vframes 123 -q:v 3))
       end
 
-      it "should put the parameters in order of codecs, presets, others" do
+      it 'should put the parameters in order of codecs, presets, others' do
         opts = Hash.new
         opts[:frame_rate] = 25
-        opts[:video_codec] = "libx264"
-        opts[:video_preset] = "normal"
+        opts[:video_codec] = 'libx264'
+        opts[:video_preset] = 'normal'
+        opts[:watermark_filter] = { position: "RT", padding_x: 10, padding_y: 10}
+        opts[:watermark] = 'watermark.png'
 
         converted = EncodingOptions.new(opts).to_a
-        expect(converted).to eq(%w(-vcodec libx264 -vpre normal -r 25))
+        expect(converted).to eq(%w(-i watermark.png -filter_complex scale=,overlay=x=main_w-overlay_w-10:y=10 -vcodec libx264 -vpre normal -r 25))
       end
 
       it "should convert a lot of them simultaneously" do

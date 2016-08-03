@@ -4,14 +4,30 @@ module FFMPEG
       merge!(options)
     end
 
+    def params_order(k)
+      if k =~ /watermark$/
+        0
+      elsif k =~ /watermark/
+        1
+      elsif k =~ /codec/
+        2
+      elsif k =~ /preset/
+        3
+      else
+        4
+      end
+    end
+
     def to_a
       params = []
 
       # codecs should go before the presets so that the files will be matched successfully
       # all other parameters go after so that we can override whatever is in the preset
-      keys.sort_by{|k| k =~ /codec/ ? 0 : (k =~ /preset/ ? 1 : 2) }.each do |key|
+      keys.sort_by{|k| params_order(k) }.each do |key|
+
         value   = self[key]
-        params += send("convert_#{key}", value) if value && supports_option?(key)
+        a = send("convert_#{key}", value) if value && supports_option?(key)
+        params += a unless a.nil?
       end
 
       params += convert_aspect(calculate_aspect) if calculate_aspect?
