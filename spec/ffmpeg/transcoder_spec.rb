@@ -276,11 +276,11 @@ module FFMPEG
             let(:transcoder) { Transcoder.new(movie, 'tmp.mp4') }
 
             it "should use the movie's path" do
-              expect(transcoder.input).to eq(Shellwords.escape(movie.path))
+              expect(transcoder.input).to eq(movie.path)
             end
 
             it 'should add the input to the shell command' do
-              expect(transcoder.command).to include(" -i #{transcoder.input}")
+              expect(transcoder.command.join(' ')).to include(" -i #{transcoder.input}")
             end
           end
 
@@ -288,7 +288,7 @@ module FFMPEG
             let(:transcoder) { Transcoder.new(movie, 'tmp.mp4', {}, input: input_path) }
 
             it 'should use the provided input' do
-              expect(transcoder.input).to eq(Shellwords.escape(input_path))
+              expect(transcoder.input).to eq(input_path)
             end
           end
         end
@@ -297,17 +297,17 @@ module FFMPEG
           let(:transcoder) { Transcoder.new(movie, 'tmp.mp4', {}, input: input_path) }
 
           it "should use the input path" do
-            expect(transcoder.input).to eq(Shellwords.escape(input_path))
+            expect(transcoder.input).to eq(input_path)
           end
         end
       end
 
       context 'with input_options' do
-        let(:option) { '-framerate 1/5' }
+        let(:option) { {framerate: '1/5'} }
         let(:transcoder) { Transcoder.new(movie, 'tmp.mp4', {}, input_options: option) }
 
         it 'should add the input_options before the input' do
-          expect(transcoder.command).to include("#{option} -i #{transcoder.input}")
+          expect(transcoder.command.join(' ')).to include("-framerate 1/5 -i #{transcoder.input}")
         end
 
         context 'to create a slideshow' do
@@ -316,7 +316,7 @@ module FFMPEG
           let(:transcoder) { Transcoder.new(movie, output, {}, input: file_spec, input_options: option) }
 
           it 'should add the input_options before the input' do
-            expect(transcoder.command).to include("#{option} -i #{transcoder.input}")
+            expect(transcoder.command.join(' ')).to include("-framerate 1/5 -i #{file_spec}")
           end
 
           it 'should not raise an error' do

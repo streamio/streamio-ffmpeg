@@ -132,13 +132,13 @@ movie.transcode("movie.flv", options)
 
 ### Specifying Input Options
 
-To specify which options apply the input, such as changing the input framerate, use `input_options` value
+To specify which options apply the input, such as changing the input framerate, use `input_options` hash
 in the transcoder_options.
 
 ``` ruby
 movie = FFMPEG::Movie.new("path/to/movie.mov")
 
-transcoder_options = { input_options: '-framerate 1/5' }
+transcoder_options = { input_options: { framerate: '1/5' } }
 movie.transcode("movie.mp4", {}, transcoder_options)
 
 # FFMPEG Command will look like this:
@@ -216,7 +216,7 @@ Since there is not movie to transcode, the Transcoder class needs to be used. Th
 provided through transcoder options.
 
 ``` ruby
-slideshow_transcoder = FFMPEG::Transcoder.new('', 'slideshow.mp4', {resolution: "320x240"}, input: 'img_%03d.jpeg', input_options: '-framerate 1/5')
+slideshow_transcoder = FFMPEG::Transcoder.new('', 'slideshow.mp4', {resolution: "320x240"}, input: 'img_%03d.jpeg', input_options: {framerate: '1/5' })
 slideshow = slideshow_transcoder.run
 ```
 

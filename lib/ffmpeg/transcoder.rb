@@ -13,7 +13,7 @@ module FFMPEG
     def initialize(input, output_file, options = EncodingOptions.new, transcoder_options = {})
       if input.is_a?(FFMPEG::Movie)
         @movie = input
-        @input = Shellwords.escape(input.path)
+        @input = input.path
       end
       @output_file = output_file
 
@@ -30,10 +30,13 @@ module FFMPEG
 
       apply_transcoder_options
 
-      @input = Shellwords.escape(@transcoder_options[:input]) unless @transcoder_options[:input].nil?
+      @input = @transcoder_options[:input] unless @transcoder_options[:input].nil?
 
-      input_options = @transcoder_options[:input_options]
-      @command = [FFMPEG.ffmpeg_binary, '-y', *input_options, '-i', @input, *@raw_options.to_a, @output_file]
+      input_options = @transcoder_options[:input_options] || []
+      iopts = []
+      input_options.each { |k, v| iopts += ['-' + k.to_s, v] }
+
+      @command = [FFMPEG.ffmpeg_binary, '-y', *iopts, '-i', @input, *@raw_options.to_a, @output_file]
     end
 
     def run(&block)
@@ -66,7 +69,7 @@ module FFMPEG
       FFMPEG.logger.info("Running transcoding...\n#{command}\n")
       @output = ""
 
-      Open3.popen3(command) do |_stdin, _stdout, stderr, wait_thr|
+      Open3.popen3(*command) do |_stdin, _stdout, stderr, wait_thr|
         begin
           yield(0.0) if block_given?
           next_line = Proc.new do |line|
