@@ -2,6 +2,27 @@
 
 Current with 2.0.0
 
+== 2.1.0 2016-08-08
+
+New:
+* Issue #135, Support creating slideshows from stills
+* Issue #130, Adds support for a URL as an input
+* Support for specifying options to apply to the input file
+* Improved support for calling  FFMpeg with popen3, improving compatibility with various platforms, including windows
+* Issue #111. uses attr_accessor for the timeout attribute
+* Exposes the movie's entire meta data and format tags as movie attributes
+* Issue #122, adds encoding fix to stderr
+* All specs pass and brought current with Rspec V3
+* Issue #123, #131 improved stream validation, ignoring additional invalid streams if a valid stream is recognized
+* Issue #124, improved parsing for moving creation_time
+* SAR and DAR now adapt after rotation, DAR is ignored when calculating dimensions
+
+Improvements:
+* Allow parenthesis in colorspace (thanks walterdavis for initial code and rociiu for finding a bug with it)
+* Width and height now switched if video is filmed in portrait mode. ffmpeg 2.7 or later now automatically rotates output
+* Movie metadata now provided with ffprobe (#114). Thanks to Ryan Lovelett for the contributions!
+* Ability to create multiple screenshots at consistent intervals in one pass (#113)
+
 == 2.0.0 2016-01-14
 
 New:
