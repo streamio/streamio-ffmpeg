@@ -273,6 +273,14 @@ module FFMPEG
           @movie.video_bitrate.should == 371185
         end
 
+        it "should know the video profile" do
+          @movie.video_profile.should == "Main"
+        end
+
+        it "should know the video level" do
+          @movie.video_level.should == 3.0
+        end
+
         it "should know the width and height" do
           @movie.width.should == 640
           @movie.height.should == 480
