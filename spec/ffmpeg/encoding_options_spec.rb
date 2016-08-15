@@ -165,28 +165,38 @@ module FFMPEG
         expect(converted).to include "-filter_complex", 'scale=640x480,overlay=x=10:y=10'
       end
 
-      it "should specify watermark position at right top corner" do
-        opts = Hash.new
-        opts[:resolution] = "640x480"
-        opts[:watermark_filter] = { position: "RT", padding_x: 10, padding_y: 10 }
+      it 'should specify watermark position at right top corner' do
+        opts = {
+            resolution: '640x480',
+            watermark_filter: { position: 'RT', padding_x: 10, padding_y: 10 }
+        }
         converted = EncodingOptions.new(opts).to_a
         expect(converted).to include "-filter_complex", 'scale=640x480,overlay=x=main_w-overlay_w-10:y=10'
       end
 
-      it "should specify watermark position at left bottom corner" do
-        opts = Hash.new
-        opts[:resolution] = "640x480"
-        opts[:watermark_filter] = { position: "LB", padding_x: 10, padding_y: 10 }
+      it 'should specify watermark position at left bottom corner' do
+        opts = {
+            resolution: '640x480',
+            watermark_filter: { position: 'LB', padding_x: 10, padding_y: 10 }
+        }
         converted = EncodingOptions.new(opts).to_a
         expect(converted).to include "-filter_complex", 'scale=640x480,overlay=x=10:y=main_h-overlay_h-10'
       end
 
       it "should specify watermark position at left bottom corner" do
-        opts = Hash.new
-        opts[:resolution] = "640x480"
-        opts[:watermark_filter] = { position: "RB", padding_x: 10, padding_y: 10 }
+        opts = {
+            resolution: '640x480',
+            watermark_filter: { position: 'RB', padding_x: 10, padding_y: 10 }
+        }
         converted = EncodingOptions.new(opts).to_a
         expect(converted.find{|str| str =~ /overlay/ }).to include "overlay=x=main_w-overlay_w-10:y=main_h-overlay_h-10"
+      end
+
+      context 'for custom options' do
+        it 'should correctly include custom options' do
+          converted = EncodingOptions.new({ custom: '-map 0:0 -map 0:1' }).to_a
+          expect(converted).to include '-map 0:0 -map 0:1'
+        end
       end
     end
   end

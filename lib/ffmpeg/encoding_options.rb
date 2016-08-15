@@ -189,7 +189,7 @@ module FFMPEG
     end
 
     def convert_custom(value)
-      value
+      [value]
     end
 
     def k_format(value)
