@@ -249,8 +249,11 @@ module FFMPEG
     end
 
     describe 'transcoding_options' do
+      let(:transcoder) { Transcoder.new(movie, 'tmp.mp4', options, transcoding_options) }
+
       context 'with validate: false' do
-        let(:transcoder) { Transcoder.new(movie, 'tmp.mp4', {}, validate: false) }
+        let(:options) { {} }
+        let(:transcoding_options) { {validate: false} }
 
         before { allow(transcoder).to receive(:transcode_movie) }
         after { FileUtils.rm_f "#{tmp_path}/tmp.mp4" }
@@ -265,6 +268,18 @@ module FFMPEG
           allow(transcoder).to receive(:validate_output_file)
           expect(transcoder).to_not receive(:encoded)
           expect(transcoder.run).to eq(nil)
+        end
+      end
+
+      context 'with custom options' do
+        let(:options) { {
+            video_codec: "h264_nvenc",
+            custom: "-map 0:0 -map 0:1" }
+        }
+        let(:transcoding_options) { {} }
+
+        it 'should add the custom options to the command' do
+          expect(transcoder.command.join(' ')).to include('-map 0:0 -map 0:1')
         end
       end
 
