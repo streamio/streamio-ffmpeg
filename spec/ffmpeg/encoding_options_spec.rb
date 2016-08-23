@@ -193,9 +193,13 @@ module FFMPEG
       end
 
       context 'for custom options' do
+        it 'should not allow custom options as String' do
+          expect { EncodingOptions.new({ custom: '-map 0:0 -map 0:1' }).to_a }.to raise_error(ArgumentError)
+        end
+
         it 'should correctly include custom options' do
-          converted = EncodingOptions.new({ custom: '-map 0:0 -map 0:1' }).to_a
-          expect(converted).to include '-map 0:0 -map 0:1'
+          converted = EncodingOptions.new({ custom: %w(-map 0:0 -map 0:1) }).to_a
+          expect(converted).to eq(['-map', '0:0', '-map', '0:1'])
         end
       end
     end

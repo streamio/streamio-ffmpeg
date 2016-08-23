@@ -1,4 +1,5 @@
 require 'spec_helper.rb'
+require 'net/http'
 require 'webrick'
 
 module FFMPEG

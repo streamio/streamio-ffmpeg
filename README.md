@@ -76,13 +76,15 @@ Keep track of progress with an optional block.
 movie.transcode("movie.mp4") { |progress| puts progress } # 0.2 ... 0.5 ... 1.0
 ```
 
-Give custom command line options with a string.
+Give custom command line options with an array.
 
 ``` ruby
-movie.transcode("movie.mp4", "-ac aac -vc libx264 -ac 2 ...")
+movie.transcode("movie.mp4", %w(-ac aac -vc libx264 -ac 2 ...)")
 ```
 
-Use the EncodingOptions parser for humanly readable transcoding options. Below you'll find most of the supported options. Note that the :custom key will be used as is without modification so use it for any tricky business you might need.
+Use the EncodingOptions parser for humanly readable transcoding options. Below you'll find most of the supported options.
+Note that the :custom key is an array so that it can be used for FFMpeg options like
+`-map` that can be repeated:
 
 ``` ruby
 options = {video_codec: "libx264", frame_rate: 10, resolution: "320x240", video_bitrate: 300, video_bitrate_tolerance: 100,
@@ -90,7 +92,7 @@ options = {video_codec: "libx264", frame_rate: 10, resolution: "320x240", video_
            x264_vprofile: "high", x264_preset: "slow",
            audio_codec: "libfaac", audio_bitrate: 32, audio_sample_rate: 22050, audio_channels: 1,
            threads: 2,
-           custom: "-vf crop=60:60:10:10"}
+           custom: %w(-vf crop=60:60:10:10 -map 0:0 -map 0:1) }
 movie.transcode("movie.mp4", options)
 ```
 

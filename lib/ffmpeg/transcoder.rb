@@ -22,7 +22,7 @@ module FFMPEG
       elsif options.is_a?(Hash)
         @raw_options = EncodingOptions.new(options)
       else
-        raise ArgumentError, "Unknown options format '#{options.class}', should be either EncodingOptions, Hash or String."
+        raise ArgumentError, "Unknown options format '#{options.class}', should be either EncodingOptions, Hash or Array."
       end
 
       @transcoder_options = transcoder_options

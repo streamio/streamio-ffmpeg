@@ -15,7 +15,7 @@ module FFMPEG
         expect { Transcoder.new(movie, output_path, video_codec: "libx264") }.not_to raise_error
       end
 
-      it "should accept String as options" do
+      it 'should accept Array as options' do
         expect { Transcoder.new(movie, output_path, %w(-vcodec libx264)) }.not_to raise_error
       end
 
@@ -249,7 +249,7 @@ module FFMPEG
     end
 
     describe 'transcoding_options' do
-      let(:transcoder) { Transcoder.new(movie, 'tmp.mp4', options, transcoding_options) }
+      let(:transcoder) { Transcoder.new(movie, "#{tmp_path}/tmp.mp4", options, transcoding_options) }
 
       context 'with validate: false' do
         let(:options) { {} }
@@ -273,10 +273,14 @@ module FFMPEG
 
       context 'with custom options' do
         let(:options) { {
-            video_codec: "h264_nvenc",
-            custom: "-map 0:0 -map 0:1" }
-        }
+            video_codec: 'libx264',
+            custom: %w(-map 0:0 -map 0:1)
+          } }
         let(:transcoding_options) { {} }
+
+        it 'should not raise an error' do
+          expect { transcoder.run }.to_not raise_error
+        end
 
         it 'should add the custom options to the command' do
           expect(transcoder.command.join(' ')).to include('-map 0:0 -map 0:1')
