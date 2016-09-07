@@ -1,6 +1,17 @@
 == Master
 
-Current with 2.0.0
+Current with 3.0.0
+
+== 3.0.0 2016-09-07
+
+Breaking Changes:
+* Changes: custom parameters now specified using an array syntax
+
+Improvements:
+* Issue # 128, #137 are fixed (custom parameters passed as strings) which was caused
+  by 2.1.0 in attempting to avoid the use of shell and filename escaping issues
+  on various platforms.
+
 
 == 2.1.0 2016-08-08
 
