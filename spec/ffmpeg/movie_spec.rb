@@ -414,6 +414,21 @@ module FFMPEG
       end
     end
 
+    describe 'transcode sound only' do
+      let(:movie) { Movie.new("#{fixture_path}/sounds/hello.wav")}
+
+      it "should run the transcoder" do
+
+        transcoder_double = double(Transcoder)
+        expect(Transcoder).to receive(:new).
+            with(movie, "#{tmp_path}/hello.mp3", {audio_codec: 'libmp3lame', custom: %w(-qscale:a 2)}, {}).
+            and_return(transcoder_double)
+        expect(transcoder_double).to receive(:run)
+
+        movie.transcode("#{tmp_path}/hello.mp3", {audio_codec: 'libmp3lame', custom: %w(-qscale:a 2)}, {})
+      end
+    end
+
     describe "screenshot" do
       let(:movie) { Movie.new("#{fixture_path}/movies/awesome movie.mov")}
 

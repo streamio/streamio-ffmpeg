@@ -94,6 +94,21 @@ module FFMPEG
           expect(encoded.audio_channels).to eq(1)
         end
 
+        context 'audio only' do
+          let(:sound) { Movie.new("#{fixture_path}/sounds/hello.wav") }
+          it 'should transcode without video' do
+            FileUtils.rm_f "#{tmp_path}/hello.mp3"
+
+            options = { audio_codec: "libmp3lame", custom: %w(-qscale:a 2)}
+
+            encoded = Transcoder.new(sound, "#{tmp_path}/hello.mp3", options).run
+            expect(encoded.video_codec).to be_nil
+            expect(encoded.audio_codec).to match(/mp3/)
+            expect(encoded.audio_sample_rate).to eq(44100)
+            expect(encoded.audio_channels).to eq(1)
+          end
+        end
+
         context "with aspect ratio preservation" do
           before do
             @movie = Movie.new("#{fixture_path}/movies/awesome_widescreen.mov")
