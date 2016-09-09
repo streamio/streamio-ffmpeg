@@ -167,6 +167,14 @@ module FFMPEG
         end
       end
 
+      context "given a file named with URL characters" do
+        let(:movie) { Movie.new("#{fixture_path}/movies/file+with+data&streams=works?.mp4") }
+
+        it "should be valid" do
+          expect(movie).to be_valid
+        end
+      end
+
       context "given a weird aspect ratio file" do
         let(:movie) { Movie.new("#{fixture_path}/movies/weird_aspect.small.mpg") }
 
@@ -408,6 +416,21 @@ module FFMPEG
         expect(Transcoder).to receive(:new).
           with(movie, "#{tmp_path}/awesome.flv", {custom: "-vcodec libx264"}, preserve_aspect_ratio: :width).
           and_return(transcoder_double)
+        expect(transcoder_double).to receive(:run)
+
+        movie.transcode("#{tmp_path}/awesome.flv", {custom: "-vcodec libx264"}, preserve_aspect_ratio: :width)
+      end
+    end
+
+    describe "transcode" do
+      let(:movie) { Movie.new("#{fixture_path}/movies/awesome movie.mov")}
+
+      it "should run the transcoder" do
+
+        transcoder_double = double(Transcoder)
+        expect(Transcoder).to receive(:new).
+            with(movie, "#{tmp_path}/awesome.flv", {custom: "-vcodec libx264"}, preserve_aspect_ratio: :width).
+            and_return(transcoder_double)
         expect(transcoder_double).to receive(:run)
 
         movie.transcode("#{tmp_path}/awesome.flv", {custom: "-vcodec libx264"}, preserve_aspect_ratio: :width)
