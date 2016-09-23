@@ -1,0 +1,8 @@
+language: ruby
+rvm:
+ - 1.9.3
+cache:
+  - bundler
+before_install:
+  - sudo apt-get -qq update
+  - sudo apt-get install -y ffmpeg
