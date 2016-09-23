@@ -1,6 +1,8 @@
 Streamio FFMPEG
 ===============
 
+[![Code Climate](https://codeclimate.com/github/streamio/streamio-ffmpeg/badges/gpa.svg)](https://codeclimate.com/github/streamio/streamio-ffmpeg)
+
 Simple yet powerful wrapper around the ffmpeg command for reading metadata and transcoding movies.
 
 All work on this project is sponsored by the online video platform [Streamio](http://streamio.com).
