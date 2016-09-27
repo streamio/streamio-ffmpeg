@@ -40,7 +40,6 @@ def tmp_path
 end
 
 def start_web_server
-  WEBrick::HTTPStatus::Redirect
   @server = WEBrick::HTTPServer.new(
       Port: 8000,
       DocumentRoot: "#{fixture_path}/movies",

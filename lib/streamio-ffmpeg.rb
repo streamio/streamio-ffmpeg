@@ -83,7 +83,10 @@ module FFMPEG
   #
   # @param [Integer] the maximum number of retries
   # @return [Integer] the number of retries you set
+  # @raise Errno::ENOENT if the value is negative or not an Integer
   def self.max_http_redirect_attempts=(v)
+    raise Errno::ENOENT, 'max_http_redirect_attempts must be an integer' if v && !v.is_a?(Integer)
+    raise Errno::ENOENT, 'max_http_redirect_attempts may not be negative' if v && v < 0
     @max_http_redirect_attempts = v
   end
 
