@@ -228,13 +228,8 @@ module FFMPEG
       case response
         when Net::HTTPRedirection then
           raise FFMPEG::HTTPTooManyRequests if limit == 0
+          new_uri = url + URI(response['Location'])
 
-          new_uri = URI(response['Location'])
-          if new_uri.relative?
-            new_uri.scheme = url.scheme
-            new_uri.port = url.port
-            new_uri.host = url.host
-          end
           head(new_uri, limit - 1)
         else
           response
