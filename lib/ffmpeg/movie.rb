@@ -17,7 +17,7 @@ module FFMPEG
 
       if remote?
         @head = head
-        raise Errno::ENOENT, "the URL '#{path}' does not exist" if @head.nil? || @head.code.to_i != 200
+        raise Errno::ENOENT, "the URL '#{path}' does not exist" unless @head.is_a?(Net::HTTPSuccess) || @head.is_a?(Net::HTTPRedirection)
       else
         raise Errno::ENOENT, "the file '#{path}' does not exist" unless File.exist?(path)
       end
@@ -217,14 +217,29 @@ module FFMPEG
       output.force_encoding("ISO-8859-1")
     end
 
-    def head
-      url = URI(@path)
+    def head(location=@path, limit=FFMPEG.max_http_redirect_attempts)
+      url = URI(location)
       return unless url.path
 
       http = Net::HTTP.new(url.host, url.port)
       http.use_ssl = url.port == 443
-      http.request_head(url.path)
-    rescue SocketError, Errno::ECONNREFUSED
+      response = http.request_head(url.path)
+
+      case response
+        when Net::HTTPRedirection then
+          raise FFMPEG::HTTPTooManyRequests if limit == 0
+
+          new_uri = URI(response['Location'])
+          if new_uri.relative?
+            new_uri.scheme = url.scheme
+            new_uri.port = url.port
+            new_uri.host = url.host
+          end
+          head(new_uri, limit - 1)
+        else
+          response
+      end
+    rescue SocketError, Errno::ECONNREFUSED => e
       nil
     end
   end
