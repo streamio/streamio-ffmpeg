@@ -22,6 +22,9 @@ RSpec.configure do |config|
         to_return(status: 302, headers: {
             location: '/awesome%20movie.mov'
         })
+    stub_request(:head, 'http://127.0.0.1:8000/awesome%20movie.mov?fail=1').
+        with(:headers => {'Accept'=>'*/*', 'User-Agent' => 'Ruby'}).
+        to_return(status: 404, headers: { })
     stub_request(:head, /toomany-redirects-example/).
         with(:headers => {'Accept'=>'*/*', 'User-Agent' => 'Ruby'}).
         to_return(status: 302, headers: {

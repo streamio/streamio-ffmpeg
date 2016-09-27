@@ -50,8 +50,18 @@ module FFMPEG
           it "should be marked as remote" do
             expect(movie.remote?).to be_truthy
           end
+
+          context 'with a query string' do
+            # We're mocking this to fail on the same URL with the query string added.
+            # This means that we're passing the query string through using .request_uri
+            # rather than .path
+
+            it 'should not be found' do
+              expect { Movie.new('http://127.0.0.1:8000/awesome%20movie.mov?fail=1') }.to raise_error(Errno::ENOENT)
+            end
+          end
         end
-        context "that is incorrect" do
+        context "that does not exist" do
           it "should raise an exception" do
             expect { Movie.new("http://127.0.0.1:8000/awesome%20movie_missing.mov") }.to raise_error(Errno::ENOENT)
           end

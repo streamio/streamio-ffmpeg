@@ -223,7 +223,7 @@ module FFMPEG
 
       http = Net::HTTP.new(url.host, url.port)
       http.use_ssl = url.port == 443
-      response = http.request_head(url.path)
+      response = http.request_head(url.request_uri)
 
       case response
         when Net::HTTPRedirection then
