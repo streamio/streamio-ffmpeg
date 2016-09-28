@@ -81,7 +81,10 @@ module FFMPEG
               else # better make sure it wont blow up in case of unexpected output
                 time = 0.0
               end
-              progress = time / @movie.duration
+              progress = -1
+              if !@movie.nil?
+                progress = time / @movie.duration
+              end
               yield(progress) if block_given?
             end
           end
