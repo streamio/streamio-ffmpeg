@@ -29,6 +29,8 @@ The current gem is tested against ffmpeg 2.8.4. So no guarantees with earlier (o
 versions. Output and input standards have inconveniently changed rather a lot between versions 
 of ffmpeg. My goal is to keep this library in sync with new versions of ffmpeg as they come along.
 
+On macOS: `brew install ffmpeg`.
+
 Usage
 -----
 
