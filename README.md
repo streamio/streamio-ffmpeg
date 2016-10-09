@@ -12,7 +12,7 @@ All work on this project is sponsored by the online video platform [Streamio](ht
 Installation
 ------------
 
-    (sudo) gem install streamio-ffmpeg
+    gem install streamio-ffmpeg
 
 Compatibility
 -------------
@@ -35,7 +35,6 @@ Usage
 ### Require the gem
 
 ``` ruby
-require 'rubygems'
 require 'streamio-ffmpeg'
 ```
 
@@ -89,12 +88,13 @@ Note that the :custom key is an array so that it can be used for FFMpeg options 
 `-map` that can be repeated:
 
 ``` ruby
-options = {video_codec: "libx264", frame_rate: 10, resolution: "320x240", video_bitrate: 300, video_bitrate_tolerance: 100,
-           aspect: 1.333333, keyframe_interval: 90,
-           x264_vprofile: "high", x264_preset: "slow",
-           audio_codec: "libfaac", audio_bitrate: 32, audio_sample_rate: 22050, audio_channels: 1,
-           threads: 2,
-           custom: %w(-vf crop=60:60:10:10 -map 0:0 -map 0:1) }
+options = {
+  video_codec: "libx264", frame_rate: 10, resolution: "320x240", video_bitrate: 300, video_bitrate_tolerance: 100,
+  aspect: 1.333333, keyframe_interval: 90, x264_vprofile: "high", x264_preset: "slow",
+  audio_codec: "libfaac", audio_bitrate: 32, audio_sample_rate: 22050, audio_channels: 1,
+  threads: 2, custom: %w(-vf crop=60:60:10:10 -map 0:0 -map 0:1)
+}
+
 movie.transcode("movie.mp4", options)
 ```
 
@@ -171,7 +171,10 @@ Add watermark image on the video.
 For example, you want to add a watermark on the video at right top corner with 10px padding.
 
 ``` ruby
-options = { watermark: "full_path_of_watermark.png", resolution: "640x360", watermark_filter: { position: "RT", padding_x: 10, padding_y: 10 } }
+options = {
+  watermark: "full_path_of_watermark.png", resolution: "640x360",
+  watermark_filter: { position: "RT", padding_x: 10, padding_y: 10 }
+}
 ```
 
 Position can be "LT" (Left Top Corner), "RT" (Right Top Corner), "LB" (Left Bottom Corner), "RB" (Right Bottom Corner).
@@ -196,7 +199,7 @@ To generate multiple screenshots in a single pass, specify `vframes` and a wildc
 sure to disable output file validation. The following code generates up to 20 screenshots every 10 seconds:
 
 ``` ruby
-movie.screenshot("screenshot_%d.jpg", {vframes: 20, frame_rate: '1/6'}, validate: false)
+movie.screenshot("screenshot_%d.jpg", { vframes: 20, frame_rate: '1/6' }, validate: false)
 ```
 
 To specify the quality when generating compressed screenshots (.jpg), use `quality` which specifies
@@ -220,20 +223,27 @@ Since there is not movie to transcode, the Transcoder class needs to be used. Th
 provided through transcoder options.
 
 ``` ruby
-slideshow_transcoder = FFMPEG::Transcoder.new('', 'slideshow.mp4', {resolution: "320x240"}, input: 'img_%03d.jpeg', input_options: {framerate: '1/5' })
+slideshow_transcoder = FFMPEG::Transcoder.new(
+  '',
+  'slideshow.mp4',
+  { resolution: "320x240" },
+  input: 'img_%03d.jpeg',
+  input_options: { framerate: '1/5' }
+)
+
 slideshow = slideshow_transcoder.run
 ```
 
 Specify the path to ffmpeg
 --------------------------
 
-By default, the gem assumes that the ffmpeg binary is available in the execution path and named ffmpeg and so will run commands that look something like "ffmpeg -i /path/to/input.file ...". Use the FFMPEG.ffmpeg_binary setter to specify the full path to the binary if necessary:
+By default, the gem assumes that the ffmpeg binary is available in the execution path and named ffmpeg and so will run commands that look something like `ffmpeg -i /path/to/input.file ...`. Use the FFMPEG.ffmpeg_binary setter to specify the full path to the binary if necessary:
 
 ``` ruby
 FFMPEG.ffmpeg_binary = '/usr/local/bin/ffmpeg'
 ```
 
-This will cause the same command to run as "/usr/local/bin/ffmpeg -i /path/to/input.file ..." instead.
+This will cause the same command to run as `/usr/local/bin/ffmpeg -i /path/to/input.file ...` instead.
 
 
 Automatically kill hung processes
@@ -264,7 +274,6 @@ attempting to open a (possibly) invalid output file might result in an error bei
 transcoder_options = { validate: false }
 movie.transcode("movie.mp4", options, transcoder_options) # returns nil
 ```
-
 
 Copyright
 ---------
