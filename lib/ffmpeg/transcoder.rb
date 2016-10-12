@@ -81,8 +81,11 @@ module FFMPEG
               else # better make sure it wont blow up in case of unexpected output
                 time = 0.0
               end
-              progress = time / @movie.duration
-              yield(progress) if block_given?
+
+              if @movie
+                progress = time / @movie.duration
+                yield(progress) if block_given?
+              end
             end
           end
 

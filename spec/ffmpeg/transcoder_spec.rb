@@ -370,6 +370,15 @@ module FFMPEG
               expect { transcoder.run }.to raise_error(FFMPEG::Error, /encoded file is invalid/)
             end
           end
+
+          context 'with no movie defined' do
+            let(:movie) { nil }
+
+            it 'should not raise an error' do
+              expect { transcoder.run }.to_not raise_error
+            end
+          end
+
         end
       end
     end
