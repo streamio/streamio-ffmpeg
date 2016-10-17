@@ -82,7 +82,7 @@ movie.transcode("movie.mp4") { |progress| puts progress } # 0.2 ... 0.5 ... 1.0
 Give custom command line options with an array.
 
 ``` ruby
-movie.transcode("movie.mp4", %w(-ac aac -vc libx264 -ac 2 ...)")
+movie.transcode("movie.mp4", %w(-ac aac -vc libx264 -ac 2 ...))
 ```
 
 Use the EncodingOptions parser for humanly readable transcoding options. Below you'll find most of the supported options.
