@@ -195,15 +195,15 @@ module FFMPEG
     def aspect_from_dar
       return nil unless dar
       w, h = dar.split(":")
-      aspect = (@rotation==nil) || (@rotation==180)? (w.to_f / h.to_f):(h.to_f / w.to_f)
-      aspect.zero? ? nil : aspect
+      return nil if w == '0' || h == '0'
+      @rotation.nil? || (@rotation == 180) ? (w.to_f / h.to_f) : (h.to_f / w.to_f)
     end
 
     def aspect_from_sar
       return nil unless sar
       w, h = sar.split(":")
-      aspect = (@rotation==nil) || (@rotation==180)? (w.to_f / h.to_f):(h.to_f / w.to_f)
-      aspect.zero? ? nil : aspect
+      return nil if w == '0' || h == '0'
+      @rotation.nil? || (@rotation == 180) ? (w.to_f / h.to_f) : (h.to_f / w.to_f)
     end
 
     def aspect_from_dimensions

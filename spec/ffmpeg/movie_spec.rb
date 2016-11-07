@@ -245,11 +245,18 @@ module FFMPEG
           let(:fixture_file) { 'file_with_weird_dar.txt' }
 
           it "should parse the DAR" do
-            expect(movie.dar).to eq("0:1")
+            expect(movie.dar).to eq('0:1')
           end
 
           it "should calculate using width and height instead" do
             expect(movie.calculated_aspect_ratio.to_s[0..14]).to eq("1.7777777777777") # substringed to be 1.9 compatible
+          end
+
+          context 'when width/height is flipped' do
+            before { movie.instance_variable_set :@rotation, 90 }
+            it "should calculate using width and height instead" do
+              expect(movie.calculated_aspect_ratio).to eq(0.5625)
+            end
           end
         end
 
@@ -262,6 +269,13 @@ module FFMPEG
 
           it 'should using square SAR, 1.0 instead' do
             expect(movie.calculated_pixel_aspect_ratio.to_s[0..14]).to eq('1') # substringed to be 1.9 compatible
+          end
+
+          context 'when width/height is flipped' do
+            before { movie.instance_variable_set :@rotation, 90 }
+            it 'should using square SAR, 1.0 instead' do
+              expect(movie.calculated_pixel_aspect_ratio).to eq(1)
+            end
           end
         end
 
