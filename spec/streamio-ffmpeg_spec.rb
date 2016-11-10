@@ -77,4 +77,27 @@ describe FFMPEG do
     end
 
   end
+
+  describe '.max_http_redirect_attempts' do
+    after(:each) do
+      FFMPEG.max_http_redirect_attempts = nil
+    end
+
+    it 'should default to 10' do
+      expect(FFMPEG.max_http_redirect_attempts).to eq 10
+    end
+
+    it 'should be an Integer' do
+      expect { FFMPEG.max_http_redirect_attempts = 1.23 }.to raise_error(Errno::ENOENT)
+    end
+
+    it 'should not be negative' do
+      expect { FFMPEG.max_http_redirect_attempts = -1 }.to raise_error(Errno::ENOENT)
+    end
+
+    it 'should be assignable' do
+      FFMPEG.max_http_redirect_attempts = 5
+      expect(FFMPEG.max_http_redirect_attempts).to eq 5
+    end
+  end
 end
