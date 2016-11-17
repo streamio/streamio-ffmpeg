@@ -326,6 +326,30 @@ module FFMPEG
           @movie.container.should == "mov,mp4,m4a,3gp,3g2,mj2"
         end
       end
+
+      context "given a movie file with 2 audio streams" do
+        let(:movie) { Movie.new("#{fixture_path}/movies/multi_audio_movie.mp4") }
+
+        it "should identify both audio streams" do
+          movie.audio_streams.length.should == 2
+        end
+
+        it "should assign audio properties to the properties of the first stream" do
+          audio_channels = movie.audio_streams[0][:channels]
+          audio_codec = movie.audio_streams[0][:codec_name]
+          audio_bitrate = movie.audio_streams[0][:bitrate]
+          audio_channel_layout = movie.audio_streams[0][:channel_layout]
+          audio_tags = movie.audio_streams[0][:tags]
+          stream_overview = movie.audio_streams[0][:overview]
+
+          movie.audio_channels.should == audio_channels
+          movie.audio_codec.should == audio_codec
+          movie.audio_bitrate.should == audio_bitrate
+          movie.audio_channel_layout.should == audio_channel_layout
+          movie.audio_tags.should == audio_tags
+          movie.audio_stream.should == stream_overview
+        end
+      end
     end
 
     context 'given an awesome_widescreen file' do
