@@ -4,5 +4,5 @@ gemspec
 
 group :test do
   gem 'webmock'
-  gem 'codeclimate-test-reporter'
+  gem 'simplecov'
 end
