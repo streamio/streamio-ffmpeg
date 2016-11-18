@@ -62,6 +62,9 @@ movie.audio_codec # "aac"
 movie.audio_sample_rate # 44100
 movie.audio_channels # 2
 
+# Multiple audio streams
+movie.audio_streams[0] # "aac, 44100 Hz, stereo, s16, 75 kb/s" (raw audio stream info)
+
 movie.valid? # true (would be false if ffmpeg fails to read the movie)
 ```
 

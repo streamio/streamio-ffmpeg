@@ -1,6 +1,12 @@
 == Master
 
-Current with 3.0.1
+Current with 3.0.2
+
+== 3.0.2 2016-11-18
+
+Improvements:
+* Issue #153 Adds support for multiple audio streams
+* Issue #150 Does not trust reported SAR/DAR as these may not be defined per https://trac.ffmpeg.org/ticket/3798
 
 == 3.0.1 2016-11-10
 
