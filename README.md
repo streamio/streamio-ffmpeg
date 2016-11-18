@@ -1,7 +1,9 @@
 Streamio FFMPEG
 ===============
 
-[![Code Climate](https://codeclimate.com/github/streamio/streamio-ffmpeg/badges/gpa.svg)](https://codeclimate.com/github/streamio/streamio-ffmpeg)
+[![Build Status](https://travis-ci.org/bikeath1337/streamio-ffmpeg.svg?branch=master)](https://travis-ci.org/bikeath1337/streamio-ffmpeg.svg?branch=master)
+[![Code Climate](https://codeclimate.com/github/bikeath1337/streamio-ffmpeg/badges/gpa.svg)](https://codeclimate.com/github/bikeath1337/streamio-ffmpeg)
+[![Test Coverage](https://codeclimate.com/github/bikeath1337/streamio-ffmpeg/badges/coverage.svg)](https://codeclimate.com/github/bikeath1337/streamio-ffmpeg/coverage)
 
 Simple yet powerful wrapper around the ffmpeg command for reading metadata and transcoding movies.
 
