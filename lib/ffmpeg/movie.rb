@@ -193,15 +193,16 @@ module FFMPEG
 
     protected
     def aspect_from_dar
-      return nil unless dar
-      w, h = dar.split(":")
-      return nil if w == '0' || h == '0'
-      @rotation.nil? || (@rotation == 180) ? (w.to_f / h.to_f) : (h.to_f / w.to_f)
+      calculate_aspect(dar)
     end
 
     def aspect_from_sar
-      return nil unless sar
-      w, h = sar.split(":")
+      calculate_aspect(sar)
+    end
+
+    def calculate_aspect(ratio)
+      return nil unless ratio
+      w, h = ratio.split(':')
       return nil if w == '0' || h == '0'
       @rotation.nil? || (@rotation == 180) ? (w.to_f / h.to_f) : (h.to_f / w.to_f)
     end
