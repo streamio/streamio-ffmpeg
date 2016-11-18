@@ -456,23 +456,37 @@ module FFMPEG
         let(:movie) { Movie.new("#{fixture_path}/movies/multi_audio_movie.mp4") }
 
         it "should identify both audio streams" do
-          movie.audio_streams.length.should == 2
+          expect(movie.audio_streams.length).to eq(2)
         end
 
-        it "should assign audio properties to the properties of the first stream" do
+        it "should assign audio_channels to the properties of the first stream" do
           audio_channels = movie.audio_streams[0][:channels]
-          audio_codec = movie.audio_streams[0][:codec_name]
-          audio_bitrate = movie.audio_streams[0][:bitrate]
-          audio_channel_layout = movie.audio_streams[0][:channel_layout]
-          audio_tags = movie.audio_streams[0][:tags]
-          stream_overview = movie.audio_streams[0][:overview]
+          expect(movie.audio_channels).to eq audio_channels
+        end
 
-          movie.audio_channels.should == audio_channels
-          movie.audio_codec.should == audio_codec
-          movie.audio_bitrate.should == audio_bitrate
-          movie.audio_channel_layout.should == audio_channel_layout
-          movie.audio_tags.should == audio_tags
-          movie.audio_stream.should == stream_overview
+        it "should assign audio_codec to the properties of the first stream" do
+          audio_codec = movie.audio_streams[0][:codec_name]
+          expect(movie.audio_codec).to eq audio_codec
+        end
+
+        it "should assign audio_bitrate to the properties of the first stream" do
+          audio_bitrate = movie.audio_streams[0][:bitrate]
+          expect(movie.audio_bitrate).to eq audio_bitrate
+        end
+
+        it "should assign audio_channel_layout to the properties of the first stream" do
+          audio_channel_layout = movie.audio_streams[0][:channel_layout]
+          expect(movie.audio_channel_layout).to eq audio_channel_layout
+        end
+
+        it "should assign audio_tags to the properties of the first stream" do
+          audio_tags = movie.audio_streams[0][:tags]
+          expect(movie.audio_tags).to eq audio_tags
+        end
+
+        it "should assign audio_stream to the properties of the first stream" do
+          stream_overview = movie.audio_streams[0][:overview]
+          expect(movie.audio_stream).to eq stream_overview
         end
       end
     end
