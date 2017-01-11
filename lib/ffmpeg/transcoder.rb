@@ -34,7 +34,12 @@ module FFMPEG
 
       input_options = @transcoder_options[:input_options] || []
       iopts = []
-      input_options.each { |k, v| iopts += ['-' + k.to_s, v] }
+
+      if input_options.is_a?(Array)
+        iopts += input_options
+      else
+        input_options.each { |k, v| iopts += ['-' + k.to_s, v] }
+      end
 
       @command = [FFMPEG.ffmpeg_binary, '-y', *iopts, '-i', @input, *@raw_options.to_a, @output_file]
     end
