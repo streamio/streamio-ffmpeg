@@ -1,6 +1,7 @@
 require 'time'
 require 'multi_json'
 require 'uri'
+require 'net/http'
 
 module FFMPEG
   class Movie
