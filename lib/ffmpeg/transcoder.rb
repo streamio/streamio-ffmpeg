@@ -55,13 +55,11 @@ module FFMPEG
     end
 
     def encoding_succeeded?
-      @errors << "no output file created" and return false unless File.exist?(@output_file)
-      @errors << "encoded file is invalid" and return false unless encoded.valid?
-      true
+      @errors.empty?
     end
 
     def encoded
-      @encoded ||= Movie.new(@output_file)
+      @encoded ||= Movie.new(@output_file) if File.exist?(@output_file)
     end
 
     def timeout
@@ -100,6 +98,8 @@ module FFMPEG
             stderr.each('size=', &next_line)
           end
 
+        @errors << "ffmpeg returned non-zero exit code" unless wait_thr.value.success?
+
         rescue Timeout::Error => e
           FFMPEG.logger.error "Process hung...\n@command\n#{command}\nOutput\n#{@output}\n"
           raise Error, "Process hung. Full output: #{@output}"
@@ -108,6 +108,9 @@ module FFMPEG
     end
 
     def validate_output_file(&block)
+      @errors << "no output file created" unless File.exist?(@output_file)
+      @errors << "encoded file is invalid" if encoded.nil? || !encoded.valid?
+
       if encoding_succeeded?
         yield(1.0) if block_given?
         FFMPEG.logger.info "Transcoding of #{input} to #{@output_file} succeeded\n"
