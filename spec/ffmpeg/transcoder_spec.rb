@@ -51,6 +51,14 @@ module FFMPEG
           end
         end
 
+        context 'when ffmpeg crashes' do
+          it 'should fail when ffmpeg exits with non-zero code' do
+            expect(FFMPEG.logger).to receive(:error)
+            transcoder = Transcoder.new(nil, "#{tmp_path}/missing.mp4", {}, input: 'http://256.256.256.256/non-existing-address.mp4')
+            expect { transcoder.run }.to raise_error(FFMPEG::Error, /non-zero exit code/)
+          end
+        end
+
         context "with timeout disabled" do
           before do
             @original_timeout = Transcoder.timeout
