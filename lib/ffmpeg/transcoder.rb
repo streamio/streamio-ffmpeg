@@ -17,15 +17,8 @@ module FFMPEG
       end
       @output_file = output_file
 
-      if options.is_a?(Array) || options.is_a?(EncodingOptions)
-        @raw_options = options
-      elsif options.is_a?(Hash)
-        @raw_options = EncodingOptions.new(options)
-      else
-        raise ArgumentError, "Unknown options format '#{options.class}', should be either EncodingOptions, Hash or Array."
-      end
+      @raw_options, @transcoder_options = optimize_screenshot_parameters(options, transcoder_options)
 
-      @transcoder_options = transcoder_options
       @errors = []
 
       apply_transcoder_options
@@ -144,6 +137,43 @@ module FFMPEG
       output[/test/]
     rescue ArgumentError
       output.force_encoding("ISO-8859-1")
+    end
+
+    def optimize_screenshot_parameters(options, transcoder_options)
+      # Moves any screenshot seek_time to an 'ss' input_option
+      if options.is_a?(Array)
+        seek_time_idx = options.find_index('-seek_time') unless options.find_index('-screenshot').nil?
+        unless seek_time_idx.nil?
+          options.delete_at(seek_time_idx) # delete 'seek_time'
+          input_seek_time = options.delete_at(seek_time_idx).to_s # fetch the seek value
+        end
+        raw_options = options
+      elsif options.is_a?(Hash)
+        raw_options = EncodingOptions.new(options)
+        unless raw_options[:screenshot].nil?
+          input_seek_time = raw_options.delete(:seek_time).to_s
+        end
+      else
+        raise ArgumentError, "Unknown options format '#{options.class}', should be either EncodingOptions, Hash or Array."
+      end
+
+      unless input_seek_time.to_s == ''
+        input_options = transcoder_options[:input_options] || []
+        # remove ss from input options because we're overriding from seek_time
+        if input_options.is_a?(Array)
+          fi = input_options.find_index('-ss')
+          if fi.nil?
+            input_options.concat(['-ss', input_seek_time])
+          else
+            input_options[fi + 1] = input_seek_time
+          end
+        else
+          input_options[:ss] = input_seek_time
+        end
+        transcoder_options[:input_options] = input_options
+      end
+
+      return raw_options, transcoder_options
     end
   end
 end
