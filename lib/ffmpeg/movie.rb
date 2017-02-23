@@ -35,6 +35,9 @@ module FFMPEG
 
       output[/rotate\ {1,}:\ {1,}(\d*)/]
       @rotation = $1 ? $1.to_i : nil
+	  if @rotation==0 then
+		@rotation=nil
+      end
 	
       output[/Video:\ (.*)/]
       @video_stream = $1
