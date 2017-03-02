@@ -383,7 +383,7 @@ module FFMPEG
         end
 
         it "should parse the creation_time" do
-          expect(movie.creation_time).to eq(Time.parse("2010-02-05 16:05:04"))
+          expect(movie.creation_time).to eq(Time.parse("2010-02-05 16:05:04 UTC"))
         end
 
         it "should parse video stream information" do
