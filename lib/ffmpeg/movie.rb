@@ -125,7 +125,7 @@ module FFMPEG
       end
 
       unsupported_stream_ids = unsupported_streams(std_error)
-      nil_or_unsupported = -> (stream) { stream.nil? || unsupported_stream_ids.include?(stream[:index]) }
+      nil_or_unsupported = ->(stream) { stream.nil? || unsupported_stream_ids.include?(stream[:index]) }
 
       @invalid = true if nil_or_unsupported.(video_stream) && nil_or_unsupported.(audio_stream)
       @invalid = true if @metadata.key?(:error)
