@@ -345,19 +345,19 @@ module FFMPEG
       end
 
       context 'with input_options' do
-        let(:input_options) { nil }
-        let(:transcoder) { Transcoder.new(movie, 'tmp.mp4', {}, input_options: option) }
+        let(:transcoder) { Transcoder.new(movie, 'tmp.mp4', {}, input_options: input_options) }
+        let(:expected_result) { "-y -ss 30 -i #{transcoder.input}" }
 
-        context 'input_options is an array' do
-          let(:option) { %w(-framerate 1/5 -re) }
+        context 'as an array' do
+          let(:input_options) { %w(-framerate 1/5 -re) }
 
           it 'should add the input_options before the input' do
             expect(transcoder.command.join(' ')).to include("-framerate 1/5 -re -i #{transcoder.input}")
           end
         end
 
-        context 'input_options is a hash' do
-          let(:option) { {framerate: '1/5'} }
+        context 'as a hash' do
+          let(:input_options) { {framerate: '1/5'} }
 
           it 'should add the input_options before the input' do
             expect(transcoder.command.join(' ')).to include("-framerate 1/5 -i #{transcoder.input}")
@@ -366,7 +366,7 @@ module FFMPEG
           context 'to create a slideshow' do
             let(:file_spec) { "#{fixture_path}/images/img_%03d.jpeg"}
             let(:output) { "#{tmp_path}/slideshow.mp4"}
-            let(:transcoder) { Transcoder.new(movie, output, {}, input: file_spec, input_options: option) }
+            let(:transcoder) { Transcoder.new(movie, output, {}, input: file_spec, input_options: input_options) }
 
             it 'should add the input_options before the input' do
               expect(transcoder.command.join(' ')).to include("-framerate 1/5 -i #{file_spec}")
@@ -396,6 +396,51 @@ module FFMPEG
               it 'should not raise an error' do
                 expect { transcoder.run }.to_not raise_error
               end
+            end
+          end
+        end
+
+        context 'not specified but with screenshot transcoder_options' do
+          let(:input_options) { nil }
+          let(:transcoder) { Transcoder.new(movie, 'tmp.mp4', transcoder_options, input_options: input_options) }
+
+          let(:transcoder_options) { { screenshot: true, seek_time: 30 } }
+          it 'should add the input_options before the input' do
+            expect(transcoder.command.join(' ')).to include(expected_result)
+          end
+        end
+
+        context 'specified without seek_time but with other transcoder_options' do
+          let(:input_options) { %w(-re) }
+          let(:transcoder_options) { { screenshot: true } }
+          let(:transcoder) { Transcoder.new(movie, 'tmp.mp4', transcoder_options, input_options: input_options) }
+
+          it 'should add the input_options before the input' do
+            expect(transcoder.command.join(' ')).to_not include('-ss')
+          end
+
+          it 'should add the input_options before the input' do
+            expect(transcoder.command.join(' ')).to include("-y -re -i #{transcoder.input}")
+          end
+        end
+
+        context 'specified seek_time and options with -ss prefers seek_time value' do
+          let(:transcoder_options) { { screenshot: true, seek_time: 30 } }
+          let(:transcoder) { Transcoder.new(movie, 'tmp.mp4', transcoder_options, input_options: input_options) }
+
+          context 'as a Hash' do
+            let(:input_options) { { ss: 20 } }
+
+            it 'should add the input_options before the input' do
+              expect(transcoder.command.join(' ')).to include(expected_result)
+            end
+
+          end
+
+          context 'as an Array' do
+            let(:input_options) { %w(-ss 20) }
+            it 'should add the input_options before the input' do
+              expect(transcoder.command.join(' ')).to include(expected_result)
             end
           end
         end
