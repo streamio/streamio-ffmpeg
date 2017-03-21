@@ -10,6 +10,8 @@ module FFMPEG
     attr_reader :container
     attr_reader :error
 
+    UNSUPPORTED_CODEC_PATTERN = /^Unsupported codec with id (\d+) for input stream (\d+)$/
+
     def initialize(path)
       unless File.exists?(path) || path =~ URI::regexp(["http", "https"])
         raise Errno::ENOENT, "the file '#{path}' does not exist"
@@ -28,8 +30,13 @@ module FFMPEG
       end
 
       fix_encoding(std_output)
+      fix_encoding(std_error)
 
-      metadata = MultiJson.load(std_output, symbolize_keys: true)
+      begin
+        metadata = MultiJson.load(std_output, symbolize_keys: true)
+      rescue MultiJson::ParseError
+        raise "Could not parse output from FFProbe:\n#{ std_output }"
+      end
 
       if metadata.key?(:error)
         @error = metadata[:error][:string]
@@ -110,10 +117,21 @@ module FFMPEG
         end
       end
 
+      unsupported_stream_ids = unsupported_streams(std_error)
+      nil_or_unsupported = ->(stream) { stream.nil? || unsupported_stream_ids.include?(stream[:index]) }
+
+      @invalid = true if nil_or_unsupported.(video_stream) && nil_or_unsupported.(audio_stream)
       @invalid = true if metadata.key?(:error)
-      @invalid = true if std_error.include?("Unsupported codec")
-      @invalid = true if std_error.include?("is not supported")
       @invalid = true if std_error.include?("could not find codec parameters")
+    end
+
+    def unsupported_streams(std_error)
+      [].tap do |stream_indices|
+        std_error.each_line do |line|
+          match = line.match(UNSUPPORTED_CODEC_PATTERN)
+          stream_indices << match[2].to_i if match
+        end
+      end
     end
 
     def valid?
