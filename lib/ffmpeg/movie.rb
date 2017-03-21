@@ -18,7 +18,9 @@ module FFMPEG
 
       if remote?
         @head = head
-        raise Errno::ENOENT, "the URL '#{path}' does not exist" unless @head.is_a?(Net::HTTPSuccess)
+        unless @head.is_a?(Net::HTTPSuccess)
+          raise Errno::ENOENT, "the URL '#{path}' does not exist or is not available (response code: #{@head.code})"
+        end
       else
         raise Errno::ENOENT, "the file '#{path}' does not exist" unless File.exist?(path)
       end
