@@ -213,6 +213,14 @@ module FFMPEG
         end
       end
 
+      context "given a file with a subtitle stream" do
+        let(:movie) {Movie.new("#{fixture_path}/movies/awesome movie with subtitles.m4v") }
+        
+        it "should be valid" do
+          expect(movie).to be_valid
+        end
+      end
+
       context "given a file named with URL characters" do
         let(:movie) { Movie.new("#{fixture_path}/movies/file+with+data&streams=works?.mp4") }
 
@@ -503,6 +511,30 @@ module FFMPEG
       it "should parse the rotation" do
         expect(movie.rotation).to eq(90)
       end
+    end
+
+    context "given a file with subtitle streams" do
+      let(:movie) {Movie.new("#{fixture_path}/movies/awesome movie with subtitles.m4v") }
+      
+      it "should identify both subtitle streams" do
+        expect(movie.subtitle_streams.length).to eq(2)
+      end
+      
+      it "should assign subtitle_codec to the format of the first stream" do
+        subtitle_codec = movie.subtitle_streams[0][:codec_name]
+        expect(movie.subtitle_codec).to eq(subtitle_codec)
+      end
+      
+      it "should assign subtitle_language to the language of the first stream" do
+        subtitle_language = movie.subtitle_streams[0][:language]
+        expect(movie.subtitle_language).to eq(subtitle_language)
+      end
+      
+      it "should assign subtitle_stream to the properties of the first stream" do
+        stream_overview = movie.subtitle_streams[0][:overview]
+        expect(movie.subtitle_stream).to eq stream_overview
+      end
+      
     end
 
     describe "transcode" do
