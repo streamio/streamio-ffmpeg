@@ -102,6 +102,11 @@ module FFMPEG
             end
           end
         end
+
+        context 'given additional params' do
+          it 'should use it for ffprobe' do
+          end
+        end
       end
 
       context "given a non movie file" do
