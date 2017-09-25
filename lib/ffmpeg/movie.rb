@@ -37,7 +37,7 @@ module FFMPEG
         std_error = stderr.read unless stderr.nil?
       end
 
-      get_levels_command = "ffmpeg -i #{path} -af \"volumedetect\" -f null /dev/null"
+      get_levels_command = [FFMPEG.ffmpeg_binary, '-i', path, *%w(-af volumedetect -f null /dev/null)]
       output = Open3.popen3(*get_levels_command) do |stdin, stdout, stderr|
         std_error = stderr.read unless stderr.nil?
       end
@@ -45,11 +45,9 @@ module FFMPEG
       fix_encoding(std_output)
       fix_encoding(std_error)
 
-      output[/mean_volume:\ (.*)/]
-      @mean_volume = $1
+      @mean_volume = output[/mean_volume:\ (.*)/, 1]
 
-      output[/max_volume:\ (.*)/]
-      @max_volume = $1
+      @max_volume = output[/max_volume:\ (.*)/, 1]
 
       begin
         @metadata = MultiJson.load(std_output, symbolize_keys: true)
