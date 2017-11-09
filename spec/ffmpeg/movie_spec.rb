@@ -384,6 +384,14 @@ module FFMPEG
           expect(movie.bitrate).to eq(481846)
         end
 
+        it "should expose mean volume" do
+          expect(movie.mean_volume).to eq("-72.4 dB")
+        end
+
+        it "should expose max volume" do
+          expect(movie.max_volume).to eq("-38.0 dB")
+        end
+
         it "should return nil rotation when no rotation exists" do
           expect(movie.rotation).to eq(nil)
         end
