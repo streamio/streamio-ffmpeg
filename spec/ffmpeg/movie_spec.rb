@@ -392,6 +392,32 @@ module FFMPEG
           expect(movie.max_volume).to eq("-38.0 dB")
         end
 
+        it "should expose lkfs" do
+          expect(movie.lkfs).to eq("-62.95")
+        end
+
+        it "should expose loudness threshold" do
+          expect(movie.loudness_threshold).to eq("-72.95")
+        end
+
+        it "should expose loudness true peak" do
+          expect(movie.loudness_true_peak).to eq( "-37.62")
+        end
+
+        it "should expose loudness LRA" do
+          expect(movie.loudness_lra).to eq("1.10")
+        end
+
+        it "should expose loudness target offset" do
+          expect(movie.target_offset).to eq("0.77")
+        end
+
+        it "should calculate loudness 2-pass normalization command" do
+          expect(movie.normalize_command).to eq("loudnorm=I=-24:TP=-1.5:"\
+            "LRA=11:measured_I=-62.95:measured_LRA=1.10:measured_TP=-37.62"\
+            ":measured_thresh=-72.95:offset=0.77:linear=true:print_format=summary")
+        end
+
         it "should return nil rotation when no rotation exists" do
           expect(movie.rotation).to eq(nil)
         end

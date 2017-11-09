@@ -155,7 +155,7 @@ module FFMPEG
 
       if wait_thr.value.success?
         stats = JSON.parse(std_err.read.lines[-12, 12].join)
-        @lkfs = stats['input_i'].to_f
+        @lkfs = stats['input_i']
         @loudness_lra = stats['input_lra']
         @loudness_threshold = stats['input_thresh']
         @loudness_true_peak = stats['input_tp']
