@@ -141,6 +141,10 @@ module FFMPEG
       ["-ss", value]
     end
 
+    def convert_loudness_normalization(value)
+      ["-af", value]
+    end
+
     def convert_screenshot(value)
       result = []
       unless self[:vframes]

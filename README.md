@@ -105,6 +105,14 @@ options = {
 movie.transcode("movie.mp4", options)
 ```
 
+Normalize the LKFS to -24:
+
+``` ruby
+options = { loudness_normalization: movie.normalize_command }
+
+movie.transcode("movie.mp4", options)
+```
+
 The transcode function returns a Movie object for the encoded file.
 
 ``` ruby
