@@ -173,7 +173,7 @@ movie.transcode("movie.mp4", {}, transcoder_options)
 
 ### Overriding the Remote Resource Check
 
-When usig a remote URL, the Movie class uses a HEAD request to determine the
+When using a remote URL, the Movie class uses a HEAD request to determine the
 resource validity and file size. If relying on presigned remote URLs
 (for example, Amazon S3 URLs), you may wish to skip the HEAD request as it will
 fail if your pre-signed URL is meant to be used with a GET request. As a caveat,
