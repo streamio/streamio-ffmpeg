@@ -108,7 +108,7 @@ module FFMPEG
             :sample_rate => stream[:sample_rate].to_i,
             :bitrate => stream[:bit_rate].to_i,
             :channel_layout => stream[:channel_layout],
-            :tags => stream[:streams],
+            :tags => stream[:streams] || stream[:tags],
             :overview => "#{stream[:codec_name]} (#{stream[:codec_tag_string]} / #{stream[:codec_tag]}), #{stream[:sample_rate]} Hz, #{stream[:channel_layout]}, #{stream[:sample_fmt]}, #{stream[:bit_rate]} bit/s"
           }
         end
@@ -120,7 +120,7 @@ module FFMPEG
           @audio_sample_rate = audio_stream[:sample_rate]
           @audio_bitrate = audio_stream[:bitrate]
           @audio_channel_layout = audio_stream[:channel_layout]
-          @audio_tags = audio_stream[:audio_tags]
+          @audio_tags = audio_stream[:tags]
           @audio_stream = audio_stream[:overview]
         end
 
