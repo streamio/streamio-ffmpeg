@@ -13,22 +13,22 @@ module FFMPEG
 
     UNSUPPORTED_CODEC_PATTERN = /^Unsupported codec with id (\d+) for input stream (\d+)$/
 
-    def initialize(path)
-      @path = path
+    def initialize(get_path, head_path = nil)
+      @path = head_path.present? ? head_path : get_path
 
       if remote?
         @head = head
         unless @head.is_a?(Net::HTTPSuccess)
-          raise Errno::ENOENT, "the URL '#{path}' does not exist or is not available (response code: #{@head.code})"
+          raise Errno::ENOENT, "the URL '#{@path}' does not exist or is not available (response code: #{@head.code})"
         end
       else
-        raise Errno::ENOENT, "the file '#{path}' does not exist" unless File.exist?(path)
+        raise Errno::ENOENT, "the file '#{@path}' does not exist" unless File.exist?(@path)
       end
 
-      @path = path
+      @path = get_path
 
       # ffmpeg will output to stderr
-      command = [FFMPEG.ffprobe_binary, '-i', path, *%w(-print_format json -show_format -show_streams -show_error)]
+      command = [FFMPEG.ffprobe_binary, '-i', @path, *%w(-print_format json -show_format -show_streams -show_error)]
       std_output = ''
       std_error = ''
 
