@@ -6,7 +6,7 @@ module FFMPEG
   class Movie
     attr_reader :path, :duration, :time, :bitrate, :rotation, :creation_time
     attr_reader :video_stream, :video_codec, :video_bitrate, :colorspace, :width, :height, :sar, :dar, :frame_rate
-    attr_reader :audio_streams, :audio_stream, :audio_codec, :audio_bitrate, :audio_sample_rate, :audio_channels, :audio_tags
+    attr_reader :audio_streams, :audio_stream, :audio_codec, :audio_bitrate, :audio_sample_rate, :audio_channels, :audio_tags, :audio_sample_fmt
     attr_reader :container
     attr_reader :metadata, :format_tags
 
@@ -106,6 +106,7 @@ module FFMPEG
             :bitrate => stream[:bit_rate].to_i,
             :channel_layout => stream[:channel_layout],
             :tags => stream[:streams],
+            :sample_fmt => stream[:sample_fmt],
             :overview => "#{stream[:codec_name]} (#{stream[:codec_tag_string]} / #{stream[:codec_tag]}), #{stream[:sample_rate]} Hz, #{stream[:channel_layout]}, #{stream[:sample_fmt]}, #{stream[:bit_rate]} bit/s"
           }
         end
@@ -118,6 +119,7 @@ module FFMPEG
           @audio_bitrate = audio_stream[:bitrate]
           @audio_channel_layout = audio_stream[:channel_layout]
           @audio_tags = audio_stream[:audio_tags]
+          @audio_sample_fmt = audio_stream[:sample_fmt]
           @audio_stream = audio_stream[:overview]
         end
 

@@ -435,6 +435,10 @@ module FFMPEG
           expect(movie.audio_bitrate).to eq(75832)
         end
 
+        it "should know the audio_sample_fmt" do
+          expect(movie.audio_sample_fmt).to eq("fltp")
+        end
+
         it "should be valid" do
           expect(movie).to be_valid
         end
@@ -482,6 +486,11 @@ module FFMPEG
         it "should assign audio_tags to the properties of the first stream" do
           audio_tags = movie.audio_streams[0][:tags]
           expect(movie.audio_tags).to eq audio_tags
+        end
+
+        it "should assign sample_fmt to the properties of the first stream" do
+          sample_fmt = movie.audio_streams[0][:sample_fmt]
+          expect(movie.audio_sample_fmt).to eq sample_fmt
         end
 
         it "should assign audio_stream to the properties of the first stream" do
