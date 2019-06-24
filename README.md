@@ -7,9 +7,9 @@ Streamio FFMPEG
 
 Simple yet powerful wrapper around the ffmpeg command for reading metadata and transcoding movies.
 
-All work on this project is sponsored by the online video platform [Streamio](http://streamio.com).
+All work on this project is sponsored by the online video platform [Streamio](https://streamio.com) from [Rackfish](https://www.rackfish.com).
 
-[![Streamio](http://d253c4ja9jigvu.cloudfront.net/assets/small-logo.png)](http://streamio.com)
+[![Streamio](http://d253c4ja9jigvu.cloudfront.net/assets/small-logo.png)](https://streamio.com)
 
 Installation
 ------------
@@ -285,4 +285,4 @@ movie.transcode("movie.mp4", options, transcoder_options) # returns nil
 Copyright
 ---------
 
-Copyright (c) Streamio AB. See LICENSE for details.
+Copyright (c) Rackfish AB. See LICENSE for details.
