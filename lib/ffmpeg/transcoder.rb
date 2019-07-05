@@ -57,6 +57,7 @@ module FFMPEG
       @command = "#{FFMPEG.ffmpeg_binary} -y -i #{Shellwords.escape(@movie.path)} #{@raw_options} #{Shellwords.escape(@output_file)}"
       FFMPEG.logger.info("Running transcoding...\n#{@command}\n")
       @output = ""
+	  @progress = 0
 
       Open3.popen3(@command) do |stdin, stdout, stderr, wait_thr|
         begin
@@ -67,18 +68,19 @@ module FFMPEG
             if line.include?("time=")
               if line =~ /time=(\d+):(\d+):(\d+.\d+)/ # ffmpeg 0.8 and above style
                 time = ($1.to_i * 3600) + ($2.to_i * 60) + $3.to_f
-              else # better make sure it wont blow up in case of unexpected output
-                time = 0.0
+                @progress = time / @movie.duration
               end
-              progress = time / @movie.duration
-              yield(progress) if block_given?
+              yield(@progress) if block_given?
             end
+			if line.downcase.include?("error")			
+			  raise Error, "Error when transcoding.\nLine: #{line}\nFull output: #{@output}"
+			end
           end
 
           if @@timeout
-            stderr.each_with_timeout(wait_thr.pid, @@timeout, 'size=', &next_line)
+            stderr.each_with_timeout(wait_thr.pid, @@timeout, "size=", &next_line)
           else
-            stderr.each('size=', &next_line)
+            stderr.each("size=", &next_line)
           end
 
         rescue Timeout::Error => e
