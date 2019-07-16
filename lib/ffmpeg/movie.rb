@@ -6,8 +6,8 @@ require 'net/http'
 module FFMPEG
   class Movie
     attr_reader :path, :duration, :time, :bitrate, :rotation, :creation_time
-    attr_reader :video_stream, :video_codec, :video_bitrate, :colorspace, :width, :height, :sar, :dar, :frame_rate
-    attr_reader :audio_streams, :audio_stream, :audio_codec, :audio_bitrate, :audio_sample_rate, :audio_channels, :audio_tags
+    attr_reader :video_stream, :video_codec, :video_bitrate, :colorspace, :width, :height, :sar, :dar, :level, :profile, :frame_rate
+    attr_reader :audio_streams, :audio_stream, :audio_codec, :audio_bitrate, :audio_sample_rate, :audio_channels, :audio_tags, :max_volume, :mean_volume
     attr_reader :container
     attr_reader :metadata, :format_tags
 
@@ -37,8 +37,17 @@ module FFMPEG
         std_error = stderr.read unless stderr.nil?
       end
 
+      get_levels_command = [FFMPEG.ffmpeg_binary, '-i', path, *%w(-af volumedetect -f null /dev/null)]
+      output = Open3.popen3(*get_levels_command) do |stdin, stdout, stderr|
+        std_error = stderr.read unless stderr.nil?
+      end
+
       fix_encoding(std_output)
       fix_encoding(std_error)
+
+      @mean_volume = output[/mean_volume:\ (.*)/, 1]
+
+      @max_volume = output[/max_volume:\ (.*)/, 1]
 
       begin
         @metadata = MultiJson.load(std_output, symbolize_keys: true)
@@ -84,6 +93,8 @@ module FFMPEG
           @video_bitrate = video_stream[:bit_rate].to_i
           @sar = video_stream[:sample_aspect_ratio]
           @dar = video_stream[:display_aspect_ratio]
+          @level = video_stream[:level]
+          @profile = video_stream[:profile]
 
           @frame_rate = unless video_stream[:avg_frame_rate] == '0/0'
                           Rational(video_stream[:avg_frame_rate])
