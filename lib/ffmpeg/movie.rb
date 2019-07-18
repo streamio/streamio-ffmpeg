@@ -13,13 +13,15 @@ module FFMPEG
 
     UNSUPPORTED_CODEC_PATTERN = /^Unsupported codec with id (\d+) for input stream (\d+)$/
 
-    def initialize(path)
+    def initialize(path, options = {})
       @path = path
 
       if remote?
-        @head = head
-        unless @head.is_a?(Net::HTTPSuccess)
-          raise Errno::ENOENT, "the URL '#{path}' does not exist or is not available (response code: #{@head.code})"
+        unless options[:skip_resource_check]
+          @head = head
+          unless @head.is_a?(Net::HTTPSuccess)
+            raise Errno::ENOENT, "the URL '#{path}' does not exist or is not available (response code: #{@head.code} #{@head.msg})"
+          end
         end
       else
         raise Errno::ENOENT, "the file '#{path}' does not exist" unless File.exist?(path)
@@ -181,7 +183,7 @@ module FFMPEG
       if local?
         File.size(@path)
       else
-        @head.content_length
+        @head ? @head.content_length : nil
       end
     end
 

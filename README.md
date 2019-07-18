@@ -27,8 +27,8 @@ Will not work in jruby until they fix: http://goo.gl/Z4UcX (should work in the u
 
 ### ffmpeg
 
-The current gem is tested against ffmpeg 2.8.4. So no guarantees with earlier (or much later) 
-versions. Output and input standards have inconveniently changed rather a lot between versions 
+The current gem is tested against ffmpeg 2.8.4. So no guarantees with earlier (or much later)
+versions. Output and input standards have inconveniently changed rather a lot between versions
 of ffmpeg. My goal is to keep this library in sync with new versions of ffmpeg as they come along.
 
 On macOS: `brew install ffmpeg`.
@@ -169,6 +169,19 @@ movie.transcode("movie.mp4", {}, transcoder_options)
 
 # FFMPEG Command will look like this:
 # ffmpeg -y -i img_%03d.png movie.mp4
+```
+
+### Overriding the Remote Resource Check
+
+When using a remote URL, the Movie class uses a HEAD request to determine the
+resource validity and file size. If relying on presigned remote URLs
+(for example, Amazon S3 URLs), you may wish to skip the HEAD request as it will
+fail if your pre-signed URL is meant to be used with a GET request. As a caveat,
+`movie.size` will return `nil`.
+
+``` ruby
+movie = FFMPEG::Movie.new("path/to/movie.mov", skip_resource_check: true)
+movie.size # nil
 ```
 
 ### Watermarking
