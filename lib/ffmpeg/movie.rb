@@ -10,6 +10,7 @@ module FFMPEG
     attr_reader :audio_streams, :audio_stream, :audio_codec, :audio_bitrate, :audio_sample_rate, :audio_channels, :audio_tags
     attr_reader :container
     attr_reader :metadata, :format_tags
+    attr_reader :ffprobe_stderr
 
     UNSUPPORTED_CODEC_PATTERN = /^Unsupported codec with id (\d+) for input stream (\d+)$/
 
@@ -39,6 +40,7 @@ module FFMPEG
 
       fix_encoding(std_output)
       fix_encoding(std_error)
+      @ffprobe_stderr = std_error
 
       begin
         @metadata = MultiJson.load(std_output, symbolize_keys: true)
