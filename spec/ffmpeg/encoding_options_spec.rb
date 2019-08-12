@@ -21,6 +21,13 @@ module FFMPEG
         expect(EncodingOptions.new(frame_rate: 29.9).to_a).to eq(%w(-r 29.9))
       end
 
+      it "should convert loudness normalization" do
+        command = "loudnorm=I=-24:TP=-1.5:"\
+            "LRA=11:measured_I=-62.95:measured_LRA=1.10:measured_TP=-37.62"\
+            ":measured_thresh=-72.95:offset=0.77:linear=true:print_format=summary"
+        expect(EncodingOptions.new(loudness_normalization: command).to_a).to include("-af", command)
+      end
+
       it "should convert the resolution" do
         expect(EncodingOptions.new(resolution: "640x480").to_a).to include("-s", "640x480")
       end
