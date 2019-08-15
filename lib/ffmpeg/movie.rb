@@ -13,7 +13,7 @@ module FFMPEG
 
     UNSUPPORTED_CODEC_PATTERN = /^Unsupported codec with id (\d+) for input stream (\d+)$/
 
-    def initialize(path)
+    def initialize(path, options = [])
       @path = path
 
       if remote?
@@ -28,7 +28,7 @@ module FFMPEG
       @path = path
 
       # ffmpeg will output to stderr
-      command = [FFMPEG.ffprobe_binary, '-i', path, *%w(-print_format json -show_format -show_streams -show_error)]
+      command = [FFMPEG.ffprobe_binary, '-i', path, *%w(-print_format json -show_format -show_streams -show_error ) + options]
       std_output = ''
       std_error = ''
 

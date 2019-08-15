@@ -102,6 +102,13 @@ module FFMPEG
             end
           end
         end
+
+        context 'given additional params' do
+          it 'should use it for ffprobe' do
+            pcm_file = FFMPEG::Movie.new("#{fixture_path}/movies/audio.pcm", %w(-f s16le))
+            expect(pcm_file.valid?).to eq true
+          end
+        end
       end
 
       context "given a non movie file" do
@@ -389,7 +396,7 @@ module FFMPEG
         end
 
         it "should parse the creation_time" do
-          expect(movie.creation_time).to eq(Time.parse("2010-02-05 16:05:04 UTC"))
+          expect(movie.creation_time).to eq(Time.parse("2010-02-05 16:05:04"))
         end
 
         it "should parse video stream information" do
@@ -502,21 +509,6 @@ module FFMPEG
 
       it "should parse the rotation" do
         expect(movie.rotation).to eq(90)
-      end
-    end
-
-    describe "transcode" do
-      let(:movie) { Movie.new("#{fixture_path}/movies/awesome movie.mov")}
-
-      it "should run the transcoder" do
-
-        transcoder_double = double(Transcoder)
-        expect(Transcoder).to receive(:new).
-          with(movie, "#{tmp_path}/awesome.flv", {custom: "-vcodec libx264"}, preserve_aspect_ratio: :width).
-          and_return(transcoder_double)
-        expect(transcoder_double).to receive(:run)
-
-        movie.transcode("#{tmp_path}/awesome.flv", {custom: "-vcodec libx264"}, preserve_aspect_ratio: :width)
       end
     end
 
