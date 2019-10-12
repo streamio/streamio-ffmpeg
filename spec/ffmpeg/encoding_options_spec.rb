@@ -64,6 +64,10 @@ module FFMPEG
         expect(EncodingOptions.new(audio_channels: 2).to_a).to eq(%w(-ac 2))
       end
 
+      it "should convert audio profile" do
+        EncodingOptions.new(:audio_profile => 'aac_he').to_s.should == "-profile:a aac_he"
+      end
+
       it "should convert maximum video bitrate" do
         expect(EncodingOptions.new(video_max_bitrate: 600).to_a).to eq(%w(-maxrate 600k))
       end
