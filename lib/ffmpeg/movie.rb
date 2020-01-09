@@ -13,7 +13,7 @@ module FFMPEG
       @path = path
 
       # ffmpeg will output to stderr
-      command = "#{FFMPEG.ffmpeg_binary} -i #{Shellwords.escape(path)}"
+      command = "#{FFMPEG.ffmpeg_binary} -i #{Shellwords.escape(path)} -hide_banner -f null -"
       output = Open3.popen3(command) { |stdin, stdout, stderr| stderr.read }
 
       fix_encoding(output)
@@ -59,15 +59,25 @@ module FFMPEG
         @audio_bitrate = audio_bitrate =~ %r(\A(\d+) kb/s(.*)\Z) ? $1.to_i : nil
         @audio_sample_rate = audio_sample_rate[/\d*/].to_i
       end
-
+      @ffmpeg_output = output
       @invalid = true if @video_stream.to_s.empty? && @audio_stream.to_s.empty?
       @invalid = true if output.include?("is not supported")
       @invalid = true if output.include?("could not find codec parameters")
+	  @has_errors = true if output.include?("error")
+	  @has_errors = true if output.include?("Error")
     end
 
     def valid?
       not @invalid
     end
+
+    def has_errors?
+       @has_errors
+    end
+
+	def ffmpeg_output
+		@ffmpeg_output
+	end
 
     def width
       resolution.split("x")[(@rotation==nil) || (@rotation==180)? 0:1].to_i rescue nil
