@@ -13,7 +13,7 @@ module FFMPEG
       @path = path
 
       # ffmpeg will output to stderr
-      command = "#{FFMPEG.ffmpeg_binary} -i #{Shellwords.escape(path)} -hide_banner -f null -"
+      command = "#{FFMPEG.ffmpeg_binary} -i #{Shellwords.escape(path)}"
       output = Open3.popen3(command) { |stdin, stdout, stderr| stderr.read }
 
       fix_encoding(output)
@@ -63,9 +63,25 @@ module FFMPEG
       @invalid = true if @video_stream.to_s.empty? && @audio_stream.to_s.empty?
       @invalid = true if output.include?("is not supported")
       @invalid = true if output.include?("could not find codec parameters")
+    end
+	
+	def check_for_errors
+      # ffmpeg will output to stderr
+      command = "#{FFMPEG.ffmpeg_binary} -i #{Shellwords.escape(path)} -hide_banner -f null -"
+      output = Open3.popen3(command) { |stdin, stdout, stderr| stderr.read }
+      fix_encoding(output)
+      @ffmpeg_output = output
 	  @has_errors = true if output.include?("error")
 	  @has_errors = true if output.include?("Error")
-    end
+	  
+      # ffmpeg will output to stderr
+      command = "#{FFMPEG.ffmpeg_binary} -i #{Shellwords.escape(path)} -hide_banner -f null -"
+      output = Open3.popen3(command) { |stdin, stdout, stderr| stderr.read }
+      fix_encoding(output)
+      @ffmpeg_output = output
+	  @has_errors = true if output.include?("error")
+	  @has_errors = true if output.include?("Error")
+	end
 
     def valid?
       not @invalid
