@@ -1,0 +1,13 @@
+before_install: wget http://johnvansickle.com/ffmpeg/releases/ffmpeg-release-64bit-static.tar.xz -O - | sudo tar -xJ --strip-components=1 -C /usr/local/bin/
+language: ruby
+rvm:
+  - 2.0.0
+  - 2.2
+  - 2.3.1
+cache:
+  - bundler
+addons:
+  code_climate:
+    repo_token: 25cb5ce0278a4633050937ff504ef0eef45f5756b53db51b179ad42ed5d8c428
+after_success:
+  - bundle exec codeclimate-test-reporter

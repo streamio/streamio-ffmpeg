@@ -1,16 +1,88 @@
-ffmpeg version N-57291-g80b8f78 Copyright (c) 2000-2013 the FFmpeg developers
-  built on Oct 21 2013 23:07:04 with Apple LLVM version 5.0 (clang-500.2.75) (based on LLVM 3.3svn)
-  configuration: --cc=clang --enable-gpl --enable-shared --enable-libmp3lame --enable-libxvid --enable-libx264 --enable-pthreads --enable-libfaac --enable-postproc --enable-libopencore-amrnb --enable-libopencore-amrwb --enable-libvorbis --enable-libgsm --enable-nonfree --enable-avfilter --enable-libtheora --enable-version3 --enable-librtmp --enable-openssl --enable-libvpx
-  libavutil      52. 47.101 / 52. 47.101
-  libavcodec     55. 37.102 / 55. 37.102
-  libavformat    55. 19.103 / 55. 19.103
-  libavdevice    55.  4.100 / 55.  4.100
-  libavfilter     3. 88.102 /  3. 88.102
-  libswscale      2.  5.101 /  2.  5.101
-  libswresample   0. 17.104 /  0. 17.104
-  libpostproc    52.  3.100 / 52.  3.100
-Input #0, mpeg, from 'spec/fixtures/movies/weird_aspect.small.mpg':
-  Duration: 00:00:01.44, start: 0.220000, bitrate: 1706 kb/s
-    Stream #0:0[0x1e0]: Video: mpeg1video, yuv420p(tv), 352x288 [SAR 0:1 DAR 704:405], 1500 kb/s, 25 fps, 25 tbr, 90k tbn, 25 tbc
-    Stream #0:1[0x1c0]: Audio: mp2, 44100 Hz, stereo, s16p, 224 kb/s
-At least one output file must be specified
+{
+    "streams": [
+        {
+            "index": 0,
+            "codec_name": "mpeg1video",
+            "codec_type": "video",
+            "codec_time_base": "1/25",
+            "codec_tag_string": "[0][0][0][0]",
+            "codec_tag": "0x0000",
+            "width": 352,
+            "height": 288,
+            "has_b_frames": 1,
+            "sample_aspect_ratio": "0:1",
+            "display_aspect_ratio": "704:405",
+            "pix_fmt": "yuv420p",
+            "level": -99,
+            "timecode": "00:00:00:00",
+            "id": "0x1e0",
+            "r_frame_rate": "25/1",
+            "avg_frame_rate": "25/1",
+            "time_base": "1/90000",
+            "start_pts": 19800,
+            "start_time": "0.220000",
+            "duration_ts": 129600,
+            "duration": "1.440000",
+            "bit_rate": "1500000",
+            "disposition": {
+                "default": 0,
+                "dub": 0,
+                "original": 0,
+                "comment": 0,
+                "lyrics": 0,
+                "karaoke": 0,
+                "forced": 0,
+                "hearing_impaired": 0,
+                "visual_impaired": 0,
+                "clean_effects": 0,
+                "attached_pic": 0
+            }
+        },
+        {
+            "index": 1,
+            "codec_name": "mp2",
+            "codec_type": "audio",
+            "codec_time_base": "1/44100",
+            "codec_tag_string": "[0][0][0][0]",
+            "codec_tag": "0x0000",
+            "sample_fmt": "s16p",
+            "sample_rate": "44100",
+            "channels": 2,
+            "channel_layout": "stereo",
+            "bits_per_sample": 0,
+            "id": "0x1c0",
+            "r_frame_rate": "0/0",
+            "avg_frame_rate": "0/0",
+            "time_base": "1/90000",
+            "start_pts": 19800,
+            "start_time": "0.220000",
+            "duration_ts": 105795,
+            "duration": "1.175500",
+            "bit_rate": "224000",
+            "disposition": {
+                "default": 0,
+                "dub": 0,
+                "original": 0,
+                "comment": 0,
+                "lyrics": 0,
+                "karaoke": 0,
+                "forced": 0,
+                "hearing_impaired": 0,
+                "visual_impaired": 0,
+                "clean_effects": 0,
+                "attached_pic": 0
+            }
+        }
+    ],
+    "format": {
+        "filename": "spec/fixtures/movies/weird_aspect.small.mpg",
+        "nb_streams": 2,
+        "nb_programs": 0,
+        "format_name": "mpeg",
+        "start_time": "0.220000",
+        "duration": "1.440000",
+        "size": "307200",
+        "bit_rate": "1706666",
+        "probe_score": 52
+    }
+}

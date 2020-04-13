@@ -1,0 +1,4 @@
+dyld: Library not loaded: /usr/local/opt/openh264/lib/libopenh264.1.dylib
+  Referenced from: /usr/local/bin/ffprobe
+  Reason: image not found
+[1]    46696 abort      /usr/local/bin/ffprobe -i spec/fixtures/village.mov -print_format json
