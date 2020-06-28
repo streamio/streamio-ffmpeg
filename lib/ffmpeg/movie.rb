@@ -25,8 +25,6 @@ module FFMPEG
         raise Errno::ENOENT, "the file '#{path}' does not exist" unless File.exist?(path)
       end
 
-      @path = path
-
       # ffmpeg will output to stderr
       command = [FFMPEG.ffprobe_binary, '-i', path, *%w(-print_format json -show_format -show_streams -show_error)]
       std_output = ''
