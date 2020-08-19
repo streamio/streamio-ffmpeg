@@ -156,11 +156,11 @@ module FFMPEG
     end
 
     def width
-      rotation.nil? || rotation == 180 ? @width : @height;
+      rotation.nil? || rotation == 0 || rotation == 180 ? @width : @height;
     end
 
     def height
-      rotation.nil? || rotation == 180 ? @height : @width;
+      rotation.nil? || rotation == 0 || rotation == 180 ? @height : @width;
     end
 
     def resolution
