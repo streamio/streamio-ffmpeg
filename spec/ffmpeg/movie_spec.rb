@@ -28,6 +28,12 @@ module FFMPEG
         end
       end
 
+      context "given a file containing http in the name" do
+        it 'should see local files with http in their name as local' do
+          expect(Movie.new("#{fixture_path}/movies/file_with_http_in_name.flv").remote?).to be false
+        end
+      end
+
       context "given a URL" do
         before(:context) { start_web_server }
         after(:context) { stop_web_server }
