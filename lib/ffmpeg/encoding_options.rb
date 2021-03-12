@@ -137,6 +137,10 @@ module FFMPEG
       "-pix_fmt #{value}"
     end
 
+    def convert_max_muxing_queue_size(value)
+      "-max_muxing_queue_size #{value}"
+    end
+
     def convert_x264_preset(value)
       "-preset #{value}"
     end
