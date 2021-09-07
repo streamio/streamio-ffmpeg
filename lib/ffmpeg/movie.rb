@@ -4,7 +4,7 @@ module FFMPEG
   class Movie
     attr_reader :path, :duration, :time, :bitrate, :rotation, :creation_time
     attr_reader :video_stream, :video_codec, :video_bitrate, :colorspace, :resolution, :sar, :dar
-    attr_reader :audio_stream, :audio_codec, :audio_bitrate, :audio_sample_rate
+    attr_reader :audio_stream, :audio_codec, :audio_bitrate, :audio_sample_rate, :audio_stream_count
     attr_reader :container
 
     def initialize(path)
@@ -44,6 +44,8 @@ module FFMPEG
 
       output[/Audio:\ (.*)/]
       @audio_stream = $1
+
+	  @audio_stream_count = output.scan(/Audio:\ (.*)/).size
 
       if video_stream
         commas_except_in_parenthesis = /(?:\([^()]*\)|[^,])+/ # regexp to handle "yuv420p(tv, bt709)" colorspace etc from http://goo.gl/6oi645
