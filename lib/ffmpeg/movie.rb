@@ -13,11 +13,11 @@ module FFMPEG
 
     UNSUPPORTED_CODEC_PATTERN = /^Unsupported codec with id (\d+) for input stream (\d+)$/
 
-    def initialize(path)
+    def initialize(path, head_url: nil)
       @path = path
 
       if remote?
-        @head = head
+        @head = head(head_url || path)
         unless @head.is_a?(Net::HTTPSuccess)
           raise Errno::ENOENT, "the URL '#{path}' does not exist or is not available (response code: #{@head.code})"
         end
