@@ -155,6 +155,8 @@ module FFMPEG
         unless seek_time_idx.nil?
           options.delete_at(seek_time_idx) # delete 'seek_time'
           input_seek_time = options.delete_at(seek_time_idx).to_s # fetch the seek value
+
+          options.delete_at(options.find_index('-screenshot')) # delete 'screenshot'
         end
         result = options, input_seek_time
       elsif options.is_a?(Hash)
