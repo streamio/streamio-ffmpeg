@@ -518,6 +518,19 @@ module FFMPEG
 
         movie.transcode("#{tmp_path}/awesome.flv", {custom: "-vcodec libx264"}, preserve_aspect_ratio: :width)
       end
+
+      context "when create a gif image" do
+        it "should run the transcoder" do
+
+          transcoder_double = double(Transcoder)
+          expect(Transcoder).to receive(:new).
+              with(movie, "#{tmp_path}/hello.gif", %w[-screenshot -seek_time 1 -r 5 -t 0.5 -vf scale=320:-1], {}).
+              and_return(transcoder_double)
+          expect(transcoder_double).to receive(:run)
+
+          movie.transcode("#{tmp_path}/hello.gif", %w[-screenshot -seek_time 1 -r 5 -t 0.5 -vf scale=320:-1], {})
+        end
+      end
     end
 
     describe "transcode" do
