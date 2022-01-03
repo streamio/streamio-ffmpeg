@@ -91,7 +91,7 @@ movie.transcode("movie.mp4", %w(-ac aac -vc libx264 -ac 2 ...))
 ```
 
 Use the EncodingOptions parser for humanly readable transcoding options. Below you'll find most of the supported options.
-Note that the :custom key is an array so that it can be used for FFMpeg options like
+Note that the `:custom` key is an array so that it can be used for FFMpeg options like
 `-map` that can be repeated:
 
 ``` ruby
