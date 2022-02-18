@@ -35,6 +35,15 @@ module FFMPEG
 
           let(:movie) { Movie.new("http://127.0.0.1:8000/awesome%20movie.mov") }
 
+          context "custom HEAD url" do
+            let(:head_url) { "http://google.com/does-not-exist.mov" }
+            let(:movie) { Movie.new("http://127.0.0.1:8000/awesome%20movie.mov", head_url: head_url) }
+
+            it "allows for a custome HEAD url location, like an S3 presigned url" do
+              expect { movie }.to raise_error(Errno::ENOENT)
+            end
+          end
+
           it "should be valid" do
             expect(movie).to be_valid
           end
