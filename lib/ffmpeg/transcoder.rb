@@ -4,13 +4,22 @@ require 'shellwords'
 module FFMPEG
   class Transcoder
     @@timeout = 30
+	@@ignore_errors = false
 
     def self.timeout=(time)
       @@timeout = time
     end
-
+	
     def self.timeout
       @@timeout
+    end
+
+	def self.ignore_errors=(ignore)
+		@@ignore_errors = ignore
+	end
+
+    def self.ignore_errors
+      @@ignore_errors
     end
 
     def initialize(movie, output_file, options = EncodingOptions.new, transcoder_options = {})
@@ -73,7 +82,8 @@ module FFMPEG
               end
               yield(@progress) if block_given?
             end
-			if line.downcase.include?("error")			
+			
+			if line.downcase.include?("error") && !@@ignore_errors
 			  raise Error, "Error when transcoding.\nLine: #{line}\nFull output: #{@output}"
 			end
           end
