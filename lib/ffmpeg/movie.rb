@@ -91,13 +91,8 @@ module FFMPEG
                           nil
                         end
 
+          @rotation = rotation_from_tags(video_stream) || rotation_from_side_data(video_stream)
           @video_stream = "#{video_stream[:codec_name]} (#{video_stream[:profile]}) (#{video_stream[:codec_tag_string]} / #{video_stream[:codec_tag]}), #{colorspace}, #{resolution} [SAR #{sar} DAR #{dar}]"
-
-          @rotation = if video_stream.key?(:tags) and video_stream[:tags].key?(:rotate)
-                        video_stream[:tags][:rotate].to_i
-                      else
-                        nil
-                      end
         end
 
         @audio_streams = audio_streams.map do |stream|
@@ -208,6 +203,20 @@ module FFMPEG
     end
 
     protected
+
+    def rotation_from_tags(video_stream)
+      if video_stream.key?(:tags) && video_stream[:tags].key?(:rotate)
+        video_stream[:tags][:rotate].to_i
+      end
+    end
+
+    def rotation_from_side_data(video_stream)
+      return unless video_stream.key?(:side_data_list)
+
+      data_list = video_stream[:side_data_list].find { |d_l| d_l[:rotation] }
+      data_list[:rotation].to_i.abs if data_list
+    end
+
     def aspect_from_dar
       calculate_aspect(dar)
     end
