@@ -33,8 +33,8 @@ module FFMPEG
       output[/bitrate: (\d*)/]
       @bitrate = $1 ? $1.to_i : nil
 
-      output[/rotate\ {1,}:\ {1,}(\d*)/]
-      @rotation = $1 ? $1.to_i : nil
+      output[/rotation of [+-]?([1-9]\d*|0)(\.\d+) degrees/]
+      @rotation = $1 ? $1.to_i.abs : nil
 	  if @rotation==0 then
 		@rotation=nil
       end
