@@ -95,6 +95,9 @@ module FFMPEG
 
           @rotation = if video_stream.key?(:tags) and video_stream[:tags].key?(:rotate)
                         video_stream[:tags][:rotate].to_i
+                      elsif video_stream.key?(:side_data_list)
+                        rotation_data = video_stream[:side_data_list].find { |data| data.key?(:rotation) }
+                        rotation_data ? rotation_data[:rotation].to_i : nil
                       else
                         nil
                       end
@@ -156,11 +159,17 @@ module FFMPEG
     end
 
     def width
-      rotation.nil? || rotation == 180 ? @width : @height;
+      return @width if rotation.nil?
+
+      normalized_rotation = rotation % 360
+      normalized_rotation == 180 || normalized_rotation == 0 ? @width : @height
     end
 
     def height
-      rotation.nil? || rotation == 180 ? @height : @width;
+      return @height if rotation.nil?
+
+      normalized_rotation = rotation % 360
+      normalized_rotation == 180 || normalized_rotation == 0 ? @height : @width
     end
 
     def resolution
