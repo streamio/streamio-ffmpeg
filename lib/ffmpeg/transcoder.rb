@@ -63,7 +63,7 @@ module FFMPEG
     # frame= 4855 fps= 46 q=31.0 size=   45306kB time=00:02:42.28 bitrate=2287.0kbits/
     def transcode_movie
       FFMPEG.logger.info("Running transcoding...\n#{command}\n")
-      @output = ""
+      @output = +""
 
       Open3.popen3(*command) do |_stdin, _stdout, stderr, wait_thr|
         begin
